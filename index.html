@@ -3,246 +3,700 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ABD Vize Red Takipçisi</title>
+    <title>TRAVELMAX</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Google Sans', 'Inter', sans-serif;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1920px-Flag_of_the_United_States.svg.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            position: relative;
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f9ff; /* Açık mavi arka plan */
         }
-        .content-bg {
-            background-color: rgba(255, 255, 255, 0.92);
+        .logo-text span {
+            display: inline-block;
+            animation: colorWave 5s infinite;
         }
-        .btn {
+        @keyframes colorWave {
+            0%, 100% { color: #3b82f6; } /* Mavi */
+            25% { color: #10b981; } /* Yeşil */
+            50% { color: #f59e0b; } /* Turuncu */
+            75% { color: #ec4899; } /* Pembe */
+        }
+        .logo-text span:nth-child(1) { animation-delay: 0.1s; }
+        .logo-text span:nth-child(2) { animation-delay: 0.2s; }
+        .logo-text span:nth-child(3) { animation-delay: 0.3s; }
+        .logo-text span:nth-child(4) { animation-delay: 0.4s; }
+        .logo-text span:nth-child(5) { animation-delay: 0.5s; }
+        .logo-text span:nth-child(6) { animation-delay: 0.6s; }
+        .logo-text span:nth-child(7) { animation-delay: 0.7s; }
+        .logo-text span:nth-child(8) { animation-delay: 0.8s; }
+
+        .country-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .section-title {
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #1e3a8a; /* Koyu mavi */
+        }
+        .detail-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .back-button {
+            background-color: #3b82f6; /* Mavi */
+            color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
-            font-weight: 500;
-            font-family: 'Google Sans', sans-serif;
-            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-weight: 600;
+            transition: background-color 0.3s ease;
         }
-        .btn:hover {
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        .back-button:hover {
+            background-color: #2563eb; /* Koyu mavi */
         }
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        .info-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb; /* Açık gri */
         }
-        .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+        .info-list li:last-child {
+            border-bottom: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .app-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
         }
-        .btn-danger {
-            background-color: #ef4444;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #dc2626;
-        }
-        .btn-secondary {
-            background-color: #6b7280;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #4b5563;
-        }
-        #loadingMessage {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
+        /* Arama çubuğu için stiller */
+        .search-bar-container {
+            margin-bottom: 2rem;
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            color: white;
-            font-size: 1.5rem;
-            text-align: center;
-            padding: 1rem;
         }
-        @keyframes pulseAndColorShift {
-            0%   { color: #e74c3c; text-shadow: 0 0 3px rgba(231, 76, 60, 0.7); transform: scale(1); }
-            25%  { color: #f1c40f; text-shadow: 0 0 5px rgba(241, 196, 15, 0.7); transform: scale(1.01); }
-            50%  { color: #3498db; text-shadow: 0 0 3px rgba(52, 152, 219, 0.7); transform: scale(1); }
-            75%  { color: #9b59b6; text-shadow: 0 0 5px rgba(155, 89, 182, 0.7); transform: scale(1.01); }
-            100% { color: #e74c3c; text-shadow: 0 0 3px rgba(231, 76, 60, 0.7); transform: scale(1); }
-        }
-        #copyright {
-            font-family: 'Google Sans', sans-serif;
-            animation: pulseAndColorShift 10s infinite ease-in-out;
-            font-weight: 500;
-            font-size: 0.80rem;
-        }
-        #noteSection label {
-            display: block;
-            text-align: left;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #374151;
-        }
-        #noteInput {
+        .search-bar {
             width: 100%;
-            min-height: 100px;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            font-family: 'Google Sans', 'Inter', sans-serif;
-            font-size: 0.9rem;
-            color: #1f2937;
-            resize: vertical;
+            max-width: 600px;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            border: 1px solid #cbd5e1; /* Tailwind gray-300 */
+            font-size: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
         }
-        #noteInput:focus {
+        .search-bar:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-        }
-        #inGodWeTrustText {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 0.75rem;
-            color: white;
-            opacity: 0.6;
-            z-index: 1000;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            border-color: #3b82f6; /* Mavi */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen p-4">
+<body class="min-h-screen flex flex-col">
 
-    <div id="loadingMessage" style="display: none;">Yükleniyor...</div> <!-- Başlangıçta gizli, JS ile yönetilecek -->
+    <!-- Header -->
+    <header class="bg-white shadow-md py-6">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold logo-text">
+                <span>T</span><span>R</span><span>A</span><span>V</span><span>E</span><span>L</span><span>M</span><span>A</span><span>X</span>
+            </h1>
+            <p class="text-xl text-gray-600 mt-2">Seyahat Rehberiniz</p>
+        </div>
+    </header>
 
-    <div class="content-bg p-6 sm:p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-lg text-center">
-        <header class="mb-6">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">ABD Vize Red Takipçisi</h1>
-        </header>
-
-        <main>
-            <div class="mb-8">
-                <p class="text-lg text-gray-700 mb-2">Mevcut Ret Sayısı:</p>
-                <p id="rejectionCountDisplay" class="text-6xl sm:text-7xl font-bold text-red-600">0</p>
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <div id="country-list-view">
+            <h2 class="text-3xl font-semibold text-center mb-6 text-blue-700">Ülkeler</h2>
+            <!-- Arama Çubuğu -->
+            <div class="search-bar-container">
+                <input type="text" id="search-input" class="search-bar" placeholder="Ülke ara...">
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <button id="addRejectionButton" class="btn btn-primary w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Ret Ekle
-                </button>
-                <button id="resetButton" class="btn btn-danger w-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                    </svg>
-                    Sıfırla
-                </button>
+            <div id="country-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Ülke kartları buraya eklenecek -->
             </div>
+             <p id="no-results-message" class="text-center text-gray-500 mt-8 hidden">Aramanızla eşleşen ülke bulunamadı.</p>
+        </div>
 
-            <div id="noteSection" class="mt-8 mb-6">
-                <label for="noteInput" class="text-lg font-semibold text-gray-700 mb-2">Kişisel Notlarınız:</label>
-                <textarea id="noteInput" placeholder="Vize süreciyle ilgili notlarınızı buraya yazabilirsiniz..."></textarea>
-                <button id="saveNoteButton" class="btn btn-secondary w-full mt-3">
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
-                    Notları Kaydet
-                </button>
-            </div>
-        </main>
+        <div id="country-detail-view" class="hidden">
+            <!-- Ülke detayları buraya eklenecek -->
+        </div>
+    </main>
 
-        <footer class="mt-8 pt-4 border-t border-gray-300">
-            <!-- Kullanıcı Kimliği alanı kaldırıldı -->
-            <p id="messageArea" class="text-sm text-green-600 mt-2 h-5"></p>
-            <p id="copyright" class="text-xs text-center mt-4">© 2025 UGURLU VISA SOLUTİONS. Tüm hakları saklıdır.</p>
-        </footer>
-    </div>
-    
-    <div id="inGodWeTrustText">In God We Trust</div>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; <span id="currentYear"></span> UGURLU Inc. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
 
     <script>
-        // Firebase ile ilgili tüm kodlar kaldırıldı.
-        // Veri saklama için localStorage kullanılacak.
+        // Global popüler uygulamalar listesi (ikonlar için placeholder)
+        const globalPopularApps = [
+            { name: "Google Maps", category: "Navigasyon", icon: "https://placehold.co/24x24/34A853/white?text=GM" },
+            { name: "Booking.com", category: "Konaklama", icon: "https://placehold.co/24x24/003580/white?text=B" },
+            { name: "Airbnb", category: "Konaklama", icon: "https://placehold.co/24x24/FF5A5F/white?text=A" },
+            { name: "Skyscanner", category: "Uçuş Arama", icon: "https://placehold.co/24x24/00A699/white?text=S" },
+            { name: "TripAdvisor", category: "Seyahat Yorumları", icon: "https://placehold.co/24x24/34E0A1/black?text=TA" },
+            { name: "Uber", category: "Ulaşım", icon: "https://placehold.co/24x24/000000/white?text=U" },
+            { name: "WhatsApp", category: "İletişim", icon: "https://placehold.co/24x24/25D366/white?text=W" },
+            { name: "Google Translate", category: "Çeviri", icon: "https://placehold.co/24x24/4285F4/white?text=GT" },
+            { name: "XE Currency", category: "Döviz Çevirici", icon: "https://placehold.co/24x24/1C4C6B/white?text=XE" }
+        ];
 
-        const rejectionCountDisplay = document.getElementById('rejectionCountDisplay');
-        const addRejectionButton = document.getElementById('addRejectionButton');
-        const resetButton = document.getElementById('resetButton');
-        const messageArea = document.getElementById('messageArea');
-        const loadingMessage = document.getElementById('loadingMessage'); // Yükleme mesajı hala kullanılabilir
-        const noteInput = document.getElementById('noteInput');
-        const saveNoteButton = document.getElementById('saveNoteButton');
+        // Örnek ülke verileri (ÇOK GENİŞLETİLMİŞ)
+        const countriesData = {
+            // Detaylı Bilgilerle Başlangıç Ülkeleri
+            "Türkiye": {
+                flag: "🇹🇷",
+                description: "Tarihi ve doğal güzellikleriyle ünlü, Asya ve Avrupa kıtalarını birleştiren eşsiz bir ülke.",
+                whatToDo: ["Ayasofya ve Sultanahmet Camii'ni ziyaret et (İstanbul)", "Kapadokya'da balon turuna katıl", "Efes Antik Kenti'ni keşfet (İzmir)", "Pamukkale travertenlerinde yürü (Denizli)", "Antalya'nın plajlarında dinlen"],
+                whatToEat: ["Kebap çeşitleri (Adana, Urfa, İskender)", "Baklava ve diğer Türk tatlıları", "Mantı", "Künefe", "Türk Kahvesi"],
+                whereToStay: ["İstanbul: Tarihi Yarımada'da butik oteller, Boğaz manzaralı lüks oteller.", "Kapadokya: Mağara oteller.", "Antalya & Muğla: Her şey dahil resortlar, butik oteller."],
+                popularApps: [
+                    { name: "Getir", category: "Hızlı Market Alışverişi", icon: "https://placehold.co/24x24/3b82f6/white?text=G" },
+                    { name: "BiTaksi", category: "Taksi Çağırma", icon: "https://placehold.co/24x24/f59e0b/white?text=B" },
+                    { name: "Sahibinden", category: "Alışveriş & İlan", icon: "https://placehold.co/24x24/10b981/white?text=S" },
+                    { name: "Yemeksepeti", category: "Yemek Siparişi", icon: "https://placehold.co/24x24/ec4899/white?text=Y" }
+                ],
+                currency: "Türk Lirası (TRY)",
+                language: "Türkçe"
+            },
+            "İtalya": {
+                flag: "🇮🇹",
+                description: "Sanat, tarih, moda ve muhteşem yemekleriyle bilinen bir Akdeniz ülkesi.",
+                whatToDo: ["Kolezyum ve Roma Forumu'nu gör (Roma)", "Venedik'te gondol sefası yap", "Floransa'da Uffizi Galerisi'ni ziyaret et", "Pisa Kulesi'nde fotoğraf çekil", "Amalfi Sahilleri'ni gez"],
+                whatToEat: ["Pizza (Napoli usulü)", "Makarna çeşitleri (Carbonara, Bolognese)", "Risotto", "Gelato (Dondurma)", "Tiramisu"],
+                whereToStay: ["Roma: Şehir merkezinde tarihi oteller.", "Venedik: Kanallara bakan oteller.", "Toskana: Kırsal villalar ve agriturismo çiftlik evleri."],
+                popularApps: [
+                    { name: "Trenitalia", category: "Tren Bileti", icon: "https://placehold.co/24x24/ef4444/white?text=T" },
+                    { name: "TheFork", category: "Restoran Rezervasyonu", icon: "https://placehold.co/24x24/22c55e/white?text=F" }
+                ].concat(globalPopularApps.filter(app => !["Trenitalia", "TheFork"].includes(app.name)).slice(0,2)),
+                currency: "Euro (EUR)",
+                language: "İtalyanca"
+            },
+            "Japonya": {
+                flag: "🇯🇵",
+                description: "Geleneksel kültürü ve fütüristik teknolojiyi bir arada sunan büyüleyici bir ada ülkesi.",
+                whatToDo: ["Tokyo'da Shibuya Geçidi'ni deneyimle", "Kyoto'daki tapınakları ve bahçeleri gez (Kinkaku-ji, Fushimi Inari)", "Fuji Dağı'na tırman veya uzaktan izle", "Hiroşima Barış Anıtı Parkı'nı ziyaret et", "Osaka'da sokak yemeklerini tat"],
+                whatToEat: ["Suşi ve Sashimi", "Ramen", "Tempura", "Okonomiyaki", "Matcha (Yeşil Çay)"],
+                whereToStay: ["Tokyo: Modern gökdelen otelleri, geleneksel Ryokanlar.", "Kyoto: Ryokanlar, machiya (geleneksel ahşap evler)."],
+                popularApps: [
+                    { name: "HyperDia", category: "Tren Saatleri", icon: "https://placehold.co/24x24/8b5cf6/white?text=H" },
+                    { name: "Gurunavi", category: "Restoran Bulucu", icon: "https://placehold.co/24x24/f97316/white?text=G" }
+                ].concat(globalPopularApps.filter(app => !["HyperDia", "Gurunavi"].includes(app.name)).slice(0,2)),
+                currency: "Japon Yeni (JPY)",
+                language: "Japonca"
+            },
+            "Fransa": {
+                flag: "🇫🇷",
+                description: "Moda, sanat, gastronomi ve romantizmin başkenti olarak bilinen Avrupa ülkesi.",
+                whatToDo: ["Eyfel Kulesi'ne çık (Paris)", "Louvre Müzesi'ni gez (Paris)", "Versay Sarayı'nı keşfet", "Nice ve Fransız Rivierası'nda dinlen", "Mont Saint-Michel'i ziyaret et"],
+                whatToEat: ["Kruvasan ve diğer Fransız pastaları", "Soğan Çorbası", "Coq au Vin (Şaraplı Horoz)", "Ratatouille", "Makaron"],
+                whereToStay: ["Paris: Şık butik oteller, lüks saray oteller.", "Provence: Lavanta tarlaları arasında şato oteller.", "Fransız Rivierası: Deniz kenarında lüks resortlar."],
+                popularApps: [
+                    { name: "SNCF Connect", category: "Tren & Otobüs Bileti", icon: "https://placehold.co/24x24/0ea5e9/white?text=S" },
+                    { name: "Le Fooding", category: "Restoran Rehberi", icon: "https://placehold.co/24x24/d946ef/white?text=L" }
+                ].concat(globalPopularApps.filter(app => !["SNCF Connect", "Le Fooding"].includes(app.name)).slice(0,2)),
+                currency: "Euro (EUR)",
+                language: "Fransızca"
+            },
+            "ABD": { // Amerika Birleşik Devletleri
+                flag: "🇺🇸",
+                description: "Kuzey Amerika'da yer alan, çeşitli kültürleri ve coğrafi özellikleri barındıran büyük bir ülke.",
+                whatToDo: ["New York'ta Özgürlük Heykeli'ni ve Times Meydanı'nı gör", "Los Angeles'ta Hollywood'u gez", "Grand Canyon Ulusal Parkı'nı ziyaret et", "San Francisco'da Golden Gate Köprüsü'nü gör", "Miami'de plajların tadını çıkar"],
+                whatToEat: ["Hamburger ve Hot Dog", "Barbekü (BBQ)", "Mac and Cheese", "Pancakes", "Apple Pie"],
+                whereToStay: ["New York: Manhattan'da çeşitli oteller.", "Los Angeles: Beverly Hills veya Santa Monica'da oteller.", "Ulusal Parklar: Kamp alanları ve pansiyonlar."],
+                popularApps: [
+                    { name: "Yelp", category: "Restoran & Mekan Bulucu", icon: "https://placehold.co/24x24/d32323/white?text=Y" }
+                ].concat(globalPopularApps.filter(app => !["Yelp","Uber"].includes(app.name)).slice(0,3)), // Uber zaten globalde var
+                currency: "Amerikan Doları (USD)",
+                language: "İngilizce"
+            },
+            "Brezilya": {
+                flag: "🇧🇷",
+                description: "Güney Amerika'nın en büyük ülkesi, Amazon yağmur ormanları, canlı kültürü ve futboluyla tanınır.",
+                whatToDo: ["Rio de Janeiro'da Kurtarıcı İsa Heykeli'ni ziyaret et ve Copacabana Plajı'nda yürü", "Amazon Nehri'nde tekne turu yap", "Iguazu Şelaleleri'ni gör", "Salvador'da karnavala katıl", "Sao Paulo'nun sanat galerilerini gez"],
+                whatToEat: ["Feijoada (Siyah fasulye yahnisi)", "Churrasco (Brezilya barbeküsü)", "Pão de Queijo (Peynirli ekmek)", "Açaí", "Brigadeiro (Çikolatalı tatlı)"],
+                whereToStay: ["Rio de Janeiro: Copacabana veya Ipanema'da oteller.", "Amazon: Orman locaları.", "Salvador: Tarihi merkezde pousadalar (butik oteller)."],
+                popularApps: [
+                    { name: "99 (app)", category: "Ulaşım", icon: "https://placehold.co/24x24/FF8000/white?text=99" },
+                    { name: "iFood", category: "Yemek Siparişi", icon: "https://placehold.co/24x24/EA1D2C/white?text=iF" }
+                ].concat(globalPopularApps.filter(app => !["99 (app)", "iFood"].includes(app.name)).slice(0,2)),
+                currency: "Brezilya Reali (BRL)",
+                language: "Portekizce"
+            },
+            "Mısır": {
+                flag: "🇪🇬",
+                description: "Kuzey Afrika'da yer alan, antik medeniyetlere ev sahipliği yapmış, piramitleri ve Nil Nehri ile ünlü ülke.",
+                whatToDo: ["Gize Piramitleri ve Sfenks'i gör", "Luxor'daki Karnak ve Krallar Vadisi'ni ziyaret et", "Nil Nehri'nde felucca (geleneksel yelkenli) turu yap", "Kahire Mısır Müzesi'ni gez", "Şarm El-Şeyh'te dalış yap"],
+                whatToEat: ["Koşari", "Ful Medames", "Falafel (Ta'ameya)", "Molokhia", "Umm Ali (Tatlı)"],
+                whereToStay: ["Kahire: Nil manzaralı oteller, şehir merkezinde seçenekler.", "Luxor: Nil kenarında oteller.", "Kıyı şeridi: Dalış resortları."],
+                popularApps: [
+                    { name: "Careem", category: "Ulaşım", icon: "https://placehold.co/24x24/4CAF50/white?text=C" },
+                    { name: "Talabat (Otlob)", category: "Yemek Siparişi", icon: "https://placehold.co/24x24/FF9800/white?text=T" }
+                ].concat(globalPopularApps.filter(app => !["Careem", "Talabat (Otlob)"].includes(app.name)).slice(0,2)),
+                currency: "Mısır Lirası (EGP)",
+                language: "Arapça"
+            },
+            "Avustralya": {
+                flag: "🇦🇺",
+                description: "Bir kıta ve ülke olan Avustralya, eşsiz vahşi yaşamı, mercan resifleri ve modern şehirleriyle bilinir.",
+                whatToDo: ["Sydney Opera Binası ve Harbour Köprüsü'nü gör", "Büyük Set Resifi'nde şnorkelle dalış yap", "Melbourne'ün sokak sanatını ve kafelerini keşfet", "Uluru'yu (Ayers Rock) ziyaret et", "Kangurular ve koalalarla tanış"],
+                whatToEat: ["Barbekü (Aussie BBQ)", "Vegemite", "Lamington (Tatlı)", "Meat Pie", "Fish and Chips"],
+                whereToStay: ["Sydney/Melbourne: Şehir merkezlerinde çeşitli oteller.", "Queensland: Sahil kasabalarında resortlar.", "Outback: Benzersiz konaklama deneyimleri."],
+                popularApps: [
+                    { name: "Menulog", category: "Yemek Siparişi", icon: "https://placehold.co/24x24/FF8C00/white?text=M" }
+                ].concat(globalPopularApps.filter(app => !["Menulog","Uber"].includes(app.name)).slice(0,3)),
+                currency: "Avustralya Doları (AUD)",
+                language: "İngilizce"
+            },
+            "Hindistan": {
+                flag: "🇮🇳",
+                description: "Güney Asya'da yer alan, zengin tarihi, çeşitli kültürü, renkli festivalleri ve baharatlı yemekleriyle ünlü büyük bir ülke.",
+                whatToDo: ["Tac Mahal'i ziyaret et (Agra)", "Varanasi'de Ganj Nehri kıyısında ritüelleri izle", "Jaipur'un (Pembe Şehir) saraylarını gez", "Goa'nın plajlarında dinlen", "Delhi'nin tarihi ve modern yüzünü keşfet"],
+                whatToEat: ["Biryani", "Çeşitli köriler (Tavuk Tikka Masala, Butter Chicken)", "Naan ve Roti ekmekleri", "Samosa", "Gulab Jamun (Tatlı)"],
+                whereToStay: ["Delhi/Mumbai: Lüks otellerden bütçe dostu seçeneklere.", "Rajasthan: Saray oteller (heritage hotels).", "Goa: Plaj kulübeleri ve resortlar."],
+                popularApps: [
+                    { name: "Ola Cabs", category: "Ulaşım", icon: "https://placehold.co/24x24/00B072/white?text=O" },
+                    { name: "Zomato", category: "Yemek Siparişi", icon: "https://placehold.co/24x24/CB202D/white?text=Z" },
+                    { name: "Swiggy", category: "Yemek Siparişi", icon: "https://placehold.co/24x24/FC8019/white?text=S" }
+                ].concat(globalPopularApps.filter(app => !["Ola Cabs", "Zomato", "Swiggy"].includes(app.name)).slice(0,1)),
+                currency: "Hindistan Rupisi (INR)",
+                language: "Hintçe, İngilizce"
+            },
 
-        let currentRejectionCount = 0;
+            // Daha Fazla Ülke (Genel Bilgilerle)
+            "Almanya": {
+                flag: "🇩🇪",
+                description: "Orta Avrupa'da yer alan, mühendislik harikaları, tarihi şehirleri ve zengin kültürüyle tanınan bir ülke.",
+                whatToDo: ["Berlin Duvarı kalıntılarını ve Brandenburg Kapısı'nı görün (Berlin)", "Neuschwanstein Şatosu'nu ziyaret edin", "Oktoberfest'e katılın (Münih)", "Kara Ormanlar'da doğa yürüyüşü yapın"],
+                whatToEat: ["Sosis çeşitleri (Bratwurst, Currywurst)", "Pretzel", "Kara Orman Pastası (Schwarzwälder Kirschtorte)", "Schnitzel", "Alman Birası"],
+                whereToStay: ["Büyük şehirlerde modern oteller ve hosteller", "Bavyera'da geleneksel konukevleri (Gasthaus)", "Ren Nehri boyunca şato oteller"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Almanca"
+            },
+            "Arjantin": {
+                flag: "🇦🇷",
+                description: "Güney Amerika'nın güneyinde yer alan, tango, futbol ve etkileyici Patagonya manzaralarıyla ünlü bir ülke.",
+                whatToDo: ["Buenos Aires'te tango gösterisi izleyin ve La Boca'yı gezin", "Iguazu Şelaleleri'nin Arjantin tarafını ziyaret edin", "Patagonya'da Perito Moreno Buzulu'nu görün", "Mendoza'da şarap tadımı yapın"],
+                whatToEat: ["Asado (Arjantin barbeküsü)", "Empanadas", "Dulce de Leche", "Milanesa", "Mate çayı"],
+                whereToStay: ["Buenos Aires'te şık oteller ve apartlar", "Patagonya'da dağ evleri ve localar", "Mendoza'da üzüm bağları içindeki oteller"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Arjantin Pesosu (ARS)",
+                language: "İspanyolca"
+            },
+            "Kanada": {
+                flag: "🇨🇦",
+                description: "Kuzey Amerika'nın kuzeyinde geniş topraklara yayılan, doğal güzellikleri, çok kültürlü yapısı ve misafirperver insanlarıyla tanınan ülke.",
+                whatToDo: ["Niagara Şelaleleri'ni ziyaret edin", "Rocky Dağları'nda Banff ve Jasper Milli Parkları'nı keşfedin", "Vancouver'da Stanley Park'ta bisiklete binin", "Quebec City'nin tarihi sokaklarında dolaşın", "Kuzey Işıkları'nı (Aurora Borealis) görün"],
+                whatToEat: ["Poutine", "Akçaağaç şurubu (Maple Syrup)", "Nanaimo Bar", "Butter Tart", "Somon"],
+                whereToStay: ["Büyük şehirlerde çeşitli oteller ve kiralık daireler", "Milli parklarda kamp alanları ve dağ evleri", "Kırsal bölgelerde 'Bed & Breakfast' konaklamaları"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Kanada Doları (CAD)",
+                language: "İngilizce, Fransızca"
+            },
+            "Çin": {
+                flag: "🇨🇳",
+                description: "Doğu Asya'da yer alan, binlerce yıllık tarihi, devasa yapıları, zengin kültürü ve modern metropolleriyle dünyanın en kalabalık ülkesi.",
+                whatToDo: ["Çin Seddi'ni ziyaret edin", "Yasak Şehir'i (Pekin) ve Terracotta Ordusu'nu (Xi'an) görün", "Şanghay'ın modern siluetini ve Bund bölgesini keşfedin", "Guilin'de Li Nehri üzerinde tekne turu yapın"],
+                whatToEat: ["Pekin Ördeği", "Dim Sum", "Kung Pao Tavuk", "Hot Pot (Güveç)", "Çin Mantısı (Jiaozi)"],
+                whereToStay: ["Büyük şehirlerde uluslararası zincir oteller ve yerel oteller", "Geleneksel Siheyuan (avlu evleri) konaklamaları", "Kırsal bölgelerde misafirhaneler"],
+                popularApps: [
+                    { name: "WeChat", category: "İletişim & Ödeme", icon: "https://placehold.co/24x24/7BB32E/white?text=WC" },
+                    { name: "Alipay", category: "Ödeme", icon: "https://placehold.co/24x24/00A1E9/white?text=AP" },
+                    { name: "Didi Chuxing", category: "Ulaşım", icon: "https://placehold.co/24x24/F77C08/white?text=Di" }
+                ].concat(globalPopularApps.filter(app => !["WeChat", "Alipay", "Didi Chuxing"].includes(app.name)).slice(0,1)),
+                currency: "Çin Yuanı (CNY)",
+                language: "Mandarin Çincesi"
+            },
+            "İspanya": {
+                flag: "🇪🇸",
+                description: "Avrupa'nın güneybatısında İber Yarımadası'nda yer alan, canlı kültürü, tarihi şehirleri, lezzetli yemekleri ve güneşli sahilleriyle ünlü ülke.",
+                whatToDo: ["Barselona'da Sagrada Familia ve Park Güell'i ziyaret edin", "Madrid'de Prado Müzesi'ni gezin ve Retiro Parkı'nda dinlenin", "Sevilla'da flamenko gösterisi izleyin ve Alcázar Sarayı'nı görün", "Granada'da Elhamra Sarayı'nı keşfedin", "İbiza'nın plajlarında eğlenin"],
+                whatToEat: ["Paella", "Tapas çeşitleri", "Jamón Ibérico", "Gazpacho", "Churros con Chocolate"],
+                whereToStay: ["Büyük şehirlerde modern oteller ve tarihi binalarda butik oteller", "Sahil bölgelerinde resortlar ve kiralık villalar", "Kırsal kesimde 'casa rural' (kır evi) konaklamaları"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "İspanyolca"
+            },
+            "Yunanistan": {
+                flag: "🇬🇷",
+                description: "Güneydoğu Avrupa'da, binlerce adası, antik kalıntıları, masmavi denizi ve mitolojik tarihiyle ünlü bir ülke.",
+                whatToDo: ["Atina'da Akropolis ve Parthenon'u ziyaret edin", "Santorini ve Mikonos gibi popüler adaları keşfedin", "Antik Olympia ve Delphi'yi gezin", "Girit'in doğal güzelliklerini ve tarihi yerlerini görün"],
+                whatToEat: ["Musakka", "Suvlaki (Souvlaki)", "Cacık (Tzatziki)", "Yunan Salatası (Horiatiki)", "Baklava"],
+                whereToStay: ["Adalarda beyaz badanalı butik oteller ve villalar", "Atina'da şehir otelleri", "Kıyı bölgelerinde aile dostu resortlar"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Yunanca"
+            },
+            "İngiltere (Birleşik Krallık)": { // Daha genel bir başlık
+                flag: "🇬🇧",
+                description: "Avrupa'nın kuzeybatısında yer alan, tarihi kraliyet ailesi, ikonik yapıları, çeşitli kültürü ve dünya çapında etkisiyle bilinen bir ada ülkesi.",
+                whatToDo: ["Londra'da Buckingham Sarayı, London Eye ve British Museum'u ziyaret edin", "Stonehenge'in gizemini çözün", "Oxford ve Cambridge gibi tarihi üniversite şehirlerini gezin", "İskoçya'da Edinburgh Kalesi'ni ve Highlands'i keşfedin (Birleşik Krallık kapsamında)", "Manchester'da futbol atmosferini yaşayın"],
+                whatToEat: ["Fish and Chips", "Sunday Roast", "Full English Breakfast", "Shepherd's Pie", "Afternoon Tea (Çay saati ve atıştırmalıklar)"],
+                whereToStay: ["Londra'da lüks otellerden bütçe dostu hostellere geniş seçenekler", "Kırsal bölgelerde şirin 'pub' konaklamaları ve 'cottage'lar", "Tarihi şehirlerde butik oteller"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "İngiliz Sterlini (GBP)",
+                language: "İngilizce"
+            },
+             "İrlanda": {
+                flag: "🇮🇪",
+                description: "Avrupa'nın batısında yer alan, yemyeşil doğası, tarihi kaleleri, geleneksel müziği ve dost canlısı insanlarıyla bilinen 'Zümrüt Ada'.",
+                whatToDo: ["Dublin'de Guinness Storehouse'u ve Trinity College'ı ziyaret edin", "Cliffs of Moher'in nefes kesen manzarasını görün", "Ring of Kerry boyunca doğal güzellikleri keşfedin", "Galway'in renkli sokaklarında dolaşın"],
+                whatToEat: ["Irish Stew (İrlanda Yahnisi)", "Colcannon ve Champ (Patates püresi çeşitleri)", "Soda Bread", "İrlanda Somonu", "Guinness Birası"],
+                whereToStay: ["Dublin'de çeşitli oteller ve 'Bed & Breakfast'lar", "Kırsal bölgelerde şato oteller ve geleneksel çiftlik evleri", "Sahil kasabalarında şirin pansiyonlar"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "İngilizce, İrlandaca"
+            },
+            "Hollanda": {
+                flag: "🇳🇱",
+                description: "Kuzeybatı Avrupa'da yer alan, yel değirmenleri, laleleri, kanalları, bisiklet kültürü ve liberal atmosferiyle tanınan düz bir ülke.",
+                whatToDo: ["Amsterdam'da kanallarda tekne turu yapın, Rijksmuseum ve Van Gogh Müzesi'ni ziyaret edin", "Keukenhof'ta lale bahçelerini gezin (mevsiminde)", "Zaanse Schans'ta tarihi yel değirmenlerini görün", "Rotterdam'ın modern mimarisini keşfedin"],
+                whatToEat: ["Stroopwafel", "Hollanda Peynirleri (Gouda, Edam)", "Haring (Ringa Balığı)", "Patatje Oorlog (Özel soslu patates kızartması)", "Poffertjes (Mini pankekler)"],
+                whereToStay: ["Amsterdam'da kanal evlerinde butik oteller ve yüzen evler", "Diğer şehirlerde modern oteller ve hosteller", "Kırsal bölgelerde çiftlik konaklamaları"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Hollandaca"
+            },
+            "İsviçre": {
+                flag: "🇨🇭",
+                description: "Orta Avrupa'da Alp Dağları ile çevrili, doğal güzellikleri, gölleri, saatleri, çikolataları ve yüksek yaşam standardıyla ünlü bir ülke.",
+                whatToDo: ["Alp Dağları'nda kayak yapın veya yürüyüşe çıkın (Matterhorn, Jungfrau)", "Luzern Gölü ve Cenevre Gölü gibi güzel gölleri ziyaret edin", "Zürih ve Cenevre gibi şehirleri keşfedin", "Trenle manzaralı yolculuklar yapın (Glacier Express, Bernina Express)"],
+                whatToEat: ["İsviçre Çikolatası", "İsviçre Peynirleri (Emmental, Gruyère)", "Fondü", "Raclette", "Rösti"],
+                whereToStay: ["Dağ kasabalarında şaleler ve lüks oteller", "Şehirlerde modern ve klasik oteller", "Göl kenarlarında manzaralı konaklama yerleri"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "İsviçre Frangı (CHF)",
+                language: "Almanca, Fransızca, İtalyanca, Romanşça"
+            },
+            "Rusya": {
+                flag: "🇷🇺",
+                description: "Doğu Avrupa ve Kuzey Asya'ya yayılan, dünyanın en geniş topraklara sahip ülkesi. Zengin tarihi, sanatı, edebiyatı ve çeşitli coğrafyasıyla dikkat çeker.",
+                whatToDo: ["Moskova'da Kızıl Meydan, Kremlin Sarayı ve Aziz Vasil Katedrali'ni ziyaret edin", "St. Petersburg'da Ermitaj Müzesi'ni ve Peterhof Sarayı'nı görün", "Trans-Sibirya Demiryolu ile unutulmaz bir yolculuk yapın", "Baykal Gölü'nün doğal güzelliğini keşfedin"],
+                whatToEat: ["Borş Çorbası", "Pelmeni (Rus Mantısı)", "Blini (Krep)", "Şaşlık (Rus Kebabı)", "Havyar"],
+                whereToStay: ["Büyük şehirlerde uluslararası zincir oteller ve yerel oteller", "Tarihi binalarda butik konaklamalar", "Kırsal bölgelerde 'daça' (yazlık ev) kiralama seçenekleri"],
+                popularApps: [
+                    { name: "Yandex Go (Taxi, Maps)", category: "Ulaşım & Harita", icon: "https://placehold.co/24x24/FCDE00/black?text=Y" },
+                    { name: "VK (VKontakte)", category: "Sosyal Medya", icon: "https://placehold.co/24x24/4A76A8/white?text=VK" }
+                ].concat(globalPopularApps.filter(app => !["Yandex Go", "VK"].includes(app.name)).slice(0,2)),
+                currency: "Rus Rublesi (RUB)",
+                language: "Rusça"
+            },
+            "Meksika": {
+                flag: "🇲🇽",
+                description: "Kuzey Amerika'nın güneyinde yer alan, antik Maya ve Aztek medeniyetlerine ev sahipliği yapmış, renkli kültürü, lezzetli yemekleri ve güzel sahilleriyle ünlü bir ülke.",
+                whatToDo: ["Chichen Itza ve Teotihuacan gibi antik kalıntıları ziyaret edin", "Cancun ve Riviera Maya'nın plajlarında dinlenin", "Mexico City'nin tarihi merkezini ve müzelerini keşfedin", "Oaxaca'da geleneksel kültürü deneyimleyin"],
+                whatToEat: ["Taco", "Guacamole", "Enchilada", "Mole Sosu", "Chilaquiles"],
+                whereToStay: ["Sahil bölgelerinde her şey dahil resortlar ve butik oteller", "Mexico City'de modern oteller ve tarihi konaklar", "Küçük kasabalarda renkli pansiyonlar"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Meksika Pesosu (MXN)",
+                language: "İspanyolca"
+            },
+            "Tayland": {
+                flag: "🇹🇭",
+                description: "Güneydoğu Asya'da yer alan, tropikal plajları, görkemli tapınakları, canlı sokak hayatı ve lezzetli yemekleriyle ünlü bir krallık.",
+                whatToDo: ["Bangkok'ta Büyük Saray ve Wat Arun (Şafak Tapınağı) gibi tapınakları ziyaret edin", "Phuket, Koh Phi Phi ve Koh Samui gibi adalarda dinlenin ve su sporları yapın", "Chiang Mai'de fil yetimhanelerini ziyaret edin ve yerel pazarları gezin", "Sokak yemeklerinin tadını çıkarın"],
+                whatToEat: ["Pad Thai", "Tom Yum Goong (Acılı Karides Çorbası)", "Green Curry (Yeşil Köri)", "Mango Sticky Rice (Mangolu Yapışkan Pirinç Tatlısı)", "Som Tam (Papaya Salatası)"],
+                whereToStay: ["Bangkok'ta lüks otellerden uygun fiyatlı hostellere geniş seçenekler", "Adalarda plaj bungalovları ve resortlar", "Chiang Mai'de butik oteller ve misafirhaneler"],
+                popularApps: [
+                    { name: "Grab", category: "Ulaşım & Yemek Siparişi", icon: "https://placehold.co/24x24/00B14F/white?text=G" },
+                    { name: "Line", category: "İletişim", icon: "https://placehold.co/24x24/00C300/white?text=L" }
+                ].concat(globalPopularApps.filter(app => !["Grab", "Line"].includes(app.name)).slice(0,2)),
+                currency: "Tayland Bahtı (THB)",
+                language: "Tayca"
+            },
+            "Güney Kore": {
+                flag: "🇰🇷",
+                description: "Doğu Asya'da Kore Yarımadası'nın güneyinde yer alan, K-Pop, teknoloji, tarihi saraylar ve lezzetli yemekleriyle bilinen dinamik bir ülke.",
+                whatToDo: ["Seul'de Gyeongbokgung Sarayı'nı ve Bukchon Hanok Köyü'nü ziyaret edin", "DMZ (Askerden Arındırılmış Bölge) turuna katılın", "Busan'ın plajlarını ve Gamcheon Kültür Köyü'nü keşfedin", "Jeju Adası'nın doğal güzelliklerini görün"],
+                whatToEat: ["Kimchi", "Bibimbap", "Bulgogi (Kore Barbeküsü)", "Tteokbokki (Acılı Pirinç Keki)", "Kore Tavuğu (Chikin)"],
+                whereToStay: ["Seul'de modern oteller, geleneksel hanok konaklamaları ve hosteller", "Busan'da sahil otelleri", "Jeju Adası'nda resortlar ve pansiyonlar"],
+                popularApps: [
+                    { name: "KakaoTalk", category: "İletişim", icon: "https://placehold.co/24x24/FEE500/black?text=K" },
+                    { name: "Naver Map", category: "Harita & Navigasyon", icon: "https://placehold.co/24x24/00C73C/white?text=N" },
+                    { name: "Kakao T", category: "Taksi & Ulaşım", icon: "https://placehold.co/24x24/FFCD00/black?text=KT" }
+                ].concat(globalPopularApps.filter(app => !["KakaoTalk", "Naver Map", "Kakao T"].includes(app.name)).slice(0,1)),
+                currency: "Güney Kore Wonu (KRW)",
+                language: "Korece"
+            },
+            "Fas": {
+                flag: "🇲🇦",
+                description: "Kuzeybatı Afrika'da yer alan, renkli pazarları (souk), tarihi medinaları, Sahra Çölü ve canlı kültürüyle egzotik bir ülke.",
+                whatToDo: ["Marakeş'te Jemaa el-Fnaa Meydanı'nı ve Majorelle Bahçesi'ni ziyaret edin", "Fes'in labirent gibi medinasında kaybolun", "Sahra Çölü'nde deve turu yapın ve yıldızların altında konaklayın", "Chefchaouen'in mavi boyalı sokaklarını keşfedin"],
+                whatToEat: ["Tagine (Tajin)", "Kuskus", "Pastilla", "Harira Çorbası", "Nane Çayı"],
+                whereToStay: ["Medinalarda geleneksel Riad'lar (avlu evleri)", "Modern şehirlerde oteller", "Sahra Çölü'nde lüks kamp alanları (glamping)"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Fas Dirhemi (MAD)",
+                language: "Arapça, Berberice (Tamazight), Fransızca yaygın"
+            },
+            "Peru": {
+                flag: "🇵🇪",
+                description: "Güney Amerika'nın batısında yer alan, antik İnka medeniyetinin merkezi Machu Picchu, Amazon yağmur ormanları ve zengin gastronomisiyle ünlü bir ülke.",
+                whatToDo: ["Machu Picchu'yu ziyaret edin", "Cusco'nun tarihi sokaklarını ve Sacsayhuaman kalıntılarını keşfedin", "Nazca Çizgileri'ni havadan görün", "Amazon Nehri'nde tekne turu yapın", "Lima'nın modern ve tarihi bölgelerini gezin"],
+                whatToEat: ["Ceviche", "Lomo Saltado", "Aji de Gallina", "Causa Rellena", "Pisco Sour (İçki)"],
+                whereToStay: ["Cusco ve Machu Picchu yakınlarında oteller ve pansiyonlar", "Lima'da modern oteller", "Amazon'da orman locaları"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Peru Solü (PEN)",
+                language: "İspanyolca, Quechua, Aymara"
+            },
+            "Yeni Zelanda": {
+                flag: "🇳🇿",
+                description: "Güneybatı Pasifik Okyanusu'nda yer alan, nefes kesen doğal manzaraları, macera sporları, Maori kültürü ve 'Yüzüklerin Efendisi' filmlerinin çekildiği yerleriyle ünlü bir ada ülkesi.",
+                whatToDo: ["Queenstown'da bungee jumping, rafting gibi macera sporları yapın", "Milford Sound ve Fiordland Milli Parkı'nı keşfedin", "Rotorua'da jeotermal harikaları ve Maori kültürünü deneyimleyin", "Hobbiton Film Seti'ni ziyaret edin"],
+                whatToEat: ["Hangi (Geleneksel Maori pişirme yöntemi)", "Kuzu eti", "Pavlova (Tatlı)", "Hokey Pokey Dondurması", "Yeşil Dudaklı Midye"],
+                whereToStay: ["Şehirlerde oteller ve moteller", "Doğal alanlarda kamp alanları ve 'lodge'lar", "Kırsal bölgelerde 'Bed & Breakfast'lar"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Yeni Zelanda Doları (NZD)",
+                language: "İngilizce, Maori Dili"
+            },
+            "Güney Afrika": {
+                flag: "🇿🇦",
+                description: "Afrika kıtasının güney ucunda yer alan, vahşi yaşam safarileri, çeşitli manzaraları, zengin tarihi ve kültürel çeşitliliğiyle bilinen bir ülke.",
+                whatToDo: ["Kruger Milli Parkı'nda safari yapın", "Cape Town'da Masa Dağı'na çıkın ve Robben Adası'nı ziyaret edin", "Garden Route boyunca doğal güzellikleri keşfedin", "Drakensberg Dağları'nda yürüyüş yapın"],
+                whatToEat: ["Braai (Güney Afrika barbeküsü)", "Biltong ve Droëwors (Kurutulmuş et)", "Bobotie", "Bunny Chow", "Malva Pudding (Tatlı)"],
+                whereToStay: ["Safari locaları ve kamp alanları", "Cape Town ve diğer şehirlerde oteller ve misafirhaneler", "Şarap bölgelerinde butik konaklamalar"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Güney Afrika Randı (ZAR)",
+                language: "İngilizce, Afrikaans, Zulu, Xhosa ve diğer 7 resmi dil"
+            },
+            "Portekiz": {
+                flag: "🇵🇹",
+                description: "Avrupa'nın güneybatısında İber Yarımadası'nda yer alan, tarihi keşifleri, melankolik Fado müziği, lezzetli deniz ürünleri ve güzel sahilleriyle tanınan ülke.",
+                whatToDo: ["Lizbon'da tarihi Alfama bölgesini gezin, Belem Kulesi'ni ve Jeronimos Manastırı'nı ziyaret edin", "Porto'da Douro Nehri kıyısında şarap tadımı yapın", "Algarve bölgesinin plajlarında dinlenin", "Sintra'nın masalsı saraylarını keşfedin"],
+                whatToEat: ["Bacalhau (Morina balığı) çeşitleri", "Pastel de Nata (Kremalı tart)", "Caldo Verde (Yeşil lahana çorbası)", "Francesinha (Porto sandviçi)", "Deniz ürünleri cataplana'sı"],
+                whereToStay: ["Lizbon ve Porto'da tarihi binalarda butik oteller ve modern konaklamalar", "Algarve'de resortlar ve kiralık villalar", "Kırsal bölgelerde 'quinta' (çiftlik evi) konaklamaları"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Portekizce"
+            },
+            "İsveç": {
+                flag: "🇸🇪",
+                description: "Kuzey Avrupa'da İskandinav Yarımadası'nda yer alan, modern tasarımı, doğal güzellikleri, ABBA müziği ve sosyal refah sistemiyle bilinen bir krallık.",
+                whatToDo: ["Stockholm'de Vasa Müzesi'ni ve Gamla Stan'ı (Eski Şehir) ziyaret edin", "Lapland'da Kuzey Işıkları'nı görün ve buz otelde konaklayın", "Göteborg takımadalarını keşfedin", "Doğada yürüyüş yapın ve göllerde yüzün"],
+                whatToEat: ["İsveç Köftesi (Köttbullar)", "Smörgåsbord (Açık büfe)", "Crayfish (Kerevit) partilerine katılın (mevsiminde)", "Kanelbulle (Tarçınlı çörek)", "Surströmming (Fermente ringa balığı - cesaretiniz varsa!)"],
+                whereToStay: ["Şehirlerde tasarım otelleri ve hosteller", "Lapland'da buz oteller ve dağ evleri", "Kırsal bölgelerde kırmızı boyalı ahşap evler (stuga)"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "İsveç Kronu (SEK)",
+                language: "İsveççe"
+            },
+            "Norveç": {
+                flag: "🇳🇴",
+                description: "Kuzey Avrupa'da İskandinav Yarımadası'nın batısında yer alan, fiyortları, dağları, Kuzey Işıkları ve Viking mirasıyla ünlü bir ülke.",
+                whatToDo: ["Fiyortlarda gemi turu yapın (Geirangerfjord, Sognefjord)", "Bergen'in tarihi Bryggen bölgesini gezin", "Oslo'da Viking Gemi Müzesi'ni ve Munch Müzesi'ni ziyaret edin", "Lofoten Adaları'nın dramatik manzaralarını keşfedin", "Kuzey Işıkları'nı (Aurora Borealis) kovalayın"],
+                whatToEat: ["Norveç Somonu", "Lutefisk", "Kjøttkaker (Norveç köftesi)", "Fårikål (Kuzu etli lahana yahnisi)", "Brunost (Kahverengi peynir)"],
+                whereToStay: ["Fiyort kenarlarında manzaralı oteller ve kabinler", "Şehirlerde modern oteller", "Kuzey bölgelerinde geleneksel 'rorbu' (balıkçı kulübesi) konaklamaları"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Norveç Kronu (NOK)",
+                language: "Norveççe (Bokmål ve Nynorsk)"
+            },
+            "Danimarka": {
+                flag: "🇩🇰",
+                description: "Kuzey Avrupa'da yer alan, 'hygge' felsefesi, tasarımı, bisiklet kültürü, Lego'su ve Hans Christian Andersen masallarıyla bilinen bir İskandinav ülkesi.",
+                whatToDo: ["Kopenhag'da Küçük Deniz Kızı Heykeli'ni görün, Tivoli Bahçeleri'nde eğlenin ve Nyhavn'da renkli evleri fotoğraflayın", "Legoland Billund'u ziyaret edin", "Roskilde'deki Viking Gemi Müzesi'ni gezin", "Aarhus'un modern sanat müzesi ARoS'u keşfedin"],
+                whatToEat: ["Smørrebrød (Açık sandviç)", "Frikadeller (Danimarka köftesi)", "Wienerbrød (Danimarka çöreği)", "Rødgrød med fløde (Kırmızı meyveli tatlı)", "Danimarka sosisleri (pølser)"],
+                whereToStay: ["Kopenhag'da tasarım otelleri ve şık hosteller", "Kırsal bölgelerde 'kro' (geleneksel han) konaklamaları", "Sahil kasabalarında yazlık evler"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Danimarka Kronu (DKK)",
+                language: "Danimarkaca"
+            },
+             "Finlandiya": {
+                flag: "🇫🇮",
+                description: "Kuzey Avrupa'da yer alan, binlerce gölü, ormanları, saunası, Kuzey Işıkları ve Noel Baba'nın evi olarak bilinen bir ülke.",
+                whatToDo: ["Helsinki'de Suomenlinna Deniz Kalesi'ni ve Temppeliaukio Kilisesi'ni (Kaya Kilise) ziyaret edin", "Lapland'da Noel Baba Köyü'nü ziyaret edin, ren geyiği veya husky kızağına binin ve Kuzey Işıkları'nı görün", "Göl bölgesinde (Lakeland) doğa aktiviteleri yapın ve saunaya girin", "Turku'nun tarihi kalesini ve katedralini gezin"],
+                whatToEat: ["Karjalanpiirakka (Karelya böreği)", "Kalakukko (Balıklı turta)", "Leipäjuusto (Peynir ekmeği)", "Lihapullat (Fin köftesi)", "Poronkäristys (Sote edilmiş ren geyiği eti)"],
+                whereToStay: ["Helsinki'de modern oteller ve tasarım konaklamaları", "Lapland'da cam iglolar, buz oteller ve ahşap kabinler", "Göl kenarlarında yazlık evler (mökki)"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Fince, İsveççe"
+            },
+            "Belçika": {
+                flag: "🇧🇪",
+                description: "Batı Avrupa'da yer alan, çikolataları, biraları, waffle'ları, çizgi romanları ve tarihi Orta Çağ şehirleriyle ünlü bir ülke.",
+                whatToDo: ["Brüksel'de Grand Place'ı, Atomium'u ve Manneken Pis Heykeli'ni ziyaret edin", "Brugge'ün kanallarında tekne turu yapın ve tarihi merkezini gezin", "Gent'in Orta Çağ mimarisini keşfedin", "Antwerp'in elmas bölgesini ve moda sahnesini görün"],
+                whatToEat: ["Belçika Çikolatası", "Belçika Birası (çok çeşitli)", "Waffle (Brüksel ve Liege usulü)", "Midye ve Patates Kızartması (Moules-frites)", "Stoemp (Patates püresi ve sebze karışımı)"],
+                whereToStay: ["Brüksel, Brugge ve Gent'te tarihi binalarda butik oteller ve modern konaklamalar", "Kırsal bölgelerde şato oteller", "Ardenler'de doğa ile iç içe pansiyonlar"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Hollandaca (Flamanca), Fransızca, Almanca"
+            },
+            "Avusturya": {
+                flag: "🇦🇹",
+                description: "Orta Avrupa'da Alp Dağları ile çevrili, klasik müziği (Mozart, Strauss), imparatorluk sarayları, Viyana kafeleri ve kış sporlarıyla ünlü bir ülke.",
+                whatToDo: ["Viyana'da Schönbrunn Sarayı'nı, Hofburg Sarayı'nı ve Aziz Stephen Katedrali'ni ziyaret edin", "Salzburg'da Mozart'ın doğduğu evi ve Hohensalzburg Kalesi'ni görün", "Alp Dağları'nda kayak yapın veya yürüyüşe çıkın (Innsbruck, Tirol)", "Hallstatt'ın masalsı göl kasabasını ziyaret edin"],
+                whatToEat: ["Wiener Schnitzel", "Apfelstrudel (Elmalı turta)", "Sachertorte (Çikolatalı kek)", "Tafelspitz (Haşlanmış dana eti)", "Kaiserschmarrn (Parçalanmış pankek)"],
+                whereToStay: ["Viyana'da imparatorluk dönemi otelleri ve modern konaklamalar", "Salzburg'da tarihi oteller", "Alp bölgelerinde dağ evleri ve kayak otelleri"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Euro (EUR)",
+                language: "Almanca"
+            },
+            "Polonya": {
+                flag: "🇵🇱",
+                description: "Orta Avrupa'da yer alan, zengin tarihi, II. Dünya Savaşı'ndan kalma önemli anıtları, Orta Çağ şehirleri ve dayanıklı kültürüyle bilinen bir ülke.",
+                whatToDo: ["Krakow'da Wawel Kalesi'ni ve Ana Pazar Meydanı'nı ziyaret edin, Auschwitz-Birkenau Anıtı ve Müzesi'ni görün", "Varşova'nın yeniden inşa edilmiş Eski Şehir'ini ve Kraliyet Kalesi'ni keşfedin", "Gdansk'ın tarihi limanını ve renkli evlerini gezin", "Wieliczka Tuz Madeni'ni ziyaret edin"],
+                whatToEat: ["Pierogi (Polonya mantısı)", "Żurek (Ekşi çavdar çorbası)", "Bigos (Avcı güveci)", "Gołąbki (Lahana sarması)", "Kiełbasa (Polonya sosisi)"],
+                whereToStay: ["Büyük şehirlerde modern oteller ve tarihi binalarda apartlar", "Kırsal bölgelerde pansiyonlar ve agroturizm çiftlikleri", "Dağlık bölgelerde ahşap konaklama yerleri"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Polonya Zlotisi (PLN)",
+                language: "Polonyaca"
+            },
+            "Çek Cumhuriyeti (Çekya)": {
+                flag: "🇨🇿",
+                description: "Orta Avrupa'da yer alan, masalsı kaleleri, tarihi Prag şehri, lezzetli biraları ve Bohemya kültürüyle tanınan bir ülke.",
+                whatToDo: ["Prag'da Karl Köprüsü'nü, Prag Kalesi'ni ve Eski Şehir Meydanı'nı (Astronomik Saat ile) ziyaret edin", "Český Krumlov'un Orta Çağ kasabasını keşfedin", "Kutná Hora'daki Kemik Kilisesi'ni (Sedlec Ossuary) görün", "Karlovy Vary'nin kaplıca şehrini ziyaret edin"],
+                whatToEat: ["Svíčková (Kremalı soslu dana eti)", "Trdelník (Tatlı hamur işi)", "Gulaş (Çek usulü)", "Knedlíky (Hamur köftesi)", "Çek Birası (Pilsner)"],
+                whereToStay: ["Prag'da tarihi binalarda butik oteller ve modern konaklamalar", "Diğer şehirlerde pansiyonlar ve küçük oteller", "Kırsal bölgelerde misafirhaneler"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Çek Korunası (CZK)",
+                language: "Çekçe"
+            },
+            "Macaristan": {
+                flag: "🇭🇺",
+                description: "Orta Avrupa'da yer alan, termal banyoları, Tuna Nehri'nin böldüğü başkenti Budapeşte, zengin tarihi ve baharatlı yemekleriyle bilinen bir ülke.",
+                whatToDo: ["Budapeşte'de Parlamento Binası'nı, Buda Kalesi'ni ve termal banyoları (Széchenyi, Gellért) ziyaret edin", "Tuna Nehri'nde tekne turu yapın", "Eger Kalesi'ni ve şarap bölgesini keşfedin", "Balaton Gölü'nde dinlenin"],
+                whatToEat: ["Gulaş Çorbası", "Lángos (Kızarmış hamur)", "Töltött Káposzta (Lahana sarması)", "Chicken Paprikash (Paprikalı tavuk)", "Dobos Torte (Karamelli kek)"],
+                whereToStay: ["Budapeşte'de Tuna manzaralı oteller ve tarihi binalarda konaklamalar", "Kırsal bölgelerde pansiyonlar ve 'csárda' (geleneksel han) konaklamaları", "Balaton Gölü çevresinde tatil köyleri"],
+                popularApps: globalPopularApps.slice(0, 4),
+                currency: "Macar Forinti (HUF)",
+                language: "Macarca"
+            },
+            // Daha fazla ülke eklenebilir... Şimdilik bu kadar.
+        };
 
-        function loadInitialData() {
-            // loadingMessage.style.display = 'flex'; // Eğer gerekirse yükleme mesajını burada göster
+        const countryListContainer = document.getElementById('country-list-container');
+        const countryListView = document.getElementById('country-list-view');
+        const countryDetailView = document.getElementById('country-detail-view');
+        const currentYearSpan = document.getElementById('currentYear');
+        const searchInput = document.getElementById('search-input');
+        const noResultsMessage = document.getElementById('no-results-message');
 
-            // Ret sayısını localStorage'dan yükle
-            const savedRejectionCount = localStorage.getItem('visaRejectionCount');
-            if (savedRejectionCount !== null) {
-                currentRejectionCount = parseInt(savedRejectionCount, 10);
-            } else {
-                currentRejectionCount = 0;
-            }
-            rejectionCountDisplay.textContent = currentRejectionCount;
-
-            // Notları localStorage'dan yükle
-            const savedNotes = localStorage.getItem('visaUserNotes');
-            if (savedNotes !== null) {
-                noteInput.value = savedNotes;
-            } else {
-                noteInput.value = "";
-            }
-            // loadingMessage.style.display = 'none'; // Veriler yüklendikten sonra gizle
+        // Yılı güncelle
+        if (currentYearSpan) {
+            currentYearSpan.textContent = new Date().getFullYear();
         }
-        
-        addRejectionButton.addEventListener('click', () => {
-            currentRejectionCount++;
-            rejectionCountDisplay.textContent = currentRejectionCount;
-            localStorage.setItem('visaRejectionCount', currentRejectionCount.toString());
+
+        // Ülke listesini oluştur ve filtrele
+        function displayCountries(filter = '') {
+            countryListContainer.innerHTML = ''; // Mevcut listeyi temizle
+            countryListView.classList.remove('hidden');
+            countryDetailView.classList.add('hidden');
+            countryDetailView.innerHTML = ''; // Detayları temizle
+
+            const normalizedFilter = filter.toLowerCase().trim();
+            // Ülkeleri alfabetik olarak sırala (Türkçe karakterlere duyarlı)
+            const sortedCountryNames = Object.keys(countriesData).sort((a, b) => a.localeCompare(b, 'tr'));
             
-            messageArea.textContent = "Ret sayısı güncellendi!";
-            messageArea.className = "text-sm text-green-600 mt-2 h-5";
-            setTimeout(() => messageArea.textContent = "", 3000);
-        });
+            let foundCountries = 0;
 
-        resetButton.addEventListener('click', () => {
-            currentRejectionCount = 0;
-            rejectionCountDisplay.textContent = currentRejectionCount;
-            localStorage.setItem('visaRejectionCount', '0');
-            
-            messageArea.textContent = "Ret sayısı sıfırlandı!";
-            messageArea.className = "text-sm text-green-600 mt-2 h-5";
-            setTimeout(() => messageArea.textContent = "", 3000);
-        });
+            sortedCountryNames.forEach(countryName => {
+                if (countryName.toLowerCase().includes(normalizedFilter)) {
+                    const country = countriesData[countryName];
+                    const card = document.createElement('div');
+                    card.className = 'country-card bg-white rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-xl transition-all duration-300 ease-in-out';
+                    card.innerHTML = `
+                        <div class="text-5xl mb-4 text-center">${country.flag}</div>
+                        <h3 class="text-xl font-semibold text-center text-blue-600 mb-2">${countryName}</h3>
+                        <p class="text-gray-600 text-sm text-center">${country.description.substring(0, 70)}...</p>
+                    `;
+                    card.addEventListener('click', () => displayCountryDetail(countryName));
+                    countryListContainer.appendChild(card);
+                    foundCountries++;
+                }
+            });
 
-        saveNoteButton.addEventListener('click', () => {
-            const noteText = noteInput.value;
-            localStorage.setItem('visaUserNotes', noteText);
-            
-            messageArea.textContent = "Notlar başarıyla kaydedildi!";
-            messageArea.className = "text-sm text-green-600 mt-2 h-5";
-            setTimeout(() => messageArea.textContent = "", 3000);
-        });
+            if (foundCountries === 0 && filter !== '') {
+                noResultsMessage.classList.remove('hidden');
+            } else {
+                noResultsMessage.classList.add('hidden');
+            }
+        }
 
-        // Sayfa yüklendiğinde verileri localStorage'dan yükle
-        document.addEventListener('DOMContentLoaded', () => {
-            loadInitialData();
-        });
+        // Arama girdisini dinle
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                displayCountries(e.target.value);
+            });
+        }
 
+
+        // Ülke detaylarını göster
+        function displayCountryDetail(countryName) {
+            const country = countriesData[countryName];
+            countryListView.classList.add('hidden');
+            countryDetailView.classList.remove('hidden');
+
+            let popularAppsHtml = '<p class="text-gray-700">Bu ülke için popüler uygulama bilgisi bulunmamaktadır.</p>';
+            if (country.popularApps && country.popularApps.length > 0) {
+                popularAppsHtml = country.popularApps.map(app => `
+                    <li class="flex items-center py-2">
+                        <img src="${app.icon}" alt="${app.name} ikonu" class="app-icon rounded-full" onerror="this.src='https://placehold.co/24x24/cccccc/969696?text=App'; this.onerror=null;">
+                        <div>
+                            <span class="font-semibold text-gray-800">${app.name}</span>
+                            <span class="text-sm text-gray-500 italic"> - ${app.category}</span>
+                        </div>
+                    </li>
+                `).join('');
+            }
+
+            countryDetailView.innerHTML = `
+                <button id="back-to-list" class="back-button mb-6">
+                    &larr; Ülke Listesine Geri Dön
+                </button>
+                <div class="detail-card">
+                    <div class="flex flex-col sm:flex-row items-center mb-6">
+                        <span class="text-7xl mr-0 sm:mr-6 mb-4 sm:mb-0">${country.flag}</span>
+                        <div class="text-center sm:text-left">
+                            <h2 class="text-4xl font-bold text-blue-700">${countryName}</h2>
+                            <p class="text-lg text-gray-600">${country.description}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-x-6 gap-y-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold section-title">Ne Yapılır? 🗺️</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 info-list">
+                                ${country.whatToDo.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold section-title">Ne Yenir? 🍕</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 info-list">
+                                ${country.whatToEat.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold section-title">Nerede Kalınır? 🏨</h3>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 info-list">
+                                ${country.whereToStay.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-semibold section-title">Popüler Uygulamalar 📱</h3>
+                            <ul class="text-gray-700 space-y-1 info-list">
+                                ${popularAppsHtml}
+                            </ul>
+                        </div>
+                    </div>
+                     <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h3 class="text-xl font-semibold section-title mb-3">Ek Bilgiler 🌍</h3>
+                        <p class="text-gray-700 mb-1"><span class="font-semibold">Para Birimi:</span> ${country.currency || 'N/A'}</p>
+                        <p class="text-gray-700"><span class="font-semibold">Resmi Dil:</span> ${country.language || 'N/A'}</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('back-to-list').addEventListener('click', () => {
+                displayCountries(searchInput.value); // Arama filtresini koruyarak geri dön
+            });
+        }
+
+        // Başlangıçta ülke listesini göster
+        displayCountries();
     </script>
+
 </body>
 </html>
