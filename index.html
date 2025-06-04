@@ -50,15 +50,16 @@
             padding: 1.5rem;
             margin-top: 2rem;
         }
-        .back-button {
+        .back-button, .gemini-button {
             background-color: #3b82f6; /* Mavi */
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
             font-weight: 600;
             transition: background-color 0.3s ease;
+            cursor: pointer;
         }
-        .back-button:hover {
+        .back-button:hover, .gemini-button:hover {
             background-color: #2563eb; /* Koyu mavi */
         }
         .info-list li {
@@ -73,7 +74,6 @@
             height: 24px;
             margin-right: 8px;
         }
-        /* Arama çubuğu için stiller */
         .search-bar-container {
             margin-bottom: 2rem;
             display: flex;
@@ -84,20 +84,39 @@
             max-width: 600px;
             padding: 0.75rem 1.25rem;
             border-radius: 0.5rem;
-            border: 1px solid #cbd5e1; /* Tailwind gray-300 */
+            border: 1px solid #cbd5e1;
             font-size: 1rem;
             box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px 0 rgba(0,0,0,0.06);
         }
         .search-bar:focus {
             outline: none;
-            border-color: #3b82f6; /* Mavi */
+            border-color: #3b82f6;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+        .itinerary-form input[type="text"], .itinerary-form input[type="number"] {
+            border: 1px solid #cbd5e1;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #3b82f6;
+            animation: spin 1s ease infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Header -->
     <header class="bg-white shadow-md py-6">
         <div class="container mx-auto px-4 text-center">
             <h1 class="text-5xl font-bold logo-text">
@@ -107,26 +126,21 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow container mx-auto px-4 py-8">
         <div id="country-list-view">
             <h2 class="text-3xl font-semibold text-center mb-6 text-blue-700">Ülkeler</h2>
-            <!-- Arama Çubuğu -->
             <div class="search-bar-container">
                 <input type="text" id="search-input" class="search-bar" placeholder="Ülke ara...">
             </div>
             <div id="country-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                <!-- Ülke kartları buraya eklenecek -->
             </div>
              <p id="no-results-message" class="text-center text-gray-500 mt-8 hidden">Aramanızla eşleşen ülke bulunamadı.</p>
         </div>
 
         <div id="country-detail-view" class="hidden">
-            <!-- Ülke detayları buraya eklenecek -->
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white py-6 mt-auto">
         <div class="container mx-auto px-4 text-center">
             <p>&copy; <span id="currentYear"></span> UGURLU Inc. Tüm hakları saklıdır.</p>
@@ -134,7 +148,6 @@
     </footer>
 
     <script>
-        // Global popüler uygulamalar listesi (ikonlar için placeholder)
         const globalPopularApps = [
             { name: "Google Maps", category: "Navigasyon", icon: "https://placehold.co/24x24/34A853/white?text=GM" },
             { name: "Booking.com", category: "Konaklama", icon: "https://placehold.co/24x24/003580/white?text=B" },
@@ -147,9 +160,7 @@
             { name: "XE Currency", category: "Döviz Çevirici", icon: "https://placehold.co/24x24/1C4C6B/white?text=XE" }
         ];
 
-        // Örnek ülke verileri (ÇOK GENİŞLETİLMİŞ)
         const countriesData = {
-            // Detaylı Bilgilerle Başlangıç Ülkeleri
             "Türkiye": {
                 flag: "🇹🇷",
                 description: "Tarihi ve doğal güzellikleriyle ünlü, Asya ve Avrupa kıtalarını birleştiren eşsiz bir ülke.",
@@ -204,7 +215,7 @@
                 currency: "Euro (EUR)",
                 language: "Fransızca"
             },
-            "ABD": { // Amerika Birleşik Devletleri
+            "ABD": { 
                 flag: "🇺🇸",
                 description: "Kuzey Amerika'da yer alan, çeşitli kültürleri ve coğrafi özellikleri barındıran büyük bir ülke.",
                 whatToDo: ["New York'ta Özgürlük Heykeli'ni ve Times Meydanı'nı gör", "Los Angeles'ta Hollywood'u gez", "Grand Canyon Ulusal Parkı'nı ziyaret et", "San Francisco'da Golden Gate Köprüsü'nü gör", "Miami'de plajların tadını çıkar"],
@@ -212,7 +223,7 @@
                 whereToStay: ["New York: Manhattan'da çeşitli oteller.", "Los Angeles: Beverly Hills veya Santa Monica'da oteller.", "Ulusal Parklar: Kamp alanları ve pansiyonlar."],
                 popularApps: [
                     { name: "Yelp", category: "Restoran & Mekan Bulucu", icon: "https://placehold.co/24x24/d32323/white?text=Y" }
-                ].concat(globalPopularApps.filter(app => !["Yelp","Uber"].includes(app.name)).slice(0,3)), // Uber zaten globalde var
+                ].concat(globalPopularApps.filter(app => !["Yelp","Uber"].includes(app.name)).slice(0,3)),
                 currency: "Amerikan Doları (USD)",
                 language: "İngilizce"
             },
@@ -268,8 +279,6 @@
                 currency: "Hindistan Rupisi (INR)",
                 language: "Hintçe, İngilizce"
             },
-
-            // Daha Fazla Ülke (Genel Bilgilerle)
             "Almanya": {
                 flag: "🇩🇪",
                 description: "Orta Avrupa'da yer alan, mühendislik harikaları, tarihi şehirleri ve zengin kültürüyle tanınan bir ülke.",
@@ -334,7 +343,7 @@
                 currency: "Euro (EUR)",
                 language: "Yunanca"
             },
-            "İngiltere (Birleşik Krallık)": { // Daha genel bir başlık
+            "İngiltere (Birleşik Krallık)": { 
                 flag: "🇬🇧",
                 description: "Avrupa'nın kuzeybatısında yer alan, tarihi kraliyet ailesi, ikonik yapıları, çeşitli kültürü ve dünya çapında etkisiyle bilinen bir ada ülkesi.",
                 whatToDo: ["Londra'da Buckingham Sarayı, London Eye ve British Museum'u ziyaret edin", "Stonehenge'in gizemini çözün", "Oxford ve Cambridge gibi tarihi üniversite şehirlerini gezin", "İskoçya'da Edinburgh Kalesi'ni ve Highlands'i keşfedin (Birleşik Krallık kapsamında)", "Manchester'da futbol atmosferini yaşayın"],
@@ -563,8 +572,7 @@
                 popularApps: globalPopularApps.slice(0, 4),
                 currency: "Macar Forinti (HUF)",
                 language: "Macarca"
-            },
-            // Daha fazla ülke eklenebilir... Şimdilik bu kadar.
+            }
         };
 
         const countryListContainer = document.getElementById('country-list-container');
@@ -573,21 +581,22 @@
         const currentYearSpan = document.getElementById('currentYear');
         const searchInput = document.getElementById('search-input');
         const noResultsMessage = document.getElementById('no-results-message');
+        
+        // API Key - normalde güvenli bir şekilde saklanmalı ve sunucu tarafında kullanılmalıdır.
+        // Canvas ortamında boş bırakıldığında otomatik olarak sağlanacaktır.
+        const GEMINI_API_KEY = ""; // Gemini API anahtarınız buraya (şimdilik boş)
 
-        // Yılı güncelle
         if (currentYearSpan) {
             currentYearSpan.textContent = new Date().getFullYear();
         }
 
-        // Ülke listesini oluştur ve filtrele
         function displayCountries(filter = '') {
-            countryListContainer.innerHTML = ''; // Mevcut listeyi temizle
+            countryListContainer.innerHTML = ''; 
             countryListView.classList.remove('hidden');
             countryDetailView.classList.add('hidden');
-            countryDetailView.innerHTML = ''; // Detayları temizle
+            countryDetailView.innerHTML = ''; 
 
             const normalizedFilter = filter.toLowerCase().trim();
-            // Ülkeleri alfabetik olarak sırala (Türkçe karakterlere duyarlı)
             const sortedCountryNames = Object.keys(countriesData).sort((a, b) => a.localeCompare(b, 'tr'));
             
             let foundCountries = 0;
@@ -608,26 +617,72 @@
                 }
             });
 
-            if (foundCountries === 0 && filter !== '') {
-                noResultsMessage.classList.remove('hidden');
-            } else {
-                noResultsMessage.classList.add('hidden');
-            }
+            noResultsMessage.classList.toggle('hidden', foundCountries > 0 || filter === '');
         }
 
-        // Arama girdisini dinle
         if (searchInput) {
             searchInput.addEventListener('input', (e) => {
                 displayCountries(e.target.value);
             });
         }
 
+        async function generateItinerary(countryName, duration, interests) {
+            const itineraryResultDiv = document.getElementById('itinerary-result');
+            const itinerarySpinner = document.getElementById('itinerary-spinner');
 
-        // Ülke detaylarını göster
+            if (!itineraryResultDiv || !itinerarySpinner) return;
+
+            itinerarySpinner.classList.remove('hidden');
+            itineraryResultDiv.innerHTML = '';
+            itineraryResultDiv.classList.remove('border', 'border-red-400', 'text-red-700', 'bg-red-100');
+
+
+            const prompt = `Lütfen "${countryName}" için ${duration} günlük bir seyahat planı oluştur. İlgi alanlarım: ${interests}. Plan, her gün için en az 2-3 aktivite ve bu aktiviteler hakkında kısa açıklamalar içermelidir. Sabah, öğle ve akşam aktivitelerini belirtebilirsin. Cevabını net ve okunabilir bir formatta, tercihen her gün için başlıklar ve madde işaretleri kullanarak ver. Örnek: 1. Gün: Sabah - [Aktivite], Öğle - [Aktivite], Akşam - [Aktivite].`;
+
+            let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+            const payload = { contents: chatHistory };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error("API Error:", errorData);
+                    throw new Error(`API Hatası: ${response.status} ${response.statusText}. Detay: ${errorData?.error?.message || 'Bilinmeyen hata'}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    itineraryResultDiv.innerHTML = `<h4 class="text-lg font-semibold mb-2 text-blue-600">✨ İşte Senin İçin Özel Plan:</h4><pre class="whitespace-pre-wrap bg-gray-50 p-4 rounded-md text-sm text-gray-700">${text}</pre>`;
+                } else {
+                    console.error("Beklenmedik API yanıt yapısı:", result);
+                    itineraryResultDiv.innerHTML = '<p class="text-red-600">Seyahat planı oluşturulurken bir sorun oluştu. Lütfen daha sonra tekrar deneyin. (Yanıt formatı hatalı)</p>';
+                     itineraryResultDiv.classList.add('border', 'border-red-400', 'text-red-700', 'bg-red-100', 'p-3', 'rounded-md');
+                }
+            } catch (error) {
+                console.error('Seyahat planı oluşturma hatası:', error);
+                itineraryResultDiv.innerHTML = `<p class="text-red-600">Seyahat planı oluşturulurken bir hata oluştu: ${error.message}</p>`;
+                itineraryResultDiv.classList.add('border', 'border-red-400', 'text-red-700', 'bg-red-100', 'p-3', 'rounded-md');
+            } finally {
+                itinerarySpinner.classList.add('hidden');
+            }
+        }
+
+
         function displayCountryDetail(countryName) {
             const country = countriesData[countryName];
             countryListView.classList.add('hidden');
             countryDetailView.classList.remove('hidden');
+            countryDetailView.innerHTML = ''; // Önceki içeriği temizle
 
             let popularAppsHtml = '<p class="text-gray-700">Bu ülke için popüler uygulama bilgisi bulunmamaktadır.</p>';
             if (country.popularApps && country.popularApps.length > 0) {
@@ -642,7 +697,7 @@
                 `).join('');
             }
 
-            countryDetailView.innerHTML = `
+            const detailContent = `
                 <button id="back-to-list" class="back-button mb-6">
                     &larr; Ülke Listesine Geri Dön
                 </button>
@@ -686,15 +741,39 @@
                         <p class="text-gray-700 mb-1"><span class="font-semibold">Para Birimi:</span> ${country.currency || 'N/A'}</p>
                         <p class="text-gray-700"><span class="font-semibold">Resmi Dil:</span> ${country.language || 'N/A'}</p>
                     </div>
+
+                    <!-- Gemini API ile Seyahat Planı Oluşturucu -->
+                    <div class="mt-8 pt-6 border-t border-gray-200">
+                        <h3 class="text-2xl font-semibold section-title mb-4">✨ Bana Özel Seyahat Planı Oluştur</h3>
+                        <div class="itinerary-form bg-blue-50 p-4 rounded-lg">
+                            <label for="trip-duration" class="block text-sm font-medium text-gray-700 mb-1">Seyahat Süresi (Gün):</label>
+                            <input type="number" id="trip-duration" name="trip-duration" min="1" max="30" value="3" class="mb-3">
+                            
+                            <label for="trip-interests" class="block text-sm font-medium text-gray-700 mb-1">İlgi Alanları (örn: tarih, doğa, macera):</label>
+                            <input type="text" id="trip-interests" name="trip-interests" placeholder="Tarihi yerler, yerel yemekler, doğa yürüyüşü" class="mb-4">
+                            
+                            <button id="generate-itinerary-btn" class="gemini-button w-full">Plan Oluştur</button>
+                        </div>
+                        <div id="itinerary-spinner" class="spinner hidden mt-4"></div>
+                        <div id="itinerary-result" class="mt-4">
+                            <!-- Oluşturulan seyahat planı buraya gelecek -->
+                        </div>
+                    </div>
                 </div>
             `;
+            countryDetailView.innerHTML = detailContent;
 
             document.getElementById('back-to-list').addEventListener('click', () => {
-                displayCountries(searchInput.value); // Arama filtresini koruyarak geri dön
+                displayCountries(searchInput.value); 
+            });
+
+            document.getElementById('generate-itinerary-btn').addEventListener('click', () => {
+                const duration = document.getElementById('trip-duration').value || "3";
+                const interests = document.getElementById('trip-interests').value || "genel turistik yerler";
+                generateItinerary(countryName, duration, interests);
             });
         }
 
-        // Başlangıçta ülke listesini göster
         displayCountries();
     </script>
 
