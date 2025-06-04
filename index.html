@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABD Vize Red Takipçisi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Sans fontu için link -->
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            /* Google Sans fontunu body'ye varsayılan olarak atayalım, Inter'e fallback yapsın */
+            font-family: 'Google Sans', 'Inter', sans-serif;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Flag_of_the_United_States.svg/1920px-Flag_of_the_United_States.svg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+            min-height: 100vh;
+        }
+        .content-bg {
+            background-color: rgba(255, 255, 255, 0.92); /* Biraz daha opak */
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500; /* Google Sans için 500 daha uygun */
+            font-family: 'Google Sans', sans-serif; /* Butonlara da Google Sans */
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb; /* Tailwind blue-600 */
+        }
+        .btn-danger {
+            background-color: #ef4444; /* Tailwind red-500 */
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #dc2626; /* Tailwind red-600 */
+        }
+        .btn-secondary { /* Not kaydet butonu için */
+            background-color: #6b7280; /* Tailwind gray-500 */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563; /* Tailwind gray-600 */
+        }
+        #loadingMessage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 1rem;
+        }
+        /* Güncellenmiş Telif Hakkı Animasyonu */
+        @keyframes pulseAndColorShift {
+            0%   { color: #e74c3c; text-shadow: 0 0 3px rgba(231, 76, 60, 0.7); transform: scale(1); }
+            25%  { color: #f1c40f; text-shadow: 0 0 5px rgba(241, 196, 15, 0.7); transform: scale(1.01); }
+            50%  { color: #3498db; text-shadow: 0 0 3px rgba(52, 152, 219, 0.7); transform: scale(1); }
+            75%  { color: #9b59b6; text-shadow: 0 0 5px rgba(155, 89, 182, 0.7); transform: scale(1.01); }
+            100% { color: #e74c3c; text-shadow: 0 0 3px rgba(231, 76, 60, 0.7); transform: scale(1); }
+        }
+        #copyright {
+            font-family: 'Google Sans', sans-serif; /* Google Sans fontu */
+            animation: pulseAndColorShift 10s infinite ease-in-out; /* Daha yavaş ve yumuşak geçişli animasyon */
+            font-weight: 500;
+            font-size: 0.80rem;
+        }
+        #cbpLogo {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 80px;
+            height: auto;
+            opacity: 0.4;
+            z-index: 1000;
+        }
+        /* Not Alanı Stilleri */
+        #noteSection label {
+            display: block;
+            text-align: left;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151; /* Tailwind gray-700 */
+        }
+        #noteInput {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            font-family: 'Google Sans', 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #1f2937; /* Tailwind gray-800 */
+            resize: vertical; /* Sadece dikeyde yeniden boyutlandırma */
+        }
+        #noteInput:focus {
+            outline: none;
+            border-color: #3b82f6; /* Tailwind blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div id="loadingMessage">Yükleniyor... Lütfen bekleyin.</div>
+
+    <!-- HTML yorumları content-bg div'inin class'ından temizlendi -->
+    <div class="content-bg p-6 sm:p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-lg text-center">
+        <header class="mb-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">ABD Vize Red Takipçisi</h1>
+        </header>
+
+        <main>
+            <div class="mb-8">
+                <p class="text-lg text-gray-700 mb-2">Mevcut Ret Sayısı:</p>
+                <p id="rejectionCountDisplay" class="text-6xl sm:text-7xl font-bold text-red-600">0</p>
+            </div>
+
+            <!-- HTML yorumu grid div'inin class'ından temizlendi -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <button id="addRejectionButton" class="btn btn-primary w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Ret Ekle
+                </button>
+                <button id="resetButton" class="btn btn-danger w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Sıfırla
+                </button>
+            </div>
+
+            <!-- Not Ekleme Alanı -->
+            <div id="noteSection" class="mt-8 mb-6">
+                <label for="noteInput" class="text-lg font-semibold text-gray-700 mb-2">Kişisel Notlarınız:</label>
+                <textarea id="noteInput" placeholder="Vize süreciyle ilgili notlarınızı buraya yazabilirsiniz..."></textarea>
+                <button id="saveNoteButton" class="btn btn-secondary w-full mt-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 inline-block mr-1">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Notları Kaydet
+                </button>
+            </div>
+        </main>
+
+        <footer class="mt-8 pt-4 border-t border-gray-300">
+            <p id="userIdDisplay" class="text-xs text-gray-500">Kullanıcı Kimliği yükleniyor...</p>
+            <p id="messageArea" class="text-sm text-green-600 mt-2 h-5"></p>
+            <p id="copyright" class="text-xs text-center mt-4">© 2025 UGURLU VISA SOLUTİONS. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+    
+    <!-- 
+        Kullanıcının sağladığı logo. 
+        Bu resmin doğru görüntülenmesi için 'image_5e6b96.jpg' dosyasının 
+        HTML dosyasıyla aynı dizinde olması veya platform tarafından erişilebilir olması gerekir.
+        Eğer logo görünmüyorsa, lütfen resmin tam ve erişilebilir bir URL'sini sağlayın.
+    -->
+    <img id="cbpLogo" 
+         src="image_5e6b96.jpg" 
+         alt="Kullanıcının sağladığı ABD Gümrük ve Sınır Koruma Logosu"
+         onerror="this.onerror=null; this.src='https://placehold.co/80x80/cccccc/ffffff?text=Logo+X'; this.alt='Logo yüklenemedi';">
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "YOUR_API_KEY", authDomain: "YOUR_AUTH_DOMAIN", projectId: "YOUR_PROJECT_ID" };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-visa-tracker-app';
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const rejectionCountDisplay = document.getElementById('rejectionCountDisplay');
+        const addRejectionButton = document.getElementById('addRejectionButton');
+        const resetButton = document.getElementById('resetButton');
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        const messageArea = document.getElementById('messageArea');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        // Not alanı elementleri
+        const noteInput = document.getElementById('noteInput');
+        const saveNoteButton = document.getElementById('saveNoteButton');
+
+        let currentUserId = null;
+        let rejectionDocRef = null;
+        let notesDocRef = null; // Notlar için Firestore belge referansı
+        let unsubscribeRejectionSnapshot = null;
+        let unsubscribeNotesSnapshot = null; // Notlar için anlık görüntü dinleyicisi
+        let currentRejectionCount = 0;
+
+        async function setupUser(user) {
+            loadingMessage.style.display = 'flex';
+            if (user) {
+                currentUserId = user.uid;
+                userIdDisplay.textContent = `Kullanıcı Kimliği: ${currentUserId}`;
+                
+                const userRejectionPath = `/artifacts/${appId}/users/${currentUserId}/usVisaRejections`;
+                rejectionDocRef = doc(db, userRejectionPath, "status");
+                loadRejectionCount();
+
+                const userNotesPath = `/artifacts/${appId}/users/${currentUserId}/userNotes`;
+                notesDocRef = doc(db, userNotesPath, "data");
+                loadUserNotes();
+
+            } else {
+                currentUserId = null;
+                userIdDisplay.textContent = "Kullanıcı girişi yapılmadı.";
+                rejectionCountDisplay.textContent = "N/A";
+                noteInput.value = ""; 
+                if (unsubscribeRejectionSnapshot) unsubscribeRejectionSnapshot();
+                if (unsubscribeNotesSnapshot) unsubscribeNotesSnapshot();
+                loadingMessage.style.display = 'none';
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                await setupUser(user);
+            } else {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try {
+                        const userCredential = await signInWithCustomToken(auth, __initial_auth_token);
+                        await setupUser(userCredential.user);
+                    } catch (error) {
+                        console.error("Özel token ile giriş hatası:", error);
+                        await trySignInAnonymously();
+                    }
+                } else {
+                    await trySignInAnonymously();
+                }
+            }
+        });
+
+        async function trySignInAnonymously() {
+            try {
+                const userCredential = await signInAnonymously(auth);
+                await setupUser(userCredential.user);
+            } catch (error) {
+                console.error("Anonim giriş hatası:", error);
+                userIdDisplay.textContent = "Giriş yapılamadı. Lütfen sayfayı yenileyin.";
+                loadingMessage.textContent = "Giriş hatası. Sayfayı yenileyin.";
+                loadingMessage.style.display = 'flex';
+            }
+        }
+
+        let dataLoadStatus = { rejection: false, notes: false };
+
+        function checkAndHideLoading() {
+            if (dataLoadStatus.rejection && dataLoadStatus.notes) {
+                loadingMessage.style.display = 'none';
+            }
+        }
+
+        async function loadRejectionCount() {
+            if (!rejectionDocRef) {
+                 dataLoadStatus.rejection = true; // Eğer referans yoksa yüklenmiş say
+                 checkAndHideLoading();
+                return;
+            }
+            if (unsubscribeRejectionSnapshot) unsubscribeRejectionSnapshot();
+            
+            unsubscribeRejectionSnapshot = onSnapshot(rejectionDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    currentRejectionCount = data.rejectionCount !== undefined ? data.rejectionCount : 0;
+                    rejectionCountDisplay.textContent = currentRejectionCount;
+                } else {
+                    currentRejectionCount = 0;
+                    rejectionCountDisplay.textContent = "0";
+                    setDoc(rejectionDocRef, { rejectionCount: 0 });
+                }
+                dataLoadStatus.rejection = true;
+                checkAndHideLoading();
+            }, (error) => {
+                console.error("Ret sayısı dinlenirken hata oluştu:", error);
+                messageArea.textContent = "Ret sayısı okunurken hata oluştu.";
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+                dataLoadStatus.rejection = true;
+                checkAndHideLoading();
+            });
+        }
+
+        async function loadUserNotes() {
+            if (!notesDocRef) {
+                dataLoadStatus.notes = true; // Eğer referans yoksa yüklenmiş say
+                checkAndHideLoading();
+                return;
+            }
+            if (unsubscribeNotesSnapshot) unsubscribeNotesSnapshot();
+
+            unsubscribeNotesSnapshot = onSnapshot(notesDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    noteInput.value = data.text || "";
+                } else {
+                    noteInput.value = ""; 
+                }
+                dataLoadStatus.notes = true;
+                checkAndHideLoading();
+            }, (error) => {
+                console.error("Notlar dinlenirken hata oluştu:", error);
+                messageArea.textContent = "Notlar okunurken hata oluştu.";
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+                dataLoadStatus.notes = true;
+                checkAndHideLoading();
+            });
+        }
+        
+        addRejectionButton.addEventListener('click', async () => {
+            if (!rejectionDocRef) {
+                messageArea.textContent = "Kullanıcı oturumu aktif değil.";
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+                return;
+            }
+            const newCount = currentRejectionCount + 1;
+            try {
+                await setDoc(rejectionDocRef, { rejectionCount: newCount }, { merge: true });
+                messageArea.textContent = "Ret sayısı güncellendi!";
+                messageArea.className = "text-sm text-green-600 mt-2 h-5";
+                setTimeout(() => messageArea.textContent = "", 3000);
+            } catch (error) {
+                console.error("Ret sayısı artırılırken hata:", error);
+                messageArea.textContent = "Güncelleme hatası: " + error.message;
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+            }
+        });
+
+        resetButton.addEventListener('click', async () => {
+            if (!rejectionDocRef) {
+                messageArea.textContent = "Kullanıcı oturumu aktif değil.";
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+                return;
+            }
+            if (true) { 
+                try {
+                    await setDoc(rejectionDocRef, { rejectionCount: 0 });
+                    messageArea.textContent = "Ret sayısı sıfırlandı!";
+                    messageArea.className = "text-sm text-green-600 mt-2 h-5";
+                    setTimeout(() => messageArea.textContent = "", 3000);
+                } catch (error) {
+                    console.error("Ret sayısı sıfırlanırken hata:", error);
+                    messageArea.textContent = "Sıfırlama hatası: " + error.message;
+                    messageArea.className = "text-sm text-red-600 mt-2 h-5";
+                }
+            }
+        });
+
+        saveNoteButton.addEventListener('click', async () => {
+            if (!notesDocRef) {
+                messageArea.textContent = "Notları kaydetmek için kullanıcı oturumu aktif değil.";
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+                return;
+            }
+            const noteText = noteInput.value;
+            try {
+                await setDoc(notesDocRef, { text: noteText });
+                messageArea.textContent = "Notlar başarıyla kaydedildi!";
+                messageArea.className = "text-sm text-green-600 mt-2 h-5";
+                setTimeout(() => messageArea.textContent = "", 3000);
+            } catch (error) {
+                console.error("Notlar kaydedilirken hata:", error);
+                messageArea.textContent = "Not kaydetme hatası: " + error.message;
+                messageArea.className = "text-sm text-red-600 mt-2 h-5";
+            }
+        });
+
+    </script>
+</body>
+</html>
