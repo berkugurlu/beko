@@ -10,7 +10,7 @@
         :root {
             --background: #F8F9FA;
             --card-bg: #FFFFFF;
-            --text-primary: #18181B;
+            --text-primary: #1818B;
             --text-secondary: #71717A;
             --accent: #4F46E5;
             --accent-dark: #4338CA;
@@ -538,12 +538,9 @@
             resultContainer.innerHTML = `<div class="text-center p-4 text-secondary">Akıllı asistanımız senin için hazırlıyor...</div>`;
 
             try {
-                // ---- ÖNEMLİ ----
-                // Lütfen 'YOUR_GOOGLE_AI_API_KEY' yazan yeri Google AI Studio'dan aldığınız kendi API anahtarınız ile değiştirin.
-                // API anahtarı olmadan bu özellik çalışmayacaktır. https://aistudio.google.com/app/apikey
                 const apiKey = "AIzaSyC69-_DoapO3-fzakAUv_M3zk7mZLoPp8g";
 
-                if (apiKey === "AIzaSyC69-_DoapO3-fzakAUv_M3zk7mZLoPp8g") {
+                if (apiKey === "YOUR_GOOGLE_AI_API_KEY") {
                      resultContainer.innerHTML = `<div class="bg-yellow-500/10 text-yellow-600 p-4 rounded-lg text-center"><strong>Uyarı!</strong> Yapay zeka özelliklerini kullanmak için kod içerisindeki <strong>apiKey</strong> değişkenini kendi Google AI API anahtarınız ile değiştirmelisiniz.</div>`;
                      buttonElement.disabled = false;
                      buttonElement.innerHTML = originalButtonText;
@@ -712,7 +709,7 @@
             const itemDiv = target.closest('.checklist-item');
             if(!itemDiv) return;
 
-            const itemId = parseInt(itemDiv.dataset.id);
+            const itemId = parseInt(itemDiv.dataset.id, 10);
 
             if (target.type === 'checkbox') {
                 const item = items.find(i => i.id === itemId);
@@ -806,5 +803,4 @@
     </script>
 </body>
 </html>
-
 
