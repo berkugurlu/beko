@@ -133,7 +133,7 @@
         .checklist-item.completed label { text-decoration: line-through; }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col">
     
     <div id="preloader" class="fade-in">
          <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -183,7 +183,7 @@
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-10 sm:py-12">
+    <main class="container mx-auto px-4 py-10 sm:py-12 flex-grow">
         <div id="country-list-view">
             <div class="text-center mb-10">
                 <h2 class="text-5xl md:text-6xl font-extrabold tracking-tight">Hayalindeki Macerayı Bul</h2>
@@ -212,6 +212,10 @@
         </div>
     </main>
     
+    <footer class="text-center py-8 border-t border-border-color mt-12">
+        <p class="text-sm text-secondary">&copy; 2024 TRAVELMAX | Bir UGURLU LLC Markasıdır.</p>
+    </footer>
+
     <div id="info-modal" class="modal-overlay" aria-modal="true" role="dialog">
       <div class="modal-content content-card w-full max-w-md p-8 text-center">
           <h3 id="modal-title" class="text-2xl font-bold mb-2">Başlık</h3>
@@ -318,7 +322,7 @@
             "Arjantin": { flag: "🇦🇷", description: "Tango'nun tutkusu, Patagonya'nın vahşi güzelliği ve lezzetli etlerin ülkesi.", whatToDo: ["Buenos Aires'in La Boca semtinde tango dansçılarını izle", "Patagonya'da Perito Moreno Buzulu'nun çatırtılarını dinle", "Iguazu Şelaleleri'nin hem Arjantin hem Brezilya tarafını gör", "Mendoza'da Malbec şaraplarını tat"], whatToEat: ["Asado (Arjantin barbeküsü)", "Fırından yeni çıkmış Empanadas", "Karamelli lezzet Dulce de Leche", "Yerel içecek Mate çayını dene"], whereToStay: ["Buenos Aires: Palermo veya Recoleta", "El Calafate: Buzula yakın oteller", "Mendoza: Üzüm bağları içindeki şarap otelleri"], popularApps: [{name: "Cabify", category: "Ulaşım"}, {name: "PedidosYa", category: "Yemek Siparişi"}, {name: "Mercado Libre", category: "Alışveriş"}, {name: "WhatsApp", category: "İletişim"}], currency: "ARS", language: "İspanyolca", emergencyNumber: "911", basicPhrases: [{tr:"Merhaba", local:"Hola"}, {tr:"Teşekkürler", local:"Gracias"}], climate: "Kuzeyde subtropikal, Patagonya'da soğuk ve kuraktır." },
             "Kanada": { flag: "🇨🇦", description: "Geniş doğal parkları, çok kültürlü şehirleri ve misafirperver insanlarıyla tanınır.", whatToDo: ["Rocky Dağları'nda Banff ve Jasper Milli Parklarını keşfet", "Niagara Şelaleleri'nin gücüne tanık ol", "Quebec City'nin Avrupa tarzı eski kentinde dolaş", "Vancouver'daki Stanley Park'ta bisiklete bin"], whatToEat: ["Peynir ve soslu patates Poutine", "Akçaağaç şurubu ile tatlandırılmış her şey", "Kanada pastırması (Peameal Bacon)", "Tatlı bir lezzet olan Butter Tart"], whereToStay: ["Banff/Jasper: Dağ evleri ve localar", "Vancouver: Downtown veya Gastown", "Toronto: Eğlence Bölgesi (Entertainment District)"], popularApps: [{name: "Uber / Lyft", category: "Ulaşım"}, {name: "SkipTheDishes", category: "Yemek Siparişi"}, {name: "Transit", category: "Toplu Taşıma"}, {name: "The Weather Network", category: "Hava Durumu"}], currency: "CAD", language: "İngilizce, Fransızca", emergencyNumber: "911", basicPhrases: [{tr:"Merhaba", local:"Hello (İngilizce), Bonjour (Fransızca)"}, {tr:"Teşekkürler", local:"Thank you (İngilizce), Merci (Fransızca)"}], climate: "Çok soğuk kışlar ve kısa, ılıman yazlar. Kıyılarda daha yumuşaktır." },
             "Hindistan": { flag: "🇮🇳", description: "Zengin tarihi, renkli festivalleri ve çeşitli mutfağıyla mistik bir ülke.", whatToDo: ["Agra'da Tac Mahal'in güzelliğine hayran kal", "Varanasi'de Ganj Nehri kıyısında manevi ritüelleri izle", "Jaipur'un 'Pembe Şehir' saraylarını gez", "Kerala'nın sakin backwater'larında tekne gezisi yap"], whatToEat: ["Baharatlı pilav Biryani", "Tavuk Tikka Masala ve tereyağlı Naan", "Sokak atıştırmalığı Samosa", "Masala Chai (baharatlı çay)"], whereToStay: ["Rajasthan: Dönüştürülmüş saray oteller (Heritage Hotels)", "Delhi/Mumbai: Lüks zincir oteller", "Goa: Sahil kulübeleri ve yoga merkezleri"], popularApps: [{name: "Ola / Uber", category: "Ulaşım"}, {name: "Zomato / Swiggy", category: "Yemek Siparişi"}, {name: "MakeMyTrip", category: "Seyahat Planlama"}, {name: "Paytm", category: "Mobil Ödeme"}], currency: "INR", language: "Hintçe, İngilizce", emergencyNumber: "100 (Polis), 102 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"नमस्ते (Namaste)"}, {tr:"Teşekkürler", local:"धन्यवाद (Dhanyavaad)"}], climate: "Güneyde tropikal, kuzeyde ılıman, Himalayalar'da alp iklimi." },
-            "Çin": { flag: "🇨🇳", description: "Binlerce yıllık tarihi, Çin Seddi ve modern mega şehirleriyle devasa bir ülke.", whatToDo: ["Çin Seddi'nin bir bölümünde yürü", "Pekin'deki Yasak Şehir'in avlularını keşfet", "Xi'an'da Terracotta Ordusu'nu gör", "Şanghay'ın fütüristik silüetini ve Bund rıhtımını gör"], whatToEat: ["Pekin Ördeği ziyafeti", "Guangdong usulü Dim Sum", "Sichuan'dan acılı Kung Pao Tavuk", "Çorba dolgulu mantı (Xiao Long Bao)"], whereToStay: ["Pekin: Wangfujing veya Sanlitun", "Şanghay: Bund veya Fransız İmtiyaz Bölgesi", "Xi'an: Şehir surlarının içi"], popularApps: [{name: "WeChat", category: "Her Şey (İletişim, Ödeme)"}, {name: "Alipay", category: "Mobil Ödeme"}, {name: "DiDi", category: "Ulaşım"}, {name: "Baidu Maps", category: "Navigasyon"}], currency: "CNY", language: "Mandarin Çincesi", emergencyNumber: "110 (Polis), 120 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"你好 (Nǐ hǎo)"}, {tr:"Teşekkürler", local:"谢谢 (Xièxiè)"}], climate: "Çok çeşitli iklimler. Güneydoğuda subtropikal, kuzeybatıda karasal." },
+            "Çin": { flag: "🇨🇳", description: "Binlerce yıllık tarihi, Çin Seddi ve modern mega şehirleriyle devasa bir ülke.", whatToDo: ["Çin Seddi'nin bir bölümünde yürü", "Pekin'deki Yasak Şehir'in avlularını keşfet", "Xi'an'da Terracotta Ordusu'nu gör", "Şanghay'ın fütüristik siluetini ve Bund rıhtımını gör"], whatToEat: ["Pekin Ördeği ziyafeti", "Guangdong usulü Dim Sum", "Sichuan'dan acılı Kung Pao Tavuk", "Çorba dolgulu mantı (Xiao Long Bao)"], whereToStay: ["Pekin: Wangfujing veya Sanlitun", "Şanghay: Bund veya Fransız İmtiyaz Bölgesi", "Xi'an: Şehir surlarının içi"], popularApps: [{name: "WeChat", category: "Her Şey (İletişim, Ödeme)"}, {name: "Alipay", category: "Mobil Ödeme"}, {name: "DiDi", category: "Ulaşım"}, {name: "Baidu Maps", category: "Navigasyon"}], currency: "CNY", language: "Mandarin Çincesi", emergencyNumber: "110 (Polis), 120 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"你好 (Nǐ hǎo)"}, {tr:"Teşekkürler", local:"谢谢 (Xièxiè)"}], climate: "Çok çeşitli iklimler. Güneydoğuda subtropikal, kuzeybatıda karasal." },
             "Rusya": { flag: "🇷🇺", description: "Çarlık sarayları, ikonik Kızıl Meydan ve Sibirya'nın sonsuz toprakları.", whatToDo: ["Moskova'da Kızıl Meydan ve Aziz Vasil Katedrali'ni ziyaret et", "St. Petersburg'daki Hermitage Müzesi'nin sanat koleksiyonunda kaybol", "Trans-Sibirya Ekspresi ile epik bir tren yolculuğu yap", "Baykal Gölü'nün donmuş yüzeyinde yürü (kışın)"], whatToEat: ["Pancarlı Borç çorbası", "Rus mantısı Pelmeni", "İnce krep Blini (havyar veya reçelle)", "Stroganoff"], whereToStay: ["Moskova: Tverskaya Caddesi yakınları", "St. Petersburg: Nevsky Prospekt çevresi", "Soçi: Karadeniz kıyısındaki resortlar"], popularApps: [{name: "Yandex Go", category: "Ulaşım & Yemek"}, {name: "Telegram", category: "İletişim"}, {name: "2GIS", category: "Harita & Rehber"}, {name: "RZD", category: "Tren Biletleri"}], currency: "RUB", language: "Rusça", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Здравствуйте (Zdravstvuyte)"}, {tr:"Teşekkürler", local:"Спасибо (Spasibo)"}], climate: "Karasal iklim. Kışlar çok soğuk ve uzun, yazlar kısa ve sıcaktır." },
             "Norveç": { flag: "🇳🇴", description: "Dramatik fiyortları, Viking mirası ve Kuzey Işıkları ile İskandinav güzeli.", whatToDo: ["Geirangerfjord gibi fiyortlarda gemi turu yap", "Bergen'in renkli Bryggen rıhtımında dolaş", "Tromsø'da Kuzey Işıkları'nı (Aurora Borealis) avla", "Lofoten Adaları'nın dramatik manzaralarını gör"], whatToEat: ["Taze Norveç Somonu", "Geleneksel et köftesi Kjøttkaker", "Kahverengi peynir Brunost", "Noel lezzeti Pinnekjøtt"], whereToStay: ["Oslo: Modern tasarım otelleri", "Bergen: Bryggen yakınındaki oteller", "Lofoten Adaları: Rorbu (dönüştürülmüş balıkçı kulübeleri)"], popularApps: [{name: "Entur / Ruter", category: "Toplu Taşıma"}, {name: "Wolt", category: "Yemek Siparişi"}, {name: "Vy", category: "Tren"}, {name: "Yr", category: "Hava Durumu"}], currency: "NOK", language: "Norveççe", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Hallo"}, {tr:"Teşekkürler", local:"Takk"}], climate: "Kıyılar ılıman okyanusal, iç kesimler daha soğuktur." },
             "İsveç": { flag: "🇸🇪", description: "Modern tasarımı, tarihi 'Gamla Stan'ı ve 'fika' kültürüyle rahat bir ülke.", whatToDo: ["Stockholm'un eski şehri Gamla Stan'ın Arnavut kaldırımlı sokaklarında yürü", "Vasa Müzesi'nde 17. yüzyıl savaş gemisini gör", "İsveç Laponyası'nda buz otelde konakla", "Fika (kahve ve tatlı molası) kültürünü benimse"], whatToEat: ["İsveç Köftesi (kremalı sos ve yabanmersini ile)", "Smörgåsbord (açık büfe)", "Tarçınlı Çörek (Kanelbulle)", "Ringa balığı turşusu (Sill)"], whereToStay: ["Stockholm: Södermalm veya Gamla Stan", "Göteborg: Avenyn caddesi yakınları", "İsveç Laponyası: Buz otel veya dağ evleri"], popularApps: [{name: "SL / Västtrafik", category: "Toplu Taşıma"}, {name: "Foodora", category: "Yemek Siparişi"}, {name: "SJ", category: "Tren"}, {name: "Swish", category: "Mobil Ödeme"}], currency: "SEK", language: "İsveççe", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Hej"}, {tr:"Teşekkürler", local:"Tack"}], climate: "Kuzeyde soğuk, güneyde ılıman iklim. Dört mevsim belirgindir." },
@@ -534,7 +538,18 @@
             resultContainer.innerHTML = `<div class="text-center p-4 text-secondary">Akıllı asistanımız senin için hazırlıyor...</div>`;
 
             try {
-                const apiKey = "";
+                // ---- ÖNEMLİ ----
+                // Lütfen 'YOUR_GOOGLE_AI_API_KEY' yazan yeri Google AI Studio'dan aldığınız kendi API anahtarınız ile değiştirin.
+                // API anahtarı olmadan bu özellik çalışmayacaktır. https://aistudio.google.com/app/apikey
+                const apiKey = "YOUR_GOOGLE_AI_API_KEY";
+
+                if (apiKey === "YOUR_GOOGLE_AI_API_KEY") {
+                     resultContainer.innerHTML = `<div class="bg-yellow-500/10 text-yellow-600 p-4 rounded-lg text-center"><strong>Uyarı!</strong> Yapay zeka özelliklerini kullanmak için kod içerisindeki <strong>apiKey</strong> değişkenini kendi Google AI API anahtarınız ile değiştirmelisiniz.</div>`;
+                     buttonElement.disabled = false;
+                     buttonElement.innerHTML = originalButtonText;
+                     return null;
+                }
+                
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
@@ -766,7 +781,9 @@
 
         searchInput.addEventListener('input', (e) => displayCountries(e.target.value));
         
-        modalCloseBtn.addEventListener('click', () => infoModal.classList.remove('visible'));
+        modalCloseBtn.addEventListener('click', () => {
+            infoModal.classList.remove('visible');
+        });
         infoModal.addEventListener('click', (e) => {
             if (e.target === infoModal) infoModal.classList.remove('visible');
         });
