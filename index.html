@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRAVELMAX Pro</title>
+    <title>TRAVELMAX</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --background: #F8F9FA;
             --card-bg: #FFFFFF;
-            --text-primary: #1818B;
+            --text-primary: #18181B;
             --text-secondary: #71717A;
             --accent: #4F46E5;
             --accent-dark: #4338CA;
@@ -38,6 +39,10 @@
             -moz-osx-font-smoothing: grayscale;
         }
         
+        .logo-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
         .content-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -171,7 +176,7 @@
                     </defs>
                     <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="url(#shine-pattern-header)"/>
                 </svg>
-                <h1 class="text-2xl font-bold tracking-tight">TRAVELMAX</h1>
+                <h1 class="text-2xl font-bold tracking-tighter logo-font">travelmax</h1>
             </a>
             <div class="flex items-center gap-2">
                 <button id="checklist-btn" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent btn-secondary">
@@ -213,7 +218,7 @@
     </main>
     
     <footer class="text-center py-8 border-t border-border-color mt-12">
-        <p class="text-sm text-secondary">&copy; 2024 TRAVELMAX | Bir UGURLU LLC Markasıdır.</p>
+        <p class="text-sm text-secondary">&copy; 2025 TRAVELMAX | Bir UGURLU LLC Markasıdır.</p>
     </footer>
 
     <div id="info-modal" class="modal-overlay" aria-modal="true" role="dialog">
@@ -301,6 +306,7 @@
             "İtalya": { flag: "🇮🇹", description: "Sanat, tarih, moda ve muhteşem yemekleriyle bilinen bir Akdeniz ülkesi.", whatToDo: ["Roma'da Kolezyum ve Antik Forum'u gez", "Venedik kanallarında gondol turu yap", "Floransa'da Rönesans sanatını keşfet", "Amalfi Sahillerinin manzarasına doy"], whatToEat: ["Napoli'de odun ateşinde Pizza", "Taze ev yapımı Makarna (Pasta Fresca)", "Gerçek İtalyan Dondurması (Gelato)", "Espresso ve Tiramisu"], whereToStay: ["Roma: Tarihi merkez (Centro Storico)", "Toskana: Kırsal agriturismo çiftlik evleri", "Venedik: Kanallara bakan oteller"], popularApps: [{name: "Trenitalia", category: "Tren"}, {name: "TheFork", category: "Restoran Rezervasyon"}, {name: "FREE NOW", category: "Taksi"}, {name: "Booking.com", category: "Konaklama"}], currency: "EUR", language: "İtalyanca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Ciao"}, {tr:"Teşekkürler", local:"Grazie"}], climate: "Akdeniz iklimi. Kuzeyde kışlar daha soğuk ve kar yağışlı olabilir." },
             "Japonya": { flag: "🇯🇵", description: "Geleneksel kültürü ve fütüristik teknolojiyi bir arada sunan büyüleyici bir ada ülkesi.", whatToDo: ["Tokyo'da Shibuya Geçidi'nin kalabalığına karış", "Kyoto'nun bambu ormanlarında yürü", "Fuji Dağı'nın görkemini izle", "Osaka'da sokak lezzetlerini tat"], whatToEat: ["Usta elinden Suşi ve Sashimi", "Sıcak bir kase Ramen", "Hafif ve çıtır Tempura", "Japon yeşil çayı (Matcha)"], whereToStay: ["Tokyo: Shinjuku veya Shibuya bölgeleri", "Kyoto: Geleneksel Ryokan'lar", "Osaka: Namba'da modern oteller"], popularApps: [{name: "Jorudan", category: "Tren & Rota"}, {name: "Gurunavi", category: "Restoran Bulucu"}, {name: "Go", category: "Taksi"}, {name: "Google Translate", category: "Çeviri"}], currency: "JPY", language: "Japonca", emergencyNumber: "110 (Polis), 119 (Ambulans/İtfaiye)", basicPhrases: [{tr:"Merhaba", local:"こんにちは (Konnichiwa)"}, {tr:"Teşekkürler", local:"ありがとう (Arigatou)"}], climate: "Dört mevsim belirgin yaşanır. Yazlar sıcak ve nemli, kışlar soğuk ve kar yağışlıdır." },
             "Fransa": { flag: "🇫🇷", description: "Moda, sanat, gastronomi ve romantizmin başkenti.", whatToDo: ["Eyfel Kulesi'nden Paris'i izle", "Louvre Müzesi'nde Mona Lisa'yı gör", "Mont Saint-Michel'in masalsı atmosferini yaşa", "Provence'da lavanta tarlalarını gez"], whatToEat: ["Fırından taze çıkmış Kruvasan", "Fransız peynirleri ve şarapları", "Renkli Makaronlar", "Soğan Çorbası"], whereToStay: ["Paris: Le Marais veya Saint-Germain", "Fransız Rivierası: Nice veya Cannes", "Provence: Şato oteller"], popularApps: [{name: "SNCF Connect", category: "Tren & Otobüs"}, {name: "TheFork", category: "Restoran Rezervasyon"}, {name: "Bonjour RATP", category: "Paris Ulaşım"}, {name: "Uber", category: "Ulaşım"}], currency: "EUR", language: "Fransızca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Bonjour"}, {tr:"Teşekkürler", local:"Merci"}], climate: "Ilıman iklim. Güneyde Akdeniz iklimi, Alpler'de dağ iklimi görülür." },
+            "Birleşik Krallık": { flag: "🇬🇧", description: "Tarih, kraliyet gelenekleri, modern kültür ve yeşil kırsal alanların birleştiği bir ada ülkesi.", whatToDo: ["Londra'da Buckingham Sarayı ve Tower Bridge'i gör", "Edinburgh Kalesi'ni keşfet", "Stonehenge'in gizemini çöz", "İskoçya'nın Highlands bölgesinde doğa yürüyüşü yap"], whatToEat: ["Fish and Chips", "Sunday Roast (Pazar Yemeği)", "Full English Breakfast", "Afternoon Tea (Beş Çayı)"], whereToStay: ["Londra: Covent Garden veya South Kensington", "Edinburgh: Old Town'daki tarihi oteller", "Cotswolds: Geleneksel 'inn'ler"], popularApps: [{name: "Citymapper", category: "Ulaşım"}, {name: "Trainline", category: "Tren Bileti"}, {name: "Just Eat", category: "Yemek Siparişi"}, {name: "Uber", category: "Ulaşım"}], currency: "GBP", language: "İngilizce", emergencyNumber: "999", basicPhrases: [{tr:"Merhaba", local:"Hello"}, {tr:"Teşekkürler", local:"Thank you / Cheers"}], climate: "Ilıman okyanus iklimi. Yıl boyunca yağışlı ve hava durumu değişkendir." },
             "ABD": { flag: "🇺🇸", description: "Çeşitli kültürleri ve coğrafi özellikleri barındıran devasa bir ülke.", whatToDo: ["New York'un gökdelenleri arasında kaybol", "Grand Canyon'un büyüklüğü karşısında şaşır", "Route 66'da araba yolculuğu yap", "Miami'nin Art Deco sahillerinde yürü"], whatToEat: ["New York usulü Pizza", "Texas usulü Barbekü (BBQ)", "California'dan taze Avokado Tost", "Pancakes ve akçaağaç şurubu"], whereToStay: ["New York: Manhattan'da merkezi bir otel", "California: Sahil kasabalarında butik oteller", "Ulusal Parklar: Kamping veya dağ evleri"], popularApps: [{name: "Uber / Lyft", category: "Ulaşım"}, {name: "Yelp", category: "Restoran & Yorum"}, {name: "DoorDash", category: "Yemek Siparişi"}, {name: "Airbnb", category: "Konaklama"}], currency: "USD", language: "İngilizce", emergencyNumber: "911", basicPhrases: [{tr:"Merhaba", local:"Hello"}, {tr:"Teşekkürler", local:"Thank you"}], climate: "Çok çeşitli iklimler. Florida'da tropikal, Alaska'da kutup iklimi görülebilir." },
             "Brezilya": { flag: "🇧🇷", description: "Amazon ormanları, canlı kültürü ve futboluyla tanınan Güney Amerika ülkesi.", whatToDo: ["Kurtarıcı İsa Heykeli'nden Rio'yu seyret", "Amazon ormanlarında ekolojik tur yap", "Iguazu Şelaleleri'nin gücünü hisset", "Salvador'un renkli sokaklarında dans et"], whatToEat: ["Ulusal yemek Feijoada", "Churrasco barbekü ziyafeti", "Sokak lezzeti Pão de Queijo", "Enerji veren Açaí kaseleri"], whereToStay: ["Rio de Janeiro: Copacabana veya Ipanema", "Amazon: Sürdürülebilir orman locaları", "Salvador: Pelourinho'da tarihi konaklar"], popularApps: [{name: "99 / Uber", category: "Ulaşım"}, {name: "iFood", category: "Yemek Siparişi"}, {name: "Rappi", category: "Teslimat"}, {name: "WhatsApp", category: "İletişim"}], currency: "BRL", language: "Portekizce", emergencyNumber: "190 (Polis), 192 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Olá"}, {tr:"Teşekkürler", local:"Obrigado/Obrigada"}], climate: "Büyük ölçüde tropikal. Güney bölgeler daha ılımandır." },
             "Mısır": { flag: "🇪🇬", description: "Antik medeniyetlere ev sahipliği yapmış, piramitleri ve Nil Nehri ile ünlü.", whatToDo: ["Gize Piramitleri ve Sfenks'in gizemini çöz", "Krallar Vadisi'ndeki firavun mezarlarını keşfet", "Nil Nehri'nde geleneksel Felucca ile yelken aç", "Dahab'da Kızıldeniz'in su altı dünyasını gör"], whatToEat: ["Sokak yemeği klasiği Koşari", "Ful Medames ile kahvaltı", "Mısır usulü Falafel (Ta'ameya)", "Geleneksel tatlı Umm Ali"], whereToStay: ["Kahire: Nil manzaralı modern oteller", "Luxor: Tarihe yakın butik oteller", "Kızıldeniz sahili: Dalış ve spa resortları"], popularApps: [{name: "Uber / Careem", category: "Ulaşım"}, {name: "Talabat", category: "Yemek Siparişi"}, {name: "Swvl", category: "Otobüs & Ulaşım"}, {name: "Google Maps", category: "Navigasyon"}], currency: "EGP", language: "Arapça", emergencyNumber: "122 (Polis), 123 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"مرحبا (Marhaban)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Sıcak çöl iklimi. Kıyı şeridi daha ılımandır." },
@@ -539,13 +545,6 @@
 
             try {
                 const apiKey = "AIzaSyC69-_DoapO3-fzakAUv_M3zk7mZLoPp8g";
-
-                if (apiKey === "YOUR_GOOGLE_AI_API_KEY") {
-                     resultContainer.innerHTML = `<div class="bg-yellow-500/10 text-yellow-600 p-4 rounded-lg text-center"><strong>Uyarı!</strong> Yapay zeka özelliklerini kullanmak için kod içerisindeki <strong>apiKey</strong> değişkenini kendi Google AI API anahtarınız ile değiştirmelisiniz.</div>`;
-                     buttonElement.disabled = false;
-                     buttonElement.innerHTML = originalButtonText;
-                     return null;
-                }
                 
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: [{ text: prompt }] }] };
