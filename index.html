@@ -8,12 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    <!-- Google AdSense Kodu -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838"
      crossorigin="anonymous"></script>
 
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E483B9402G"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E483B9402G"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -169,20 +167,43 @@
             font-size: 0.8rem;
             min-height: 100px;
         }
+
+        /* */
+        /* Google Translate Widget Stilleri */
+        .goog-te-gadget-simple {
+            background-color: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 9999px !important;
+            padding: 6px 8px !important;
+            cursor: pointer;
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+        .goog-te-gadget-simple span {
+            color: var(--text-primary) !important;
+        }
+        .goog-te-gadget-icon {
+            display: none !important;
+        }
+        body > .skiptranslate { display: none; }
+        #goog-gt-tt { display: none !important; }
+        /* */
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
     
     <div id="preloader" class="fade-in">
          <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="logo-gradient-preloader" gradientTransform="rotate(45)">
-                    <stop offset="0%" stop-color="var(--accent)"/>
-                    <stop offset="100%" stop-color="var(--accent-dark)"/>
-                </linearGradient>
-            </defs>
-            <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="url(#logo-gradient-preloader)"/>
-        </svg>
+             <defs>
+                 <linearGradient id="logo-gradient-preloader" gradientTransform="rotate(45)">
+                     <stop offset="0%" stop-color="var(--accent)"/>
+                     <stop offset="100%" stop-color="var(--accent-dark)"/>
+                 </linearGradient>
+             </defs>
+             <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="url(#logo-gradient-preloader)"/>
+         </svg>
     </div>
     
     <header>
@@ -205,6 +226,9 @@
                 </button>
                 <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent btn-secondary">
                 </button>
+                -->
+                <div id="google_translate_element"></div>
+                -->
             </div>
         </div>
     </header>
@@ -221,9 +245,16 @@
             
             <div class="sticky top-[73px] z-40 mb-10 py-2">
                  <div class="max-w-2xl mx-auto">
-                    <input type="text" id="search-input" class="w-full p-4 rounded-xl border border-border-color focus:outline-none" placeholder="Bir ülke ara (örn: Japonya)...">
+                     <input type="text" id="search-input" class="w-full p-4 rounded-xl border border-border-color focus:outline-none" placeholder="Bir ülke ara (örn: Japonya)...">
                  </div>
             </div>
+
+            -->
+            <div class="text-center mb-10">
+                <h3 class="text-3xl font-bold tracking-tight">Destinasyonları Keşfet</h3>
+                <p class="text-md text-secondary mt-2">Aşağıdaki ülkelerden birini seçerek detaylı rehbere ulaşabilirsin.</p>
+            </div>
+            -->
 
             <div id="country-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             </div>
@@ -595,21 +626,21 @@
                         <div class="mt-12 pt-8 border-t border-border-color">
                              <h3 class="text-3xl font-bold text-center mb-6">✨ Yapay Zeka Asistanın</h3>
                              <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                 <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
-                                     <h4 class="font-bold text-lg mb-2">Seyahat Planı Oluştur</h4>
-                                     <p class="text-sm text-secondary mb-3 flex-grow">Süre ve ilgi alanlarına göre kişisel rotanı oluştur.</p>
-                                     <button id="open-itinerary-modal-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">Planla!</button>
-                                 </div>
-                                 <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
-                                     <h4 class="font-bold text-lg mb-2">Kültürel İpuçları Al</h4>
-                                     <p class="text-sm text-secondary mb-3 flex-grow">Yerel adetleri öğrenerek daha anlamlı bir gezi yap.</p>
-                                      <button id="get-cultural-tips-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">İpuçları Getir</button>
-                                 </div>
-                                 <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
-                                     <h4 class="font-bold text-lg mb-2">Bavul Hazırlama Asistanı</h4>
-                                     <p class="text-sm text-secondary mb-3 flex-grow">Gideceğin yere ve mevsime göre bavulunu hazırla.</p>
-                                      <button id="open-packing-list-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">Bavul Hazırla</button>
-                                 </div>
+                                  <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
+                                       <h4 class="font-bold text-lg mb-2">Seyahat Planı Oluştur</h4>
+                                       <p class="text-sm text-secondary mb-3 flex-grow">Süre ve ilgi alanlarına göre kişisel rotanı oluştur.</p>
+                                       <button id="open-itinerary-modal-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">Planla!</button>
+                                  </div>
+                                  <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
+                                       <h4 class="font-bold text-lg mb-2">Kültürel İpuçları Al</h4>
+                                       <p class="text-sm text-secondary mb-3 flex-grow">Yerel adetleri öğrenerek daha anlamlı bir gezi yap.</p>
+                                        <button id="get-cultural-tips-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">İpuçları Getir</button>
+                                  </div>
+                                  <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
+                                       <h4 class="font-bold text-lg mb-2">Bavul Hazırlama Asistanı</h4>
+                                       <p class="text-sm text-secondary mb-3 flex-grow">Gideceğin yere ve mevsime göre bavulunu hazırla.</p>
+                                        <button id="open-packing-list-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">Bavul Hazırla</button>
+                                  </div>
                              </div>
                              <div id="ai-results-container" class="mt-6 max-w-3xl mx-auto"></div>
                         </div>
@@ -669,7 +700,7 @@
                 // This key is exposed on the client-side and is not secure.
                 const apiKey = "AIzaSyC69-_DoapO3-fzakAUv_M3zk7mZLoPp8g"; 
                 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 const payload = { contents: [{ parts: [{ text: prompt }] }] };
 
                 const response = await fetch(apiUrl, {
@@ -953,8 +984,15 @@
 
     });
     </script>
+
+    -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement({pageLanguage: 'tr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    -->
+
 </body>
 </html>
-
-
-
