@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="light-default">
+<html lang="tr" data-theme="light-indigo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,72 +26,65 @@
     <style>
         /*
          * Temel Renk Tanımları: Işık ve Koyu Şema için ortak değişkenler.
-         * data-theme="light-default" veya data-theme="dark-default" gibi değerlerle renk paleti değişir.
+         * data-theme="scheme-color" formatını kullanır (örn: light-indigo, dark-ocean)
          */
         
-        /* --- Ortak Değişkenler --- */
+        /* --- Ortak Değişkenler (Mod bağımsız) --- */
         :root {
             --text-primary: #18181B;
             --text-secondary: #71717A;
             --border-color: #E4E4E7;
+            --shadow-color: rgba(0, 0, 0, 0.08);
         }
 
         [data-theme*="dark"] {
             --text-primary: #FAFAFA;
             --text-secondary: #A1A1AA;
             --border-color: #27272A;
-        }
-
-        /* --- IŞIK TEMALAR (Light Schemes) --- */
-        [data-theme^="light-"] {
-            --background: #F8F9FA;
-            --card-bg: #FFFFFF;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-        }
-
-        /* LIGHT - DEFAULT (Indigo) */
-        [data-theme="light-default"] {
-            --accent: #4F46E5; /* Indigo 600 */
-            --accent-dark: #4338CA; /* Indigo 700 */
-        }
-        
-        /* LIGHT - OCEAN (Cyan) */
-        [data-theme="light-ocean"] {
-            --accent: #06B6D4; /* Cyan 600 */
-            --accent-dark: #0891B2; /* Cyan 700 */
-        }
-
-        /* LIGHT - FOREST (Emerald) */
-        [data-theme="light-forest"] {
-            --accent: #10B981; /* Emerald 500 */
-            --accent-dark: #059669; /* Emerald 600 */
-        }
-
-        /* --- KOYU TEMALAR (Dark Schemes) --- */
-        [data-theme^="dark-"] {
-            --background: #121212;
-            --card-bg: #1E1E1E;
             --shadow-color: rgba(0, 0, 0, 0.3);
-        }
-
-        /* DARK - DEFAULT (Light Indigo) */
-        [data-theme="dark-default"] {
-            --accent: #818CF8; /* Indigo 400 */
-            --accent-dark: #6366F1; /* Indigo 500 */
+            --background-base: #121212;
+            --card-bg-base: #1E1E1E;
         }
         
-        /* DARK - OCEAN (Light Cyan) */
-        [data-theme="dark-ocean"] {
-            --accent: #22D3EE; /* Cyan 400 */
-            --accent-dark: #06B6D4; /* Cyan 600 */
+        [data-theme*="light"] {
+            --background-base: #F8F9FA;
+            --card-bg-base: #FFFFFF;
         }
 
-        /* DARK - FOREST (Light Emerald) */
-        [data-theme="dark-forest"] {
-            --accent: #34D399; /* Emerald 400 */
-            --accent-dark: #10B981; /* Emerald 500 */
+        /* LIGHT SCHEMES */
+        [data-theme^="light-"] {
+            --background: var(--background-base);
+            --card-bg: var(--card-bg-base);
         }
 
+        /* DARK SCHEMES */
+        [data-theme^="dark-"] {
+            --background: var(--background-base);
+            --card-bg: var(--card-bg-base);
+        }
+
+        /* --- RENK PALETLERİ (ACCENTS) --- */
+
+        /* 1. INDIGO (Varsayılan / Default) */
+        [data-theme*="indigo"] { --accent: #4F46E5; --accent-dark: #4338CA; } /* Light */
+        [data-theme="dark-indigo"] { --accent: #818CF8; --accent-dark: #6366F1; } /* Dark */
+
+        /* 2. OCEAN (Cyan) */
+        [data-theme*="ocean"] { --accent: #06B6D4; --accent-dark: #0891B2; } /* Light */
+        [data-theme="dark-ocean"] { --accent: #22D3EE; --accent-dark: #06B6D4; } /* Dark */
+
+        /* 3. FOREST (Emerald) */
+        [data-theme*="forest"] { --accent: #10B981; --accent-dark: #059669; } /* Light */
+        [data-theme="dark-forest"] { --accent: #34D399; --accent-dark: #10B981; } /* Dark */
+        
+        /* 4. CHERRY (Vişne / Red) - Yeni eklendi */
+        [data-theme*="cherry"] { --accent: #E11D48; --accent-dark: #BE123C; } /* Light (Red 600) */
+        [data-theme="dark-cherry"] { --accent: #F87171; --accent-dark: #EF4444; } /* Dark (Red 400) */
+
+        /* 5. ORANGE (Portakal / Amber) - Yeni eklendi */
+        [data-theme*="orange"] { --accent: #F59E0B; --accent-dark: #D97706; } /* Light (Amber 500) */
+        [data-theme="dark-orange"] { --accent: #FCD34D; --accent-dark: #F59E0B; } /* Dark (Amber 300) */
+        
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background);
@@ -167,6 +160,16 @@
         
         @keyframes fadeInAnimation { from { opacity: 0; } to { opacity: 1; } }
         
+        /* YENİ: Logo için parlama animasyonu */
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 1px var(--accent)) drop-shadow(0 0 3px var(--accent-dark)); }
+            50% { filter: drop-shadow(0 0 6px var(--accent)) drop-shadow(0 0 12px var(--accent-dark)); }
+        }
+
+        #home-link:hover svg {
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
         .btn { 
             transition: all 0.2s ease; 
             border-radius: 12px;
@@ -222,6 +225,21 @@
             font-size: 0.8rem;
             min-height: 100px;
         }
+        
+        /* Yeni: Yapay zeka içeriği butonu stilini ekle */
+        .ai-result-embed-btn {
+            background-color: var(--accent);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .ai-result-embed-btn:hover {
+            background-color: var(--accent-dark);
+        }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -257,7 +275,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 </button>
                 <button id="theme-menu-btn" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent btn-secondary">
-                    <!-- Başlangıçta moon veya sun ikonu JS tarafından set edilecek -->
+                    <!-- JS tarafından ayarlanacak -->
                 </button>
             </div>
         </div>
@@ -273,14 +291,13 @@
                 </button>
             </div>
             
-            <!-- AdSense Onayı için EKLENEN/GÜNCELLENEN BÖLÜM: Yüksek Değerli İçerik kaldırıldı, yerine giriş metni genişletildi -->
+            <!-- Ana ekranda AdSense uyumu için kısa metin bloğu -->
             <div class="content-card p-6 sm:p-8 mb-10 max-w-4xl mx-auto text-center" id="main-content-block">
-                <h3 class="text-2xl font-bold text-primary mb-4">Vuelina'ya Hoş Geldiniz! Keşfe Hazır mısınız?</h3>
+                <h3 class="text-2xl font-bold text-primary mb-4">Vuelina: Akıllı Gezi Rehberiniz</h3>
                 <p class="text-secondary text-sm sm:text-base leading-relaxed">
-                    Vuelina, karmaşık seyahat planlama sürecini basitleştirmek için tasarlanmış akıllı bir rehberdir. Amacımız, size sadece bir rota sunmak değil, aynı zamanda dünya çapındaki 30'dan fazla destinasyonun kültürel derinliğini, en popüler aktivitelerini ve yerel lezzetlerini avucunuzun içine getirmektir. Her ülkenin kendine özgü iklim, dil ve acil durum bilgilerine anında erişebilir, döviz çevirici ve yapay zeka destekli planlama araçlarıyla tatilinizi baştan sona organize edebilirsiniz. Seyahatlerinizde güvenli, bilinçli ve unutulmaz deneyimler yaşamanız için buradayız. Aşağıdan bir destinasyon seçin ve maceranıza başlayın!
+                    Vuelina, sıradan seyahat planlarının ötesine geçerek size kişiselleştirilmiş, kültürel açıdan zengin deneyimler sunar. 30'dan fazla ülkeye ait detaylı yerel bilgi, gastronomi ipuçları ve ulaşım rehberlerini tek bir platformda topladık. Yapay zeka asistanımız sayesinde, seyahat sürenize, ilgi alanlarınıza ve bütçenize uygun olarak tasarlanmış özgün rotalar oluşturabilir, böylece her anınızı en iyi şekilde değerlendirebilirsiniz. Unutulmaz bir maceraya hazır mısınız? Aşağıdaki ülkelerden birini seçin veya size özel bir öneri isteyin!
                 </p>
             </div>
-            <!-- GÜNCELLEME SONU -->
             
             <div class="sticky top-[73px] z-40 mb-10 py-2">
                 <div class="max-w-2xl mx-auto content-card !shadow-none !border-none !p-0">
@@ -298,6 +315,7 @@
         </div>
 
         <div id="country-detail-view" class="hidden">
+            <!-- Ülke detayları ve yapay zeka sonuçları buraya yerleştirilecek -->
         </div>
     </main>
     
@@ -308,11 +326,11 @@
         
         <!-- AdSense Onayı için EKLENEN BÖLÜM: Yasal Sayfa Bağlantıları -->
         <div class="max-w-7xl mx-auto px-4 text-sm mb-3 space-x-4">
-            <a href="#" id="privacy-policy-link" class="text-secondary hover:text-accent transition-colors">Gizlilik Politikası</a>
+            <a href="#" id="privacy-policy-link" class="text-secondary hover:text-accent transition-colors">Privacy Policy</a>
             <span class="text-secondary">|</span>
-            <a href="#" id="terms-of-use-link" class="text-secondary hover:text-accent transition-colors">Kullanım Şartları</a>
+            <a href="#" id="terms-of-use-link" class="text-secondary hover:text-accent transition-colors">Terms of Use</a>
             <span class="text-secondary">|</span>
-            <a href="#" id="contact-link" class="text-secondary hover:text-accent transition-colors">İletişim</a>
+            <a href="#" id="contact-link" class="text-secondary hover:text-accent transition-colors">Contact</a>
         </div>
         <!-- AdSense Onayı için EKLENEN BÖLÜM SONU -->
 
@@ -393,33 +411,39 @@
         </div>
     </div>
     
-    <!-- Yeni Tema Seçim Menüsü -->
+    <!-- Tema Seçim Menüsü (Hata Düzeltildi) -->
     <div id="theme-menu-container" class="absolute top-16 right-4 z-50 hidden">
         <div class="content-card p-4 w-64 shadow-xl">
             <h4 class="font-bold text-lg mb-3 border-b pb-2 border-border-color">Tema Ayarları</h4>
             
             <div class="mb-4">
                 <p class="font-medium text-primary mb-2">Mod Seçimi</p>
-                <div class="flex space-x-2">
-                    <button data-scheme="light" class="theme-scheme-btn btn-secondary w-1/2 p-2 flex items-center justify-center text-sm">
-                        ${icons.sun} <span class="ml-2">Aydınlık</span>
+                <div class="flex space-x-2" id="theme-scheme-selector">
+                    <button data-scheme="light" class="theme-scheme-btn btn-secondary w-1/2 p-2 flex items-center justify-center text-sm" id="light-scheme-btn-inside">
+                        <!-- JS tarafından ayarlanacak -->
                     </button>
-                    <button data-scheme="dark" class="theme-scheme-btn btn-secondary w-1/2 p-2 flex items-center justify-center text-sm">
-                        ${icons.moon} <span class="ml-2">Karanlık</span>
+                    <button data-scheme="dark" class="theme-scheme-btn btn-secondary w-1/2 p-2 flex items-center justify-center text-sm" id="dark-scheme-btn-inside">
+                        <!-- JS tarafından ayarlanacak -->
                     </button>
                 </div>
             </div>
 
-            <p class="font-medium text-primary mb-2">Renk Paleti</p>
+            <p class="font-medium text-primary mb-2">Color Palette</p>
             <div class="grid grid-cols-3 gap-2">
-                <button data-color="default" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #4F46E5;">
-                    <span class="text-white font-semibold">İndigo</span>
+                <button data-color="indigo" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #4F46E5;">
+                    <span class="text-white font-semibold">Indigo</span>
                 </button>
                 <button data-color="ocean" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #06B6D4;">
-                    <span class="text-white font-semibold">Okyanus</span>
+                    <span class="text-white font-semibold">Ocean</span>
                 </button>
                 <button data-color="forest" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #10B981;">
-                    <span class="text-white font-semibold">Orman</span>
+                    <span class="text-white font-semibold">Forest</span>
+                </button>
+                <button data-color="cherry" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #E11D48;">
+                    <span class="text-white font-semibold">Cherry</span>
+                </button>
+                 <button data-color="orange" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #F59E0B;">
+                    <span class="text-white font-semibold">Orange</span>
                 </button>
             </div>
         </div>
@@ -462,11 +486,13 @@
         const legalModal = document.getElementById('legal-modal');
         const legalModalTitle = document.getElementById('legal-modal-title');
         const legalModalContent = document.getElementById('legal-modal-content');
+        const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
         const privacyPolicyLink = document.getElementById('privacy-policy-link');
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
         
         let currencyRates = null;
+        let aiGeneratedContent = {}; // Yeni: Dinamik olarak üretilen içerikleri saklamak için
 
         const icons = {
             sun: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
@@ -520,7 +546,7 @@
             "Belçika": { flag: "🇧🇪", description: "Ortaçağ şehirleri, waffle, çikolata ve çizgi romanlarıyla küçük ama etkileyici bir ülke.", searchTerms: { flights: 'Belcika', booking: 'Belgium' }, whatToDo: ["Brugge'un kanallarında romantik bir tekne turu yap", "Brüksel'deki Grand-Place meydanının mimarisine hayran kal", "Gent'in Gravensteen kalesini ziyaret et", "Çizgi Roman Müzesi'nde Tenten ve Şirinler'i gör"], whatToEat: ["Brüksel veya Liège usulü Waffle", "Midye ve Patates Kızartması (Moules-frites)", "El yapımı Belçika çikolatası (Pralin)", "Yüzlerce çeşit Belçika birası"], whereToStay: ["Brugge: Tarihi merkezdeki butik oteller", "Brüksel: Grand-Place çevresi", "Gent: Nehir kenarı otelleri"], popularApps: [{name: "Uber", category: "Ulaşım"}, {name: "Deliveroo", category: "Yemek Siparişi"}, {name: "SNCB/NMBS", category: "Tren"}, {name: "STIB-MIVB", category: "Brüksel Ulaşım"}], fastFoodChains: ["McDonald's", "Quick", "Burger King", "Hector Chicken"], currency: "EUR", language: "Hollandaca, Fransızca, Almanca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Bonjour (Fransızca), Hallo (Hollandaca)"}, {tr:"Teşekkürler", local:"Merci (Fransızca), Dank u (Hollandaca)"}], climate: "Ilıman okyanus iklimi. Yıl boyunca yağışlıdır." },
             "Singapur": { flag: "🇸🇬", description: "Fütüristik mimarisi, yemyeşil bahçeleri ve dünya standartlarındaki mutfağıyla bir şehir devleti.", searchTerms: { flights: 'Singapur', booking: 'Singapore' }, whatToDo: ["Gardens by the Bay'deki Supertree Grove'da ışık gösterisini izle", "Marina Bay Sands'in sonsuzluk havuzundan şehri seyret", "Hawker center'larda (yemek merkezi) yerel lezzetleri dene", "Singapur Hayvanat Bahçesi'nde gece safarisine katıl"], whatToEat: ["Acılı Yengeç (Chilli Crab)", "Hainanese usulü Tavuklu Pilav", "Hindistan cevizi sütlü Laksa çorbası", "Kaya Tostu ve yumuşak haşlanmış yumurta"], whereToStay: ["Marina Bay: Lüks ve manzara için", "Orchard Road: Alışveriş tutkunları için", "Chinatown/Bugis: Kültür ve uygun fiyatlı oteller için"], popularApps: [{name: "Grab", category: "Ulaşım & Yemek"}, {name: "Citymapper", category: "Toplu Taşıma"}, {name: "Klook", category: "Aktivite & Tur"}, {name: "Chope", category: "Restoran Rezervasyon"}], fastFoodChains: ["McDonald's", "KFC", "Burger King", "Jollibee"], currency: "SGD", language: "İngilizce, Mandarin, Malayca, Tamilce", emergencyNumber: "999 (Polis), 995 (Ambulans/İtfaiye)", basicPhrases: [{tr:"Merhaba", local:"Hello"}, {tr:"Teşekkürler", local:"Thank you"}], climate: "Tropikal iklim. Yıl boyunca sıcak, nemli ve yağışlıdır." },
             "Malezya": { flag: "🇲🇾", description: "Yağmur ormanları, tropik adaları ve Kuala Lumpur'daki Petronas Kuleleri ile kültürel bir eritme potası.", searchTerms: { flights: 'Malezya', booking: 'Malaysia' }, whatToDo: ["Kuala Lumpur'daki Petronas İkiz Kuleleri'ni ziyaret et", "Batu Mağaraları'nın renkli merdivenlerini tırman", "Penang'da George Town'un sokak sanatını keşfet", "Cameron Highlands'in çay tarlalarında yürü"], whatToEat: ["Ulusal yemek Nasi Lemak", "Çöp şiş Satay (fıstık sosuyla)", "Hint etkileşimli ekmek Roti Canai", "Buzlu tatlı Ais Kacang"], whereToStay: ["Kuala Lumpur: KLCC veya Bukit Bintang", "Langkawi: Sahil kenarı resortlar", "Penang: George Town'daki miras oteller"], popularApps: [{name: "Grab", category: "Ulaşım & Yemek"}, {name: "Touch 'n Go eWallet", category: "Mobil Ödeme"}, {name: "Foodpanda", category: "Yemek Siparişi"}, {name: "Agoda", category: "Konaklama"}], fastFoodChains: ["McDonald's", "KFC", "Burger King", "Marrybrown"], currency: "MYR", language: "Malayca", emergencyNumber: "999", basicPhrases: [{tr:"Merhaba", local:"Selamat pagi (Günaydın)"}, {tr:"Teşekkürler", local:"Terima kasih"}], climate: "Tropikal iklim. Yüksek nem ve bol yağış görülür." },
-            "Endonezya": { flag: "🇮🇩", description: "Binlerce volkanik adadan oluşan, Bali'nin spiritüel atmosferi ve Komodo ejderleriyle ünlü.", searchTerms: { flights: 'Endonezya', booking: 'Indonesia' }, whatToDo: ["Bali'de Ubud'un pirinç tarlalarında ve yoga merkezlerinde dinlen", "Borobudur Tapınağı'nda gün doğumu izle", "Gili Adaları'nda şnorkelle kaplumbağaları gör", "Komodo ejderlerini doğal ortamında gözlemle"], whatToEat: ["Kızarmış pilav Nasi Goreng", "Yavaş pişirilmiş et Rendang", "Fıstık soslu salata Gado-gado", "Çöp şiş Sate Ayam"], whereToStay: ["Bali: Seminyak (lüks), Ubud (spiritüel), Canggu (sörf)", "Gili Trawangan: Sahil bungalovları", "Yogyakarta: Borobudur'a yakın oteller"], popularApps: [{name: "Gojek / Grab", category: "Süper Uygulama"}, {name: "Traveloka", category: "Seyahat Planlama"}, {name: "Tokopedia", category: "Alışveriş"}, {name: "WhatsApp", category: "İletişim"}], fastFoodChains: ["McDonald's", "KFC", "A&W", "J.CO Donuts & Coffee"], currency: "IDR", language: "Endonezyaca", emergencyNumber: "110 (Polis), 118 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Selamat pagi (Günaydın)"}, {tr:"Teşekkürler", local:"Terima kasih"}], climate: "Tropikal iklim. Genellikle sıcak ve nemlidir." },
+            "Endonezya": { flag: "🇮🇩", description: "Binlerce volkanik adadan oluşan, Bali'nin spiritüel atmosferi ve Komodo ejderleriyle ünlü.", searchTerms: { flights: 'Endonezya', booking: 'Indonesia' }, whatToDo: ["Bali'de Ubud'un pirinç tarlalarında ve yoga merkezlerinde dinlen", "Borobudur Tapınağı'nda gün doğumunu izle", "Gili Adaları'nda şnorkelle kaplumbağaları gör", "Komodo ejderlerini doğal ortamında gözlemle"], whatToEat: ["Kızarmış pilav Nasi Goreng", "Yavaş pişirilmiş et Rendang", "Fıstık soslu salata Gado-gado", "Çöp şiş Sate Ayam"], whereToStay: ["Bali: Seminyak (lüks), Ubud (spiritüel), Canggu (sörf)", "Gili Trawangan: Sahil bungalovları", "Yogyakarta: Borobudur'a yakın oteller"], popularApps: [{name: "Gojek / Grab", category: "Süper Uygulama"}, {name: "Traveloka", category: "Seyahat Planlama"}, {name: "Tokopedia", category: "Alışveriş"}, {name: "WhatsApp", category: "İletişim"}], fastFoodChains: ["McDonald's", "KFC", "A&W", "J.CO Donuts & Coffee"], currency: "IDR", language: "Endonezyaca", emergencyNumber: "110 (Polis), 118 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Selamat pagi (Günaydın)"}, {tr:"Teşekkürler", local:"Terima kasih"}], climate: "Tropikal iklim. Genellikle sıcak ve nemlidir." },
             "Filipinler": { flag: "🇵🇭", description: "7.000'den fazla tropik adası, beyaz kumlu plajları ve inanılmaz dalış noktaları.", searchTerms: { flights: 'Filipinler', booking: 'Philippines' }, whatToDo: ["Palawan'da El Nido veya Coron'un gizli lagünlerinde tekne turu yap", "Boracay'ın pudra gibi beyaz kumlarında yürü", "Bohol'daki Çikolata Tepeleri'ni ve Tarsier'leri gör", "Siargao'da sörf yapmayı öğren"], whatToEat: ["Ulusal yemek Adobo (tavuk veya domuz)", "Kızarmış bütün domuz Lechon", "Ekşi çorba Sinigang", "Buzlu tatlı Halo-halo"], whereToStay: ["El Nido/Coron: Su üstü bungalovlar ve adacık otelleri", "Boracay: Station 1-3 boyunca oteller", "Cebu: Dalış merkezlerine yakın resortlar"], popularApps: [{name: "Grab", category: "Ulaşım & Yemek"}, {name: "Angkas", category: "Motosiklet Taksi"}, {name: "GCash", category: "Mobil Ödeme"}, {name: "Klook", category: "Aktivite & Tur"}], fastFoodChains: ["Jollibee", "McDonald's", "Chowking", "KFC"], currency: "PHP", language: "Filipince, İngilizce", emergencyNumber: "911", basicPhrases: [{tr:"Merhaba", local:"Kamusta"}, {tr:"Teşekkürler", local:"Salamat"}], climate: "Tropikal deniz iklimi. Yıl boyunca sıcak ve nemlidir." },
             "Birleşik Arap Emirlikleri": { flag: "🇦🇪", description: "Çölün ortasında yükselen fütüristik gökdelenler, lüks alışveriş ve dünya rekorları.", searchTerms: { flights: 'Birlesik-Arap-Emirlikleri', booking: 'United-Arab-Emirates' }, whatToDo: ["Dubai'de dünyanın en yüksek binası Burj Khalifa'ya çık", "Abu Dabi'deki muhteşem Şeyh Zayed Camii'ni ziyaret et", "Dubai Mall'da alışveriş yap ve akvaryumu gör", "4x4 araçlarla çölde safari yap"], whatToEat: ["Geleneksel etli pilav Al Machboos", "Lübnan ve Arap mezeleri", "Sokak lezzeti Shawarma", "Tatlı lokma Luqaimat"], whereToStay: ["Dubai: Downtown, Jumeirah Beach Residence (JBR) veya Palm Jumeirah", "Abu Dabi: Corniche veya Saadiyat Adası", "Ras Al Khaimah: Çöl veya sahil resortları"], popularApps: [{name: "Careem", category: "Süper Uygulama"}, {name: "Talabat", category: "Yemek & Market"}, {name: "The Entertainer", category: "İndirim & Fırsat"}, {name: "RTA Dubai", category: "Dubai Ulaşım"}], fastFoodChains: ["McDonald's", "KFC", "Hardee's", "Pizza Hut", "Tim Hortons"], currency: "AED", language: "Arapça", emergencyNumber: "999 (Polis), 998 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"مرحبا (Marhaban)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Sıcak çöl iklimi. Yazlar çok sıcak ve nemlidir." },
             "Polonya": { flag: "🇵🇱", description: "Zengin tarihi, II. Dünya Savaşı'nın izleri ve yeniden doğan canlı şehirleriyle bir Orta Avrupa ülkesi.", searchTerms: { flights: 'Polonya', booking: 'Poland' }, whatToDo: ["Kraków'un tarihi ana meydanını (Rynek Główny) gez", "Auschwitz-Birkenau Anıtı ve Müzesi'ni ziyaret et", "Varşova'nın yeniden inşa edilmiş Eski Şehir'inde yürü", "Wieliczka Tuz Madeni'nin yeraltı dünyasını keşfet"], whatToEat: ["Mantı benzeri Pierogi", "Etli ve av etli güveç Bigos", "Pancarlı soğuk çorba Chłodnik", "Peynirli tatlı Sernik"], whereToStay: ["Kraków: Stare Miasto (Eski Şehir) veya Kazimierz", "Varşova: Śródmieście (Şehir Merkezi)", "Gdańsk: Ana Şehir (Główne Miasto)"], popularApps: [{name: "Jakdojade", category: "Toplu Taşıma"}, {name: "Bolt / Uber", category: "Ulaşım"}, {name: "Pyszne.pl", category: "Yemek Siparişi"}, {name: "PKP Intercity", category: "Tren"}], fastFoodChains: ["McDonald's", "KFC", "Burger King", "North Fish"], currency: "PLN", language: "Lehçe", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Dzień dobry"}, {tr:"Teşekkürler", local:"Dziękuję"}], climate: "Ilıman karasal iklim. Soğuk, karlı kışlar ve ılıman yazlar." },
@@ -531,13 +557,13 @@
             "Ukrayna": { flag: "🇺🇦", description: "Altın kubbeli kiliseleri, tarihi Lviv şehri ve misafirperver halkıyla dirençli bir Doğu Avrupa ülkesi.", searchTerms: { flights: 'Ukrayna', booking: 'Ukraine' }, whatToDo: ["Kiev'deki Aziz Sofya Katedrali ve Pechersk Lavra'yı gez", "Lviv'in Arnavut kaldırımlı sokaklarında kahve iç", "Karpat Dağları'nda doğa ile iç içe ol", "Odessa'nın Potemkin Merdivenleri'ni gör"], whatToEat: ["Pancar çorbası Borç (Borscht)", "İçi dolgulu hamur işi Varenyky", "Tavuk Kiev", "Lviv çikolatası ve kahvesi"], whereToStay: ["Kiev: Khreshchatyk Caddesi çevresi", "Lviv: Rynok Meydanı (Pazar Meydanı)", "Odessa: Deribasivska Caddesi"], popularApps: [{name: "Uklon / Bolt", category: "Ulaşım"}, {name: "Glovo", category: "Yemek Siparişi"}, {name: "Ukrzaliznytsia", category: "Tren"}, {name: "Lviv Interactive", category: "Şehir Rehberi"}], fastFoodChains: ["McDonald's", "KFC", "Puzata Hata", "Domino's"], currency: "UAH", language: "Ukraynaca", emergencyNumber: "101 (İtfaiye), 102 (Polis), 103 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Добрий день (Dobryy den')"}, {tr:"Teşekkürler", local:"Дякую (Dyakuyu)"}], climate: "Büyük ölçüde karasal. Güney Kırım kıyısı daha nemlidir." },
             "Letonya": { flag: "🇱🇻", description: "Art Nouveau mimarisiyle ünlü başkenti Riga ve el değmemiş Baltık sahilleriyle tanınır.", searchTerms: { flights: 'Letonya', booking: 'Latvia' }, whatToDo: ["Riga'nın Art Nouveau binalarla dolu Alberta Iela caddesinde yürü", "Jūrmala'nın beyaz kumlu plajlarında dinlen", "Rundāle Sarayı'nın Barok ihtişamını gör", "Gauja Milli Parkı'nda kano yap"], whatToEat: ["Gri bezelye ve pastırma (Pelēkie Zirņi)", "Soğuk pancar çorbası (Aukstā zupa)", "Çavdar ekmeği tatlısı (Rupjmaizes kārtojums)", "Tütsülenmiş balık"], whereToStay: ["Riga: Vecrīga (Eski Şehir) veya Sessiz Merkez", "Jūrmala: Sahil kenarı spa otelleri", "Sigulda: Gauja Milli Parkı'na yakın pansiyonlar"], popularApps: [{name: "Bolt", category: "Ulaşım"}, {name: "Wolt", category: "Yemek Siparişi"}, {name: "Rīgas Satiksme", category: "Riga Ulaşım"}, {name: "1188", category: "Yerel Rehber"}], fastFoodChains: ["McDonald's", "Hesburger", "KFC", "Lido"], currency: "EUR", language: "Letonca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Labdien"}, {tr:"Teşekkürler", local:"Paldies"}], climate: "Ilıman okyanusal ve karasal iklim arası geçiş. Nemli ve serindir." },
             "Litvanya": { flag: "🇱🇹", description: "Barok mimarisi, Haçlar Tepesi'nin manevi atmosferi ve kehribar taşıyla bilinen Baltık ülkesi.", searchTerms: { flights: 'Litvanya', booking: 'Lithuania' }, whatToDo: ["Vilnius'un Barok Eski Şehri'ni ve Užupis Cumhuriyeti'ni keşfet", "Trakai Ada Kalesi'ni ziyaret et", "Šiauliai yakınlarındaki Haçlar Tepesi'ni gör", "Nida'daki Curonian Spit'in kum tepelerinde yürü"], whatToEat: ["Patatesli hamur işi Cepelinai", "Soğuk pancar çorbası Šaltibarščiai", "Kibin (Karaim böreği)", "Ağaç keki Šakotis"], whereToStay: ["Vilnius: Senamiestis (Eski Şehir)", "Kaunas: Laisvės Alėja (Özgürlük Bulvarı)", "Klaipėda: Curonian Spit'e geçiş için merkez"], popularApps: [{name: "Bolt", category: "Ulaşım"}, {name: "Wolt", category: "Yemek Siparişi"}, {name: "Trafi", category: "Toplu Taşıma"}, {name: "Lietuvos geležinkeliai", category: "Tren"}], fastFoodChains: ["McDonald's", "Hesburger", "KFC", "Charlie Pizza"], currency: "EUR", language: "Litvanyaca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Laba diena"}, {tr:"Teşekkürler", local:"Ačiū"}], climate: "Okyanusal ve karasal iklimler arasında geçiş. Kışlar oldukça soğuktur." },
-            "Estonya": { flag: "🇪🇪", description: "Orta Çağ'dan kalma başkenti, dijital yenilikleri ve bataklıklarıyla Baltıkların en kuzeydeki ülkesi.", searchTerms: { flights: 'Estonya', booking: 'Estonia' }, whatToDo: ["Tallinn'in masalsı Eski Şehri'nde (Vanalinn) dolaş", "Lahemaa Milli Parkı'nın bataklıklarında ve ormanlarında yürü", "Tartu'nun entelektüel ve bohem atmosferini yaşa", "Saaremaa adasının yel değirmenlerini ve kalesini gör"], whatToEat: ["Kan sosisi Verivorst", "Estonyalıların favorisi Kama", "Tütsülenmiş Baltık ringası (Suitsukala)", "Çavdar ekmeği (Rukkileib)"], whereToStay: ["Tallinn: Vanalinn (Eski Şehir) veya Kalamaja", "Tartu: Şehir merkezi", "Pärnu: Yaz tatili için plaj otelleri"], popularApps: [{name: "Bolt", category: "Ulaşım & Yemek"}, {name: "pilet.ee", category: "Toplu Taşıma Biletleri"}, {name: "Elron", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Hesburger", "Burger King", "Peetri Pizza"], currency: "EUR", language: "Estonca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Tere"}, {tr:"Teşekkürler", local:"Aitäh"}], climate: "Ilıman. Uzun ve soğuk kışlar, kısa ve serin yazlar." },
+            "Estonya": { flag: "🇪🇪", description: "Orta Çağ'dan kalma başkenti, dijital yenilikleri ve bataklıklarıyla Baltıkların en kuzeyindeki ülkesi.", searchTerms: { flights: 'Estonya', booking: 'Estonia' }, whatToDo: ["Tallinn'in masalsı Eski Şehri'nde (Vanalinn) dolaş", "Lahemaa Milli Parkı'nın bataklıklarında ve ormanlarında yürü", "Tartu'nun entelektüel ve bohem atmosferini yaşa", "Saaremaa adasının yel değirmenlerini ve kalesini gör"], whatToEat: ["Kan sosisi Verivorst", "Estonyalıların favorisi Kama", "Tütsülenmiş Baltık ringası (Suitsukala)", "Çavdar ekmeği (Rukkileib)"], whereToStay: ["Tallinn: Vanalinn (Eski Şehir) veya Kalamaja", "Tartu: Şehir merkezi", "Pärnu: Yaz tatili için plaj otelleri"], popularApps: [{name: "Bolt", category: "Ulaşım"}, {name: "pilet.ee", category: "Toplu Taşıma Biletleri"}, {name: "Elron", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Hesburger", "Burger King", "Peetri Pizza"], currency: "EUR", language: "Estonca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Tere"}, {tr:"Teşekkürler", local:"Aitäh"}], climate: "Ilıman. Uzun ve soğuk kışlar, kısa ve serin yazlar." },
             "Sırbistan": { flag: "🇷🇸", description: "Canlı gece hayatı, Tuna Nehri kıyıları ve misafirperverliğiyle ünlü bir Balkan ülkesi.", searchTerms: { flights: 'Sirbistan', booking: 'Serbia' }, whatToDo: ["Belgrad'daki Kalemegdan Kalesi'nde tarihi ve manzarayı birleştir", "Skadarlija'nın bohem sokaklarında geleneksel müzik dinle", "Novi Sad'daki Petrovaradin Kalesi'ni keşfet", "Drvengrad'ın (Küstendorf) etnik köyünü ziyaret et"], whatToEat: ["Izgara et karışımı Pljeskavica ve Ćevapi", "Biber salçası Ajvar", "Mısır ekmeği Proja", "Erik rakısı Šljivovica"], whereToStay: ["Belgrad: Stari Grad (Eski Şehir) veya Dorćol", "Novi Sad: Şehir merkezi", "Zlatibor: Dağ ve kayak tatili"], popularApps: [{name: "CarGo / Yandex Go", category: "Ulaşım"}, {name: "Glovo / Wolt", category: "Yemek Siparişi"}, {name: "Srbija Voz", category: "Tren"}, {name: "PlanPlus", category: "Harita"}], fastFoodChains: ["McDonald's", "KFC", "Caribic Pizza", "Skroz Dobra Pekara"], currency: "RSD", language: "Sırpça", emergencyNumber: "192 (Polis), 194 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Здраво (Zdravo)"}, {tr:"Teşekkürler", local:"Хвала (Hvala)"}], climate: "Karasal iklim. Sıcak yazlar ve soğuk kışlar." },
             "Bosna-Hersek": { flag: "🇧🇦", description: "Doğu ve Batı kültürlerinin buluştuğu, tarihi Mostar Köprüsü ve hüzünlü yakın geçmişiyle bir ülke.", searchTerms: { flights: 'Bosna-Hersek', booking: 'Bosnia-and-Herzegovina' }, whatToDo: ["Mostar'daki yeniden inşa edilmiş Stari Most'tan atlayanları izle", "Saraybosna'nın Başçarşı'sında gez ve savaşın izlerini gör", "Kravica Şelaleleri'nin serin sularında yüz", "Blagaj'daki derviş tekkesini (Tekija) ziyaret et"], whatToEat: ["Saraybosna usulü köfte Ćevapi", "Soğanlı ve kıymalı börek Burek", "Begova Čorba (Bey Çorbası)", "Tufahija (cevizli elma tatlısı)"], whereToStay: ["Saraybosna: Baščaršija (Başçarşı) veya Marijin Dvor", "Mostar: Stari Grad (Eski Şehir)", "Jajce: Şelale manzaralı pansiyonlar"], popularApps: [{name: "mojTaxi", category: "Taksi"}, {name: "Korpa.ba / Glovo", category: "Yemek Siparişi"}, {name: "ŽFBiH", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Burger King", "KFC", "Fan Ferhatović (Ćevapi)"], currency: "BAM", language: "Boşnakça, Sırpça, Hırvatça", emergencyNumber: "122 (Polis), 124 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Dobar dan"}, {tr:"Teşekkürler", local:"Hvala"}], climate: "Ilıman karasal. Yüksek rakımlarda kışlar daha serttir." },
             "Karadağ": { flag: "🇲🇪", description: "Adriyatik'in fiyort benzeri koyları, Orta Çağ kasabaları ve dramatik dağ manzaralarıyla bir mücevher.", searchTerms: { flights: 'Karadag', booking: 'Montenegro' }, whatToDo: ["Kotor Körfezi'nin surlarla çevrili eski şehrini keşfet", "Budva'nın plajlarında ve gece hayatında eğlen", "Sveti Stefan adasının ikonik manzarasını fotoğrafla", "Durmitor Milli Parkı'ndaki Kara Göl'de (Crno Jezero) yürü"], whatToEat: ["Kurutulmuş et Njeguški pršut", "Mısır unundan Kačamak", "Göl balığı ve zeytinyağı", "Tatlı Priganice"], whereToStay: ["Kotor: Eski Şehir içi veya Dobrota", "Budva: Slovenska Plaža yakını", "Žabljak: Durmitor Milli Parkı'na yakın dağ evleri"], popularApps: [{name: "TeslaGo", category: "Taksi"}, {name: "Glovo", category: "Yemek Siparişi"}, {name: "BusTicket4.me", category: "Otobüs Biletleri"}, {name: "Montenegro Talking", category: "Sesli Rehber"}], fastFoodChains: ["McDonald's", "KFC", "Goodfellas", "Lounge Bar VERDE"], currency: "EUR", language: "Karadağca", emergencyNumber: "122 (Polis), 124 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Zdravo"}, {tr:"Teşekkürler", local:"Hvala"}], climate: "Kıyıda Akdeniz, iç kesimlerde karasal iklim." },
             "Arnavutluk": { flag: "🇦🇱", description: "El değmemiş plajları, Osmanlı ve komünist dönem mimarisiyle Adriyatik'in yükselen yıldızı.", searchTerms: { flights: 'Arnavutluk', booking: 'Albania' }, whatToDo: ["Arnavutluk Rivierası'nın Ksamil gibi plajlarında denize gir", "Gjirokastër'in taş evleri ve kalesini gez", "Tiran'daki Bunk'Art müzeleriyle ülkenin geçmişini öğren", "Berat'ın 'Bin Pencereli Şehri'nde yürü"], whatToEat: ["Yoğurtlu ve pirinçli fırın yemeği Tavë Kosi", "Biber dolması Fergesë", "Mısır ekmeği ve yöresel peynirler", "Trileçe tatlısı"], whereToStay: ["Tiran: Blloku bölgesi", "Sarandë: Rivieranın merkezi", "Berat: Mangalem veya Gorica mahalleleri"], popularApps: [{name: "Speed Taxi / Ups Taxi", category: "Taksi"}, {name: "Gjirafa50", category: "Teslimat"}, {name: "Gjirafa Travel", category: "Otobüs"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["KFC", "Proper Pizza", "Big Bite", "Kolonat"], currency: "ALL", language: "Arnavutça", emergencyNumber: "129 (Polis), 127 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Përshëndetje"}, {tr:"Teşekkürler", local:"Faleminderit"}], climate: "Akdeniz iklimi. Sıcak, kurak yazlar ve ılıman, yağışlı kışlar." },
-            "Kosova": { flag: "🇽🇰", description: "Avrupa'nın en genç ülkesi; canlı başkenti, manastırları ve misafirperver halkıyla tanınır.", searchTerms: { flights: 'Kosova', booking: 'Kosovo' }, whatToDo: ["Priştine'deki Newborn Anıtı ve Milli Kütüphane'yi gör", "Prizren'in Osmanlı döneminden kalma taş köprüsünde yürü", "Visoki Deçani Manastırı'nı ziyaret et (UNESCO)", "Rugova Kanyonu'nda doğa sporları yap"], whatToEat: ["Biberli ve peynirli börek Flija", "Sulu köfte Qebapa", "Tavë Prizreni (Prizren tavası)", "Boza içeceği"], whereToStay: ["Priştine: Rahibe Teresa Bulvarı çevresi", "Prizren: Shadervan (Şadırvan) bölgesi", "Peja (İpek): Rugova Kanyonu'na yakın oteller"], popularApps: [{name: "Taksi.al", category: "Taksi"}, {name: "Hajde", category: "Yemek & Market"}, {name: "Gjirafa Travel", category: "Otobüs"}, {name: "Visit Kosovo", category: "Turizm Rehberi"}], fastFoodChains: ["KFC", "Proper Pizza", "Burger King", "Aurora"], currency: "EUR", language: "Arnavutça, Sırpça", emergencyNumber: "192 (Polis), 194 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Përshëndetje (Arnavutça)"}, {tr:"Teşekkürler", local:"Faleminderit (Arnavutça)"}], climate: "Karasal iklim, Akdeniz ve Alp etkileriyle." },
-            "Lüksemburg": { flag: "🇱🇺", description: "Orta Çağ'dan kalma kalesi, yeşil vadileri ve uluslararası finans merkezi kimliğiyle küçük ama zengin bir ülke.", searchTerms: { flights: 'Luksemburg', booking: 'Luxembourg' }, whatToDo: ["Lüksemburg Şehri'nin Bock Kazamatları'nı (yeraltı tünelleri) keşfet", "Adolphe Köprüsü'nden Petrusse Vadisi'ni seyret", "Müllerthal Bölgesi'nde ('Küçük İsviçre') yürüyüş yap", "Vianden Kalesi'ni ziyaret et"], whatToEat: ["Fasulyeli domuz pastırması Judd mat Gaardebounen", "Patatesli krep Gromperekichelcher", "Erikli turta Quetschentaart", "Yerel Moselle şarapları"], whereToStay: ["Lüksemburg Şehri: Ville Haute (Yukarı Şehir) veya Gar", "Vianden: Kale manzaralı oteller", "Müllerthal: Kırsal pansiyonlar"], popularApps: [{name: "mobiliteit.lu", category: "Toplu Taşıma"}, {name: "WebTaxi", category: "Taksi"}, {name: "Takeaway.com", category: "Yemek Siparişi"}, {name: "Goolive", category: "Etkinlik Rehberi"}], fastFoodChains: ["McDonald's", "Quick", "Burger King", "Subway"], currency: "EUR", language: "Lüksemburgca, Fransızca, Almanca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Moien (Lüksemburgca)"}, {tr:"Teşekkürler", local:"Merci (Fransızca)"}], climate: "Ilıman okyanusal iklim. Yıl boyunca yağışlıdır." },
+            "Kosova": { flag: "🇽🇰", description: "Avrupa'nın en genç ülkesi; canlı başkenti, manastırları ve misafirperver halkıyla tanınır.", searchTerms: { flights: 'Kosova', booking: 'Kosovo' }, whatToDo: ["Priştine'deki Newborn Anıtı ve Milli Kütüphane'yi gör", "Prizren'in Osmanlı döneminden kalma taş köprüsünde yürü", "Visoki Dečani Manastırı'nı ziyaret et (UNESCO)", "Rugova Kanyonu'nda doğa sporları yap"], whatToEat: ["Biberli ve peynirli börek Flija", "Sulu köfte Qebapa", "Tavë Prizreni (Prizren tavası)", "Boza içeceği"], whereToStay: ["Priştine: Rahibe Teresa Bulvarı çevresi", "Prizren: Shadervan (Şadırvan) bölgesi", "Peja (İpek): Rugova Kanyonu'na yakın oteller"], popularApps: [{name: "Taksi.al", category: "Taksi"}, {name: "Hajde", category: "Yemek & Market"}, {name: "Gjirafa Travel", category: "Otobüs"}, {name: "Visit Kosovo", category: "Turizm Rehberi"}], fastFoodChains: ["KFC", "Proper Pizza", "Burger King", "Aurora"], currency: "EUR", language: "Arnavutça, Sırpça", emergencyNumber: "192 (Polis), 194 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Përshëndetje (Arnavutça)"}, {tr:"Teşekkürler", local:"Faleminderit (Arnavutça)"}], climate: "Karasal iklim, Akdeniz ve Alp etkileriyle." },
+            "Lüksemburg": { flag: "🇱🇺", description: "Orta Çağ'dan kalma kalesi, yeşil vadileri ve uluslararası finans merkezi kimliğiyle küçük ama zengin bir ülke.", searchTerms: { flights: 'Luksemburg', booking: 'Luxembourg' }, whatToDo: ["Lüksemburg Şehri'nin Bock Kazamatları'nı (yeraltı tünelleri) keşfet", "Adolphe Köprüsü'nden Petrusse Vadisi'ni seyret", "Müllerthal Bölgesi'nde ('Küçük İsviçre') yürüyüş yap", "Vianden Kalesi'ni ziyaret et"], whatToEat: ["Fasulyeli domuz pastırması Judd mat Gaardebounen", "Patatesli krep Gromperekichelcher", "Erikli turta Quetschentaart", "Yerel Moselle şarapları"], whereToStay: ["Lüksemburg Şehri: Ville Haute (Yukarı Şehir) veya Gar", "Vianden: Kale manzaralı oteller", "Müllerthal: Kırsal pansiyonlar"], popularApps: [{name: "mobiliteit.lu", category: "Toplu Taşıma"}, {name: "WebTaxi", category: "Taksi"}, {name: "Takeaway.com", category: "Yemek Siparişi"}, {name: "Goolive", category: "Etkinlik Rehberi"}], fastFoodChains: ["McDonald's", "Quick", "Burger King", "Subway"], currency: "EUR", language: "Lüksemburgca, Fransızca, Almanca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Moien (Lüksemburgca)"}, {tr:"Teşekkürler", local:"Merci (Fransızca)"}], climate: "Ilıman okyanus iklimi. Yıl boyunca yağışlıdır." },
             "Malta": { flag: "🇲🇹", description: "Tarihi şövalyeleri, berrak denizi ve üç adadan oluşan güneşli bir Akdeniz takımadası.", searchTerms: { flights: 'Malta', booking: 'Malta' }, whatToDo: ["Başkent Valletta'nın Barok sokaklarında yürü", "Comino adasındaki Mavi Lagün'de (Blue Lagoon) yüz", "Gozo'nun daha sakin ve kırsal atmosferini keşfet", "Mdina'nın 'Sessiz Şehir' surları içinde zaman yolculuğu yap"], whatToEat: ["Tavşan yahnisi Stuffat tal-Fenek", "Ricotta peynirli hamur işi Pastizzi", "Balık çorbası Aljotta", "Malta ekmeği Ħobż tal-Malti"], whereToStay: ["Valletta: Butik oteller", "Sliema / St. Julian's: Modern oteller ve gece hayatı", "Mellieħa: Plaj ve aile otelleri"], popularApps: [{name: "Bolt / eCabs", category: "Ulaşım"}, {name: "Tallinja", category: "Otobüs"}, {name: "Wolt", category: "Yemek Siparişi"}, {name: "Gozo Channel", category: "Feribot"}], fastFoodChains: ["McDonald's", "Burger King", "KFC", "Pizza Hut"], currency: "EUR", language: "Maltaca, İngilizce", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Bonġu"}, {tr:"Teşekkürler", local:"Grazzi"}], climate: "Akdeniz iklimi. Sıcak, güneşli yazlar ve ılıman kışlar." },
             "Monako": { flag: "🇲🇨", description: "Lüks yatları, Monte Carlo casinosu ve Formula 1 yarışlarıyla dünyanın en göz alıcı prensliklerinden biri.", searchTerms: { flights: 'Monako', booking: 'Monaco' }, whatToDo: ["Monte Carlo Casino'sunun ihtişamını gör", "Prens'in Sarayı'nı ve nöbet değişimini izle", "Oşinografi Müzesi'ni ziyaret et", "Formula 1 pistinin virajlarında yürü"], whatToEat: ["Yerel bir lezzet olan Barbajuan", "Deniz mahsulleri ve Akdeniz mutfağı", "Fransız ve İtalyan etkileşimli yemekler", "Crêpes Suzette"], whereToStay: ["Monte Carlo: Lüks oteller", "La Condamine: Liman bölgesi", "Fontvieille: Daha modern bölge"], popularApps: [{name: "Uber", category: "Ulaşım"}, {name: "Monaco Malin", category: "Şehir Rehberi"}, {name: "Monaco Bus", category: "Otobüs"}, {name: "TheFork", category: "Restoran"}], fastFoodChains: ["McDonald's", "Stars'N'Bars", "Grubbers"], currency: "EUR", language: "Fransızca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Bonjour"}, {tr:"Teşekkürler", local:"Merci"}], climate: "Akdeniz iklimi. Ilıman kışlar ve sıcak yazlar." },
             "Andorra": { flag: "🇦🇩", description: "Pireneler'de yer alan, kayak merkezleri ve gümrüksüz alışverişiyle ünlü küçük bir prenslik.", searchTerms: { flights: 'Andorra', booking: 'Andorra' }, whatToDo: ["Grandvalira veya Vallnord'da kayak yap", "Caldea'nın termal spa merkezinde rahatla", "Başkent Andorra la Vella'da gümrüksüz alışveriş yap", "Romanesk kiliseleri ve taş evleri keşfet"], whatToEat: ["Dağ yemeği Trinxat", "Salyangoz Cargols a la llauna", "Yabani mantar ve av etleri", "Katalan kreması Crema Catalana"], whereToStay: ["Andorra la Vella: Alışveriş ve şehir hayatı", "Soldeu / Pas de la Casa: Kayak pistlerine yakın oteller", "Ordino: Sakin ve otantik bir atmosfer"], popularApps: [{name: "Mou-te", category: "Toplu Taşıma"}, {name: "Grandvalira / Vallnord Pal Arinsal", category: "Kayak Merkezleri"}, {name: "Grup Hiper Pas", category: "Alışveriş"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Burger King", "Pans & Company", "Lizarran"], currency: "EUR", language: "Katalanca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Hola"}, {tr:"Teşekkürler", local:"Gràcies"}], climate: "Alp iklimi. Soğuk ve karlı kışlar, ılıman ve kuru yazlar." },
@@ -550,11 +576,11 @@
             "Ürdün": { flag: "🇯🇴", description: "Kayalara oyulmuş antik kent Petra, Mars'ı andıran Wadi Rum çölü ve Lut Gölü'nün tuzlu sularıyla ünlü.", searchTerms: { flights: 'Urdun', booking: 'Jordan' }, whatToDo: ["Petra antik kentinin Hazine'sini (Al-Khazneh) gör", "Wadi Rum çölünde Bedevi kampında kal ve ciple safari yap", "Lut Gölü'nde (Ölü Deniz) suyun üzerinde kal", "Jerash'ın iyi korunmuş Roma kalıntılarını gez"], whatToEat: ["Ulusal yemek Mansaf", "Kömürde pişirilmiş Zarb", "Humus, Falafel ve diğer mezeler", "Künefe benzeri tatlı Knafeh"], whereToStay: ["Amman: Jabal Amman veya Al-Weibdeh", "Petra (Wadi Musa): Antik kente yakın oteller", "Wadi Rum: Lüks veya geleneksel Bedevi kampları"], popularApps: [{name: "Careem / Uber", category: "Ulaşım"}, {name: "Talabat", category: "Yemek Siparişi"}, {name: "JETT Bus", category: "Otobüs"}, {name: "Visit Jordan", category: "Turizm Rehberi"}], fastFoodChains: ["McDonald's", "KFC", "Popeyes", "Al-Baik"], currency: "JOD", language: "Arapça", emergencyNumber: "911", basicPhrases: [{tr:"Merhaba", local:"مرحبا (Marhaban)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Büyük ölçüde kurak çöl iklimi. Batıda Akdeniz iklimi etkileri görülür." },
             "Sri Lanka": { flag: "🇱🇰", description: "Hint Okyanusu'nun incisi; yemyeşil çay tarlaları, antik Budist tapınakları ve tropik plajlarıyla ünlü.", searchTerms: { flights: 'Sri-Lanka', booking: 'Sri-Lanka' }, whatToDo: ["Sigiriya'daki Aslan Kayası'na tırman", "Kandy'deki Kutsal Diş Tapınağı'nı ziyaret et", "Ella'dan Kandy'ye manzaralı tren yolculuğu yap", "Yala Milli Parkı'nda leopar safarisi yap"], whatToEat: ["Pirinç ve çeşitli köriler (Rice and Curry)", "Ekşi krep Hoppers", "Kottu Roti (doğranmış roti ve sebzeler)", "Taze kral hindistan cevizi suyu"], whereToStay: ["Güney Sahili (Galle, Mirissa): Plaj otelleri ve villalar", "Tepelik Bölge (Ella, Nuwara Eliya): Çay tarlası manzaralı oteller", "Kültürel Üçgen (Sigiriya, Dambulla): Doğayla iç içe oteller"], popularApps: [{name: "PickMe / Uber", category: "Ulaşım"}, {name: "Uber Eats", category: "Yemek Siparişi"}, {name: "Sri Lanka Railways", category: "Tren"}, {name: "Agoda", category: "Konaklama"}], fastFoodChains: ["KFC", "Pizza Hut", "McDonald's", "Domino's"], currency: "LKR", language: "Sinhala, Tamilce", emergencyNumber: "119 (Polis), 110 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Ayubowan"}, {tr:"Teşekkürler", local:"Istuti"}], climate: "Tropikal iklim. Yıl boyunca sıcak ve nemlidir, muson yağmurları görülür." },
             "Ermenistan": { flag: "🇦🇲", description: "Dünyanın en eski Hristiyan uluslarından biri; antik manastırları ve Ağrı Dağı manzaralarıyla zengin bir kültüre sahip.", searchTerms: { flights: 'Ermenistan', booking: 'Armenia' }, whatToDo: ["Erivan'daki Cumhuriyet Meydanı ve Cascade Kompleksi'ni gez", "Khor Virap Manastırı'ndan Ağrı Dağı'nı izle", "Tatev Manastırı'na 'Wings of Tatev' teleferiğiyle git", "Sevan Gölü'nün kenarında dinlen"], whatToEat: ["Geleneksel barbekü Khorovats", "Lavaş ekmeği", "Harissa (buğday ve et yemeği)", "Cevizli tatlı Gata"], whereToStay: ["Erivan: Kentron (Merkez)", "Dilijan: 'Ermenistan'ın İsviçresi' olarak bilinen bölge", "Goris: Tatev'e yakın konaklama"], popularApps: [{name: "GG / Yandex Go", category: "Ulaşım"}, {name: "Menu.am", category: "Yemek Siparişi"}, {name: "A2B Transport", category: "Ulaşım Planlama"}, {name: "Visit Armenia", category: "Turizm Rehberi"}], fastFoodChains: ["KFC", "Mr. Gyros", "Tumanyan Shaurma"], currency: "AMD", language: "Ermenice", emergencyNumber: "102 (Polis), 103 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Barev Dzez"}, {tr:"Teşekkürler", local:"Shnorhakalutyun"}], climate: "Karasal iklim. Sıcak, kuru yazlar ve soğuk, karlı kışlar." },
-            "Gürcistan": { flag: "🇬🇪", description: "Kafkas Dağları'nın gölgesinde, şarabın anavatanı olarak bilinen, tarihi ve misafirperver bir ülke.", searchTerms: { flights: 'Gurcistan', booking: 'Georgia' }, whatToDo: ["Tiflis'in sülfür hamamlarını ve eski şehrini keşfet", "Kazbegi'deki Gergeti Teslis Kilisesi'ne tırman", "Svaneti'nin Orta Çağ kuleleri arasında yürü", "Kakheti şarap bölgesinde şarap tadımı yap"], whatToEat: ["Peynirli pide Haçapuri (Khachapuri)", "Mantı benzeri Hinkali (Khinkali)", "Cevizli patlıcan Badrijani Nigvzit", "Geleneksel Churchkhela tatlısı"], whereToStay: ["Tiflis: Sololaki veya Avlabari", "Batumi: Karadeniz kıyısındaki modern oteller", "Mestia: Svaneti'ye açılan kapı"], popularApps: [{name: "Bolt / Yandex Go", category: "Ulaşım"}, {name: "Wolt / Glovo", category: "Yemek Siparişi"}, {name: "Georgian Railway", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Wendy's", "Dunkin' Donuts", "Subway"], currency: "GEL", language: "Gürcüce", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Gamarjoba"}, {tr:"Teşekkürler", local:"Madloba"}], climate: "Batıda nemli subtropikal, doğuda karasal iklim." },
+            "Gürcistan": { flag: "🇬🇪", description: "Kafkas Dağları'nın gölgesinde, şarabın anavatanı olarak bilinen, tarihi ve misafirperver bir ülke.", searchTerms: { flights: 'Gurcistan', booking: 'Georgia' }, whatToDo: ["Tiflis'in sülfür hamamlarını ve eski şehrini keşfet", "Kazbegi'deki Gergeti Teslis Kilisesi'ne tırman", "Svaneti'nin Orta Çağ kuleleri arasında yürü", "Kakheti şarap bölgesinde şarap tadımı yap"], whatToEat: ["Peynirli pide Haçapuri (Khachapuri)", "Mantı benzeri Hinkali (Hinkali)", "Cevizli patlıcan Badrijani Nigvzit", "Geleneksel Churchkhela tatlısı"], whereToStay: ["Tiflis: Sololaki veya Avlabari", "Batumi: Karadeniz kıyısındaki modern oteller", "Mestia: Svaneti'ye açılan kapı"], popularApps: [{name: "Bolt / Yandex Go", category: "Ulaşım"}, {name: "Wolt / Glovo", category: "Yemek Siparişi"}, {name: "Georgian Railway", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Wendy's", "Dunkin' Donuts", "Subway"], currency: "GEL", language: "Gürcüce", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Gamarjoba"}, {tr:"Teşekkürler", local:"Madloba"}], climate: "Batıda nemli subtropikal, doğuda karasal iklim." },
             "Kazakistan": { flag: "🇰🇿", description: "Fütüristik başkenti Astana, Sovyet dönemi izleri ve uçsuz bucaksız bozkırlarıyla Orta Asya'nın devi.", searchTerms: { flights: 'Kazakistan', booking: 'Kazakhstan' }, whatToDo: ["Astana'daki (Nur-Sultan) Bayterek Kulesi'ne çık", "Almatı'daki Medeu buz pateni pistini ve Shymbulak kayak merkezini gör", "Charyn Kanyonu'nun 'Kaleler Vadisi'nde yürü", "Kolsai ve Kaindy Gölleri'nin doğal güzelliklerini keşfet"], whatToEat: ["At etinden yapılan Beshbarmak", "Kımız (fermente at sütü)", "Tandırda pişen Samsa", "Plov (pilav)"], whereToStay: ["Almatı: Dostyk Caddesi çevresi", "Astana (Nur-Sultan): Yeni şehir merkezi", "Aktau: Hazar Denizi kıyısı"], popularApps: [{name: "Yandex Go", category: "Ulaşım"}, {name: "Wolt / Glovo", category: "Yemek Siparişi"}, {name: "2GIS", category: "Harita & Rehber"}, {name: "Aviata", category: "Uçak & Tren Bileti"}], fastFoodChains: ["McDonald's", "KFC", "Burger King", "Hardee's"], currency: "KZT", language: "Kazakça, Rusça", emergencyNumber: "101 (İtfaiye), 102 (Polis), 103 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"Сәлеметсіз бе (Sälemetsiz be)"}, {tr:"Teşekkürler", local:"Рақмет (Raqmet)"}], climate: "Sert karasal iklim. Çok soğuk kışlar ve sıcak yazlar." },
             "Tunus": { flag: "🇹🇳", description: "Antik Kartaca kalıntıları, Sahra Çölü'nün başlangıcı ve mavi-beyaz Sidi Bou Said kasabasıyla bir Akdeniz ülkesi.", searchTerms: { flights: 'Tunus', booking: 'Tunisia' }, whatToDo: ["Antik Kartaca harabelerini gez", "Mavi ve beyaz Sidi Bou Said köyünde nane çayı iç", "El Djem'deki Roma amfitiyatrosunu gör", "Sahra Çölü'nde deveye bin ve vahalara git"], whatToEat: ["Acı biber salçası Harissa", "Kuskus (genellikle balıklı veya kuzulu)", "Tunus salatası (Salade Tunisienne)", "Brik (yumurtalı börek)"], whereToStay: ["Hammamet / Sousse: Plaj resortları", "Tunus Şehri: Medina veya Berges du Lac", "Djerba: Ada tatili için oteller"], popularApps: [{name: "Bolt", category: "Ulaşım"}, {name: "Jumia Food", category: "Yemek Siparişi"}, {name: "SNCFT", category: "Tren"}, {name: "Waze", category: "Navigasyon"}], fastFoodChains: ["KFC", "Pizza Hut", "Fatburger", "Chili's"], currency: "TND", language: "Arapça", emergencyNumber: "197 (Polis), 190 (Ambulans)", basicPhrases: [{tr:"Merhaba", local:"السلام عليكم (As-salamu alaykum)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Kuzeyde Akdeniz, güneyde çöl iklimi." },
             "Cezayir": { flag: "🇩🇿", description: "Fransız kolonyal mimarisi, Kazbah'ın labirent sokakları ve Sahra Çölü'nün enginliğiyle Kuzey Afrika'nın en büyüğü.", searchTerms: { flights: 'Cezayir', booking: 'Algeria' }, whatToDo: ["Cezayir şehrindeki Kazbah'ı (Casbah) keşfet", "Djemila ve Timgad'daki Roma kalıntılarını ziyaret et", "Constantine'in asma köprülerinde yürü", "Tassili n'Ajjer Milli Parkı'ndaki kaya sanatını gör"], whatToEat: ["Kuskus (ulusal yemek)", "Chakhchoukha (parçalanmış ekmek ve güveç)", "Rechta (şehriyeli tavuk yemeği)", "Makroudh (hurmalı tatlı)"], whereToStay: ["Cezayir Şehri: Merkez veya Sidi Fredj", "Oran: Sahil kenarı oteller", "Constantine: Şehir merkezi"], popularApps: [{name: "Yassir", category: "Ulaşım & Teslimat"}, {name: "Jumia Food", category: "Yemek Siparişi"}, {name: "SNTF", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["KFC", "Quick", "Pizza Hut"], currency: "DZD", language: "Arapça", emergencyNumber: "17 (Polis), 14 (Sivil Savunma)", basicPhrases: [{tr:"Merhaba", local:"السلام عليكم (As-salamu alaykum)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Kıyıda Akdeniz, iç kesimlerde ve güneyde çöl iklimi." },
-            "Tanzanya": { flag: "🇹🇿", description: "Serengeti'deki büyük göçe, Kilimanjaro Dağı'na ve Zanzibar'ın baharat adalarına ev sahipliği yapan bir safari cenneti.", searchTerms: { flights: 'Tanzanya', booking: 'Tanzania' }, whatToDo: ["Serengeti Milli Parkı'nda safari yap", "Kilimanjaro Dağı'na tırman veya eteklerinde yürü", "Zanzibar'ın Stone Town'unu gez ve baharat tarlalarını ziyaret et", "Ngorongoro Krateri'nin içindeki vahşi yaşamı gözlemle"], whatToEat: ["Mısır lapası Ugali", "Muz ve et yemeği Mtori", "Zanzibar pizzası", "Pilav ve Nyama Choma (ızgara et)"], whereToStay: ["Arusha: Safari başlangıç noktası", "Zanzibar: Nungwi (plaj) veya Stone Town (tarih)", "Serengeti: Lüks safari locaları veya kampları"], popularApps: [{name: "Uber / Bolt", category: "Ulaşım"}, {name: "Piki", category: "Yemek Siparişi"}, {name: "Booking.com / Airbnb", category: "Konaklama"}, {name: "Swahili Dictionary", category: "Dil"}], fastFoodChains: ["KFC", "Marrybrown", "Pizza Hut", "Samaki Samaki"], currency: "TZS", language: "Svahili, İngilizce", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Jambo / Habari"}, {tr:"Teşekkürler", local:"Asante"}], climate: "Kıyıda tropikal, iç kesimlerde daha ılımandır." },
+            "Tanzanya": { flag: "🇹🇿", description: "Serengeti'deki büyük göçe, Kilimanjaro Dağı'na ve Zanzibar'ın baharat adalarına ev sahipliği yapan bir safari cenneti.", searchTerms: { flights: 'Tanzanya', booking: 'Tanzania' }, whatToDo: ["Serengeti Milli Parkı'nda safari yap", "Kilimanjaro Dağı'na tırman veya eteklerinde yürü", "Zanzibar'ın Stone Town'unu gez ve baharat tarlalarını ziyaret et", "Ngorongoro Krateri'nin içindeki vahşi yaşamı gözlemle"], whatToEat: ["Mısır lapası Ugali", "Muz ve et yemeği Mtori", "Zanzibar pizzası", "Pilav ve Nyama Choma (ızgara et)"], whereToStay: ["Arusha: Safari başlangıç noktası", "Zanzibar: Nungwi (plaj) veya Stone Town (tarih)", "Serengeti: Lüks safari locaları veya kamplar"], popularApps: [{name: "Uber / Bolt", category: "Ulaşım"}, {name: "Piki", category: "Yemek Siparişi"}, {name: "Booking.com / Airbnb", category: "Konaklama"}, {name: "Swahili Dictionary", category: "Dil"}], fastFoodChains: ["KFC", "Marrybrown", "Pizza Hut", "Samaki Samaki"], currency: "TZS", language: "Svahili, İngilizce", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Jambo / Habari"}, {tr:"Teşekkürler", local:"Asante"}], climate: "Kıyıda tropikal, iç kesimlerde daha ılımandır." },
             "Libya": { flag: "🇱🇾", description: "Leptis Magna gibi dünyanın en iyi korunmuş Roma harabelerine ve Sahra Çölü'nün güzelliklerine sahip.", searchTerms: { flights: 'Libya', booking: 'Libya' }, whatToDo: ["Leptis Magna antik kentinin ihtişamını keşfet", "Sabratha'daki Roma tiyatrosunu gör", "Trablus'un eski medinasında dolaş", "Acacus Dağları'ndaki tarih öncesi kaya oymalarını gör"], whatToEat: ["Bazeen (arpa hamuru ve sos)", "Usban (doldurulmuş sosis)", "Rishda (makarna ve nohut yemeği)", "Kuskus"], whereToStay: ["Trablus: Şehir merkezindeki oteller", "Misrata: İş otelleri"], popularApps: [{name: "Presto", category: "Süper Uygulama"}, {name: "Lezzoo", category: "Teslimat"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["Yerel restoranlar ve kafeler"], currency: "LYD", language: "Arapça", emergencyNumber: "1515", basicPhrases: [{tr:"Merhaba", local:"مرحبا (Marhaban)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Kıyıda Akdeniz, iç kesimlerde aşırı sıcak çöl iklimi." },
             "Moldova": { flag: "🇲🇩", description: "Avrupa'nın en az ziyaret edilen ülkelerinden biri; geniş şarap mahzenleri ve kırsal manzaralarıyla bir gizli cennet.", searchTerms: { flights: 'Moldova', booking: 'Moldova' }, whatToDo: ["Mileștii Mici'deki dünyanın en büyük şarap mahzenini gez", "Cricova'nın yeraltı şarap şehrinde tur yap", "Orheiul Vechi'deki mağara manastırını keşfet", "Kişinev'in Sovyet dönemi mimarisini ve parklarını gör"], whatToEat: ["Mısır lapası Mămăligă", "Lahana sarması Sarmale", "Turta benzeri Plăcinte", "Ekşi çorba Zeamă"], whereToStay: ["Kişinev (Chișinău): Şehir merkezi", "Orheiul Vechi: Kırsal pansiyonlar", "Şaraphanelere bağlı butik oteller"], popularApps: [{name: "Yandex Go", category: "Ulaşım"}, {name: "Straus.md", category: "Yemek Siparişi"}, {name: "Calea Ferată din Moldova", category: "Tren"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "KFC", "Andy's Pizza", "La Plăcinte"], currency: "MDL", language: "Romence", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Bună ziua"}, {tr:"Teşekkürler", local:"Mulțumesc"}], climate: "Ilıman karasal. Sıcak yazlar ve soğuk, rüzgarlı kışlar." },
             "Yemen": { flag: "🇾🇪", description: "Antik kerpiç gökdelenleri, ejderha kanı ağaçlarıyla ünlü Sokotra adası ve zengin tarihiyle bir ülke.", searchTerms: { flights: 'Yemen', booking: 'Yemen' }, whatToDo: ["Sana'a'nın UNESCO korumasındaki eski şehrinde dolaş", "Shibam'ın 'çölün Manhattan'ı' olarak bilinen kerpiç binalarını gör", "Sokotra adasının eşsiz bitki örtüsünü keşfet", "Tarihi kahve ticareti merkezi Al-Makha'yı (Mocha) öğren"], whatToEat: ["Geleneksel güveç Saltah", "Bal ve ekmekle yapılan Bint al-Sahn", "Fahsa (et yahnisi)", "Shafut (ekmekli yoğurtlu yemek)"], whereToStay: ["Sana'a: Eski şehirdeki geleneksel oteller", "Aden: Liman bölgesindeki oteller", "Sokotra: Eko-localar"], popularApps: [{name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["Yerel restoranlar ağırlıklıdır"], currency: "YER", language: "Arapça", emergencyNumber: "199 (Polis)", basicPhrases: [{tr:"Merhaba", local:"مرحبا (Marhaban)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Kıyıda sıcak ve nemli, batıdaki dağlık bölgelerde ılıman, doğuda çöl iklimi." }
@@ -575,10 +601,10 @@
                 line = line.trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
                 
                 if (line.startsWith('###')) {
-                     html += `${inList ? '</ul>' : ''}<h3 class="text-xl font-semibold mt-4 mb-2">${line.replace(/###\s*/, '')}</h3>`;
+                     html += `${inList ? '</ul>' : ''}<h3 class="text-xl font-semibold mt-4 mb-2 text-primary">${line.replace(/###\s*/, '')}</h3>`;
                      inList = false;
                 } else if (line.startsWith('##')) {
-                     html += `${inList ? '</ul>' : ''}<h2 class="text-2xl font-bold mt-5 mb-3">${line.replace(/##\s*/, '')}</h2>`;
+                     html += `${inList ? '</ul>' : ''}<h2 class="text-2xl font-bold mt-5 mb-3 text-primary">${line.replace(/##\s*/, '')}</h2>`;
                      inList = false;
                 } else if (line.startsWith('-') || line.startsWith('*')) {
                     if (!inList) {
@@ -609,6 +635,7 @@
             document.body.removeChild(textArea);
         };
         
+        // Olay Delegasyonu kullanılarak kart listeleme işlevi
         const displayCountries = (filter = '') => {
             countryListContainer.innerHTML = '';
             const normalizedFilter = filter.toLowerCase().trim();
@@ -616,21 +643,22 @@
             let adInserted = false;
 
             countryNames.forEach((name, index) => {
-                if (name.toLowerCase().includes(normalizedFilter)) {
+                // Sadece ülke adı veya bayrak filtreye uyuyorsa göster
+                if (name.toLowerCase().includes(normalizedFilter) || countriesData[name].flag.toLowerCase().includes(normalizedFilter)) {
                     const country = countriesData[name];
                     const card = document.createElement('div');
-                    // GÜNCELLEME: cursor-pointer eklendi ve data-country eklendi
-                    card.className = 'country-card content-card p-6 text-center cursor-pointer';
-                    card.dataset.country = name; // Ülke adını data attribute'ta sakla
+                    card.className = 'country-card content-card p-6 text-center';
+                    // SEO için temiz URL'ler: Country adını URL'ye eklemek için data attribute kullanılıyor
+                    card.setAttribute('data-country-name', name); 
                     card.innerHTML = `
                         <p class="text-6xl mb-4">${country.flag}</p>
                         <h3 class="text-lg font-semibold mb-1">${name}</h3>
-                        <p class="text-sm text-secondary">${country.description}</p>
+                        <p class="text-sm text-secondary">${country.description.length > 50 ? country.description.substring(0, 50) + '...' : country.description}</p>
                     `;
-                    // Kaldırıldı: card.addEventListener('click', () => displayCountryDetail(name));
                     countryListContainer.appendChild(card);
                 }
 
+                // AdSense placeholder'ı ekle
                 if (index === 7 && !adInserted && !filter) {
                     const adCard = document.createElement('div');
                     adCard.className = 'ad-placeholder content-card p-6 text-center lg:col-span-2 md:col-span-1 sm:col-span-2 col-span-1';
@@ -642,12 +670,38 @@
                 }
             });
 
-            const hasResults = countryListContainer.children.length > 0;
+            const hasResults = countryListContainer.querySelectorAll('.country-card').length > 0;
             noResults.classList.toggle('hidden', hasResults);
         };
         
+        countryListContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.country-card');
+            if (card && card.dataset.countryName) {
+                displayCountryDetail(card.dataset.countryName);
+            }
+        });
+
+        // Yeni: URL'deki ülke adını alıp detay sayfasını yükler
+        const checkURLForCountry = () => {
+            const params = new URLSearchParams(window.location.search);
+            const countryName = params.get('country');
+            if (countryName && countriesData[countryName]) {
+                displayCountryDetail(countryName);
+            } else {
+                // Eğer URL'de ülke yoksa, ana listeyi göster
+                countryDetailView.classList.add('hidden');
+                countryListView.classList.remove('hidden');
+                displayCountries();
+            }
+        };
+
         const displayCountryDetail = (countryName) => {
             const country = countriesData[countryName];
+            
+            // Yeni: URL'yi güncelle (SEO için kritik)
+            const newUrl = `${window.location.pathname}?country=${encodeURIComponent(countryName)}`;
+            window.history.pushState({ country: countryName }, countryName, newUrl);
+
             const popularAppsHtml = country.popularApps.map(app => `
                 <li class="flex items-center">
                     <span class="font-semibold text-primary mr-2">${app.name}</span>
@@ -662,6 +716,41 @@
                 </li>
             `).join('');
 
+            // AI içeriğini dinamik olarak kontrol et ve HTML'e ekle
+            const itineraryContent = aiGeneratedContent[countryName]?.itinerary ? formatGeminiResponse(aiGeneratedContent[countryName].itinerary) : 
+                `<p class="text-center text-secondary">Seyahat planı oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
+            const culturalTipsContent = aiGeneratedContent[countryName]?.tips ? formatGeminiResponse(aiGeneratedContent[countryName].tips) : 
+                `<p class="text-center text-secondary">Kültürel ipuçları henüz oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
+            const packingListContent = aiGeneratedContent[countryName]?.packing ? formatGeminiResponse(aiGeneratedContent[countryName].packing) : 
+                `<p class="text-center text-secondary">Bavul hazırlama listesi oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
+
+            // Yeni AI sonuçlarını detay görünümüne yerleştirmek için konteynerleri dinamik oluştur
+            const aiResultsContainerHtml = `
+                <div class="mt-12 pt-8 border-t border-border-color">
+                    <h3 class="text-3xl font-bold text-center mb-6">✨ Yapay Zeka Asistanın</h3>
+                    
+                    <!-- Dinamik olarak eklenen AI içerikleri -->
+                    <div id="ai-itinerary-embed" class="content-card p-6 rounded-2xl mb-6">
+                        <h4 class="text-2xl font-bold mb-4 text-primary">🗺️ Kişiselleştirilmiş Seyahat Planı</h4>
+                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${itineraryContent}</div>
+                        <button id="open-itinerary-modal-btn" class="ai-result-embed-btn mt-4 w-full">Planı Özelleştir / Oluştur</button>
+                    </div>
+
+                    <div id="ai-tips-embed" class="content-card p-6 rounded-2xl mb-6">
+                        <h4 class="text-2xl font-bold mb-4 text-primary">💡 Yerel Kültürel İpuçları</h4>
+                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${culturalTipsContent}</div>
+                        <button id="get-cultural-tips-btn" class="ai-result-embed-btn mt-4 w-full">İpuçları Oluştur / Güncelle</button>
+                    </div>
+
+                    <div id="ai-packing-embed" class="content-card p-6 rounded-2xl mb-6">
+                        <h4 class="text-2xl font-bold mb-4 text-primary">📦 Akıllı Bavul Hazırlık Listesi</h4>
+                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${packingListContent}</div>
+                         <button id="open-packing-list-btn" class="ai-result-embed-btn mt-4 w-full">Listeyi Oluştur / Güncelle</button>
+                    </div>
+
+                </div>
+            `;
+            
             countryListView.classList.add('hidden');
             countryDetailView.innerHTML = `
                 <div class="fade-in">
@@ -723,34 +812,15 @@
                                     <ul class="space-y-2">${basicPhrasesHtml}</ul>
                                 </div>
                                  <div>
-                                    <h4 class="font-bold text-lg mb-3 text-primary">Acil Durum Numarası</h4>
-                                    <p class="text-2xl font-bold text-accent">${country.emergencyNumber}</p>
-                                </div>
+                                     <h4 class="font-bold text-lg mb-3 text-primary">Acil Durum Numarası</h4>
+                                     <p class="text-2xl font-bold text-accent">${country.emergencyNumber}</p>
+                                 </div>
                             </div>
                         </div>
-
-                        <div class="mt-12 pt-8 border-t border-border-color">
-                             <h3 class="text-3xl font-bold text-center mb-6">✨ Yapay Zeka Asistanın</h3>
-                             <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                 <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
-                                     <h4 class="font-bold text-lg mb-2">Seyahat Planı Oluştur</h4>
-                                     <p class="text-sm text-secondary mb-3 flex-grow">Süre ve ilgi alanlarına göre kişisel rotanı oluştur.</p>
-                                     <button id="open-itinerary-modal-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">Planla!</button>
-                                 </div>
-                                 <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
-                                     <h4 class="font-bold text-lg mb-2">Kültürel İpuçları Al</h4>
-                                     <p class="text-sm text-secondary mb-3 flex-grow">Yerel adetleri öğrenerek daha anlamlı bir gezi yap.</p>
-                                      <button id="get-cultural-tips-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">İpuçları Getir</button>
-                                 </div>
-                                 <div class="bg-background/50 p-6 rounded-2xl border border-border-color flex flex-col">
-                                     <h4 class="font-bold text-lg mb-2">Bavul Hazırlama Asistanı</h4>
-                                     <p class="text-sm text-secondary mb-3 flex-grow">Gideceğin yere ve mevsime göre bavulunu hazırla.</p>
-                                      <button id="open-packing-list-btn" class="btn btn-primary w-full py-2 rounded-lg font-bold mt-auto">Bavul Hazırla</button>
-                                 </div>
-                             </div>
-                             <div id="ai-results-container" class="mt-6 max-w-3xl mx-auto"></div>
-                        </div>
                     </div>
+
+                    <!-- AI ENTEGRASYONU BURADA -->
+                    ${aiResultsContainerHtml}
                 </div>`;
             countryDetailView.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -760,6 +830,8 @@
             document.getElementById('back-to-list').addEventListener('click', () => {
                 countryDetailView.classList.add('hidden');
                 countryListView.classList.remove('hidden');
+                // Yeni: Ana sayfaya dönerken URL'yi temizle
+                window.history.pushState({}, document.title, window.location.pathname);
             });
             
             const tabs = document.getElementById('detail-tabs').querySelectorAll('button');
@@ -767,136 +839,111 @@
                 tab.addEventListener('click', () => {
                     tabs.forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.querySelectorAll('#tab-content-container .tab-content').forEach(c => c.classList.remove('active'));
                     document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
                 });
             });
-
-            document.getElementById('open-itinerary-modal-btn').addEventListener('click', () => {
+            
+            // Yapay Zeka Butonları için olay dinleyicilerini yeniden ata (Yeni butonu bulmak için)
+            document.getElementById('open-itinerary-modal-btn').onclick = () => {
                 document.getElementById('itinerary-modal-subtitle').textContent = `${countryName} için plan oluştur.`;
                 itineraryModal.classList.add('visible');
-            });
+            };
             
-            getItineraryBtn.onclick = () => { // Use onclick to easily re-assign it
-                const duration = document.getElementById('itinerary-duration').value || "3";
-                const interests = document.getElementById('itinerary-interests').value || "genel turistik yerler ve yerel lezzetler";
+            // Itinerary modal içindeki butona yeni işlev atama (önceki atanmış işlevi ezer)
+            const itineraryDurationInput = document.getElementById('itinerary-duration');
+            const itineraryInterestsInput = document.getElementById('itinerary-interests');
+
+            getItineraryBtn.onclick = () => {
+                const duration = itineraryDurationInput.value || "3";
+                const interests = itineraryInterestsInput.value || "genel turistik yerler ve yerel lezzetler";
                 generateItinerary(countryName, duration, interests);
                 itineraryModal.classList.remove('visible');
             };
 
-            document.getElementById('get-cultural-tips-btn').addEventListener('click', () => {
+            document.getElementById('get-cultural-tips-btn').onclick = () => {
                 getCulturalTips(countryName);
-            });
+            };
 
-            document.getElementById('open-packing-list-btn').addEventListener('click', () => {
+            document.getElementById('open-packing-list-btn').onclick = () => {
                 const duration = document.getElementById('itinerary-duration').value || "7";
                 generatePackingList(countryName, duration, 'mevsimine uygun');
-            });
-        };
+            };
 
-        const callGeminiAPI = async (prompt, buttonElement, resultContainer) => {
-            const originalButtonText = buttonElement.innerHTML;
-            buttonElement.disabled = true;
-            const spinnerIcon = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
-            
-            // Check if resultContainer is a button's parent (for the destination suggestion modal)
-            const isModalResult = resultContainer.id === 'ai-suggestion-result';
-            
-            if (!isModalResult) {
-                buttonElement.innerHTML = `${spinnerIcon} Oluşturuluyor...`;
-                resultContainer.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için hazırlıyor...</div>`;
-            } else {
-                 buttonElement.innerHTML = `${spinnerIcon} Öneriler Aranıyor...`;
-                 resultContainer.innerHTML = `<div class="content-card p-4 rounded-xl text-center text-secondary">Yapay zeka macera fikirlerini topluyor...</div>`;
-            }
-
-
-            try {
-                // KULLANICININ VERDİĞİ API KEY KORUNMUŞTUR
-                const apiKey = "AIzaSyC69-_DoapO3-fzakAUv_M3zk7mZLoPp8g"; 
-                
-                // Consistency update to a modern preview model as per general instructions, while respecting the user's specific key.
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`; 
-                const payload = { contents: [{ parts: [{ text: prompt }] }] };
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error("API Error Response:", errorData);
-                    throw new Error(`API Hatası: ${response.status}. ${errorData.error?.message || 'Bilinmeyen bir hata oluştu.'}`);
-                }
-                const result = await response.json();
-                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content?.parts?.[0]?.text) {
-                     return result.candidates[0].content.parts[0].text;
-                } else {
-                    console.error("Beklenmedik API yanıtı:", result);
-                    if(result.candidates && result.candidates[0].finishReason === 'SAFETY') {
-                        throw new Error("İçerik güvenlik politikaları nedeniyle engellendi.");
-                    }
-                    throw new Error("API'den boş veya hatalı formatta yanıt alındı.");
-                }
-            } catch (error) {
-                console.error('Gemini API Hatası:', error);
-                resultContainer.innerHTML = `<div class="bg-red-500/10 text-red-500 p-4 rounded-lg text-center mt-4"><strong>Hata!</strong> İstek işlenemedi. Detay: ${error.message}</div>`;
-                return null;
-            } finally {
-                buttonElement.disabled = false;
-                buttonElement.innerHTML = originalButtonText;
-            }
         };
 
         const generateItinerary = async (countryName, duration, interests) => {
-            const resultDiv = document.getElementById('ai-results-container');
+            const resultEmbed = document.getElementById('ai-itinerary-embed');
             const triggerBtn = document.getElementById('open-itinerary-modal-btn');
+            
+            // Geçici olarak sonucu gösteren bir alan oluştur
+            const tempResultDiv = document.createElement('div');
+            tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için planı hazırlıyor...</div>`;
+            resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
+
+
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, heyecan verici ve detaylı bir seyahat planı oluştur. İlgi alanları: ${interests}. Plan, her gün için Sabah, Öğle, Akşam aktiviteleri içermeli. Her aktivite için kısa ve ilgi çekici bir açıklama ekle. Cevabını Türkçe ve Markdown formatında, başlıklar ve listeler kullanarak ver. Ana başlıklar için '##', alt başlıklar için '###' kullan.`;
             
-            const text = await callGeminiAPI(prompt, triggerBtn, resultDiv);
+            const text = await callGeminiAPI(prompt, triggerBtn, tempResultDiv);
             if(text) {
-                resultDiv.innerHTML = `
-                   <div class="content-card p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="text-2xl font-bold">İşte Macera Planın!</h4>
-                            <button id="copy-itinerary-btn" class="btn btn-secondary px-3 py-1 rounded-md text-sm">Kopyala</button>
-                        </div>
-                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${formatGeminiResponse(text)}</div>
-                   </div>`;
+                // Kalıcı içeriği sakla
+                if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
+                aiGeneratedContent[countryName].itinerary = text;
+
+                // Sayfada göster
+                resultEmbed.querySelector('div.prose').innerHTML = `
+                    <div class="flex justify-between items-center mb-2 pt-2 border-t border-border-color">
+                        <h4 class="text-lg font-bold text-primary">Oluşturuldu!</h4>
+                        <button id="copy-itinerary-btn" class="btn btn-secondary px-3 py-1 rounded-md text-sm">Kopyala</button>
+                    </div>
+                    ${formatGeminiResponse(text)}`;
+                
                 document.getElementById('copy-itinerary-btn').addEventListener('click', () => copyToClipboard(text));
             }
         };
 
         const getCulturalTips = async (countryName) => {
-            const resultDiv = document.getElementById('ai-results-container');
+            const resultEmbed = document.getElementById('ai-tips-embed');
             const tipsBtn = document.getElementById('get-cultural-tips-btn');
+            
+            const tempResultDiv = document.createElement('div');
+            tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için ipuçlarını hazırlıyor...</div>`;
+            resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
+
             const prompt = `Türkiye'den ${countryName}'e seyahat edecek bir turist için 5 önemli kültürel ipucu ve görgü kuralı listele. İpuçları pratik, anlaşılır ve saygılı bir tonda olmalı. Örneğin, selamlaşma, bahşiş, giyim kuralları, hediyeleşme ve kaçınılması gereken hassas konular gibi başlıkları ele al. Cevabını Türkçe ve Markdown formatında ver.`;
 
-            const text = await callGeminiAPI(prompt, tipsBtn, resultDiv);
+            const text = await callGeminiAPI(prompt, tipsBtn, tempResultDiv);
             if(text) {
-                 resultDiv.innerHTML = `
-                    <div class="content-card p-6 rounded-2xl">
-                        <h4 class="text-2xl font-bold mb-4">${countryName} İçin Kültürel İpuçları</h4>
-                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${formatGeminiResponse(text)}</div>
-                    </div>`;
+                if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
+                aiGeneratedContent[countryName].tips = text;
+                 resultEmbed.querySelector('div.prose').innerHTML = `
+                    <h4 class="text-lg font-bold text-primary pt-2 border-t border-border-color mb-2">Hazır!</h4>
+                    ${formatGeminiResponse(text)}`;
             }
         };
 
         const generatePackingList = async (countryName, duration, season) => {
-            const resultDiv = document.getElementById('ai-results-container');
+            const resultEmbed = document.getElementById('ai-packing-embed');
             const packingBtn = document.getElementById('open-packing-list-btn');
+            
+            const tempResultDiv = document.createElement('div');
+            tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için listeyi hazırlıyor...</div>`;
+            resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
+
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, ${season} bir seyahate yönelik detaylı bir bavul hazırlama listesi oluştur. Listeyi Giyim, Elektronik, Kişisel Bakım ve Belgeler gibi pratik kategorilere ayır. Cevabını Türkçe ve Markdown formatında ver.`;
             
-            const text = await callGeminiAPI(prompt, packingBtn, resultDiv);
+            const text = await callGeminiAPI(prompt, packingBtn, tempResultDiv);
             if(text) {
-                 resultDiv.innerHTML = `
-                    <div class="content-card p-6 rounded-2xl">
-                        <h4 class="text-2xl font-bold mb-4">Bavul Hazırlama Listen</h4>
-                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${formatGeminiResponse(text)}</div>
-                    </div>`;
+                if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
+                aiGeneratedContent[countryName].packing = text;
+                 resultEmbed.querySelector('div.prose').innerHTML = `
+                    <h4 class="text-lg font-bold text-primary pt-2 border-t border-border-color mb-2">Hazır!</h4>
+                    ${formatGeminiResponse(text)}`;
             }
         };
+        
+        // Diğer fonksiyonlar (getAiDestinationSuggestion, fetchCurrencyRates, initCurrencyConverter, legalTexts, showLegalModal, renderChecklist, saveChecklistState, handleChecklistInteraction) aynı kalmıştır.
+        // ... (Diğer fonksiyonların kodları burada) ...
 
         const getAiDestinationSuggestion = async () => {
             const userInput = aiPromptInput.value;
@@ -905,15 +952,17 @@
                 return;
             }
             const prompt = `Ben bir seyahat planlama asistanıyım. Kullanıcı şu şekilde bir seyahat istiyor: "${userInput}". Bu isteğe en uygun 3 farklı ülkeyi öner. Her öneri için ülke ismini kalın harflerle yaz, altına neden uygun olduğunu 2-3 cümleyle açıkla. Cevabını sadece bu 3 öneriyi içerecek şekilde, başka bir giriş veya sonuç cümlesi olmadan, Türkçe ve Markdown formatında ver.`;
-            const text = await callGeminiAPI(prompt, getAiSuggestionBtn, aiSuggestionResult);
+            const resultContainer = document.getElementById('ai-suggestion-result'); // Bu değişken modal içinde
+            const text = await callGeminiAPI(prompt, getAiSuggestionBtn, resultContainer);
             if (text) {
-                aiSuggestionResult.innerHTML = formatGeminiResponse(text);
+                resultContainer.innerHTML = formatGeminiResponse(text);
             }
         };
         
         const fetchCurrencyRates = async () => {
             if (currencyRates) return;
             try {
+                // Not using apiKey for this external public API
                 const response = await fetch('https://api.frankfurter.app/latest?from=TRY');
                 const data = await response.json();
                 currencyRates = data.rates;
@@ -942,7 +991,7 @@
                     <select id="from-currency" class="p-2 rounded-lg bg-background border border-border-color">${optionsHtml}</select>
                 </div>
                 <div class="text-center my-2 font-bold text-2xl text-accent">&darr; &uarr;</div>
-                   <div class="flex items-center gap-2">
+                 <div class="flex items-center gap-2">
                     <input type="text" id="to-amount" readonly class="w-full p-2 rounded-lg bg-background border border-border-color">
                     <select id="to-currency" class="p-2 rounded-lg bg-background border border-border-color">${localOptionsHtml}</select>
                 </div>`;
@@ -960,8 +1009,9 @@
                     toAmount.value = '';
                     return;
                 }
-                // Convert from selected currency to TRY base, then to target currency
-                const result = (amount / fromRate) * toRate;
+                // Convert from FromCurrency to TRY base, then to ToCurrency
+                const amountInTRY = amount / fromRate;
+                const result = amountInTRY * toRate;
                 toAmount.value = result.toFixed(2);
             };
 
@@ -972,8 +1022,74 @@
             calculateCurrency();
         };
 
+        const legalTexts = {
+            'privacy': `
+                <h2>Gizlilik Politikası</h2>
+                <p><strong>Son Güncelleme: Ekim 2025</strong></p>
+                <p>Vuelina, akıllı seyahat rehberi olarak, kullanıcı gizliliğini ciddiye alır. Bu politika, uygulamamız aracılığıyla topladığımız, kullandığımız ve paylaştığımız bilgileri açıklamaktadır.</p>
+                
+                <h3>1. Toplanan Bilgiler</h3>
+                <p>Uygulamamız sadece tarayıcınızın yerel depolamasını (Local Storage) kullanarak aşağıdaki bilgileri cihazınızda saklar:</p>
+                <ul>
+                    <li><strong>Tema Seçimi:</strong> Tercih ettiğiniz aydınlık/karanlık modu ve renk paleti.</li>
+                    <li><strong>Kontrol Listesi Verileri:</strong> Eklediğiniz seyahat görevleri ve tamamlanma durumları.</li>
+                </ul>
+                <p>Bu bilgiler, sunucularımızda saklanmaz veya üçüncü taraflarla paylaşılmaz. Yapay Zeka sorguları, Google'ın Gemini API'sine anonim olarak gönderilir ve sorgu içeriği kalıcı olarak saklanmaz.</p>
+                
+                <h3>2. Üçüncü Taraf Bağlantıları</h3>
+                <p>Uygulamamız, uçuş arama, otel rezervasyonu ve tur/aktivite platformları gibi üçüncü taraf web sitelerine bağlantılar içerir. Bu sitelerin gizlilik uygulamaları üzerinde kontrolümüz yoktur ve bu siteleri ziyaret ettiğinizde kendi gizlilik politikaları geçerli olacaktır.</p>
+                
+                <h3>3. Google AdSense</h3>
+                <p>Uygulamamız, reklam sunmak için Google AdSense'i kullanır. Google, DART çerezi kullanarak kullanıcıların sitemize ve internetteki diğer sitelere yaptıkları ziyaretlere göre reklamlar sunar. Kullanıcılar, Google Reklam ve İçerik Ağı gizlilik politikasını ziyaret ederek DART çerezinin kullanımını devre dışı bırakabilirler.</p>
+                
+                <h3>4. Politika Değişiklikleri</h3>
+                <p>Gizlilik politikamızı zaman zaman güncelleyebiliriz. Herhangi bir değişiklik durumunda, bu sayfada yeni politikayı yayınlayarak sizi bilgilendireceğiz. Değişiklikler, yayınlandığı anda yürürlüğe girer.</p>
+            `,
+            'terms': `
+                <h2>Kullanım Şartları</h2>
+                <p><strong>Son Güncelleme: Ekim 2025</strong></p>
+                <p>Bu Kullanım Şartları ("Şartlar"), Vuelina akıllı seyahat rehberi uygulamasının ("Uygulama") kullanımını düzenler.</p>
+
+                <h3>1. Uygulamanın Kullanımı</h3>
+                <p>Uygulama, kişisel, ticari olmayan seyahat planlama ve bilgi amaçlı kullanımınız için tasarlanmıştır. Uygulamayı yasa dışı, zararlı veya bu Şartları ihlal eden herhangi bir amaçla kullanamazsınız.</p>
+                
+                <h3>2. Fikri Mülkiyet</h3>
+                <p>Uygulamanın tüm içeriği, metinleri, grafikleri, logoları, ikonları ve yazılımı Vuelina'ya aittir ve telif hakkı yasalarıyla korunmaktadır. Uygulamadan elde edilen hiçbir içeriği ticari amaçlarla kopyalayamaz, çoğaltamaz veya dağıtamazsınız.</p>
+                
+                <h3>3. Harici Bağlantılar ve İçerik Doğruluğu</h3>
+                <p>Uygulama, üçüncü taraf kaynaklara (uçuş, otel, aktivite vb.) bağlantılar içerebilir. Bu bağlantıların içeriğinden sorumlu değiliz. Seyahat bilgileri (döviz kurları, acil durum numaraları vb.) en güncel olmaya çalışılsa da, herhangi bir rezervasyon veya acil durum öncesinde her zaman bağımsız olarak doğrulamanız önerilir. Uygulama, sağlanan bilgilerin doğruluğu konusunda garanti vermez.</p>
+
+                <h3>4. Garanti Reddi</h3>
+                <p>Uygulama "olduğu gibi" ve "mevcut olduğu gibi" esasına göre sağlanır. Vuelina, uygulamanın kesintisiz, hatasız veya virüssüz olacağına dair hiçbir garanti vermez.</p>
+            `,
+            'contact': `
+                <h2>İletişim</h2>
+                <p>Vuelina ile ilgili herhangi bir sorunuz, öneriniz veya geri bildiriminiz için lütfen aşağıdaki yöntemleri kullanın:</p>
+
+                <h3>1. Geri Bildirim ve Destek</h3>
+                <p>Uygulama ile ilgili teknik sorunlar veya önerileriniz için lütfen bize e-posta yoluyla ulaşın. Tüm geri bildirimler değerlidir ve uygulamayı iyileştirmemize yardımcı olur.</p>
+                <ul>
+                    <li><strong>E-posta Adresi:</strong> support@vuelina.com (Kurgusal)</li>
+                </ul>
+
+                <h3>2. Kurumsal Sorular</h3>
+                <p>Basın, iş ortaklığı veya diğer kurumsal konular için lütfen aşağıdaki adrese yazın:</p>
+                <ul>
+                    <li><strong>Kurumsal İletişim:</strong> info@vuelina.com (Kurgusal)</li>
+                </ul>
+                <p>Size en kısa sürede geri dönüş yapılacaktır.</p>
+            `
+        };
+
+        const showLegalModal = (type) => {
+            const text = legalTexts[type];
+            if (!text) return;
+            legalModalTitle.textContent = type === 'privacy' ? 'Gizlilik Politikası' : type === 'terms' ? 'Kullanım Şartları' : 'İletişim Bilgileri';
+            legalModalContent.innerHTML = text;
+            legalModal.classList.add('visible');
+        };
+        
         const renderChecklist = () => {
-            // Using localStorage for checklist items
             const items = JSON.parse(localStorage.getItem('travelChecklist')) || [
                 { text: "Pasaport ve Vize", completed: false, id: 1},
                 { text: "Uçak Biletleri ve Konfirmasyonlar", completed: false, id: 2},
@@ -1019,198 +1135,102 @@
             renderChecklist();
         };
 
-        // --- TEMA FONKSİYONLARI ---
+        // --- TEMA YÖNETİMİ ---
+        const themeColors = {
+            indigo: { light: '#4F46E5', dark: '#818CF8', name: 'Indigo' },
+            ocean: { light: '#06B6D4', dark: '#22D3EE', name: 'Ocean' },
+            forest: { light: '#10B981', dark: '#34D399', name: 'Forest' },
+            cherry: { light: '#E11D48', dark: '#F87171', name: 'Cherry' },
+            orange: { light: '#F59E0B', dark: '#FCD34D', name: 'Orange' },
+        };
+        
+        const updateThemeUI = (currentTheme) => {
+            const [scheme, color] = currentTheme.split('-');
+            const isDark = scheme === 'dark';
 
-        const applyTheme = (themeValue) => {
-            // themeValue formatı: "scheme-color" -> "light-default", "dark-ocean"
-            document.documentElement.dataset.theme = themeValue;
-            localStorage.setItem('theme', themeValue);
+            // Ana butonu güncelle
+            themeMenuBtn.innerHTML = icons.palette;
 
-            const [scheme, color] = themeValue.split('-');
+            // Tema menüsündeki mod butonlarını güncelle
+            const lightBtn = document.getElementById('light-scheme-btn-inside');
+            const darkBtn = document.getElementById('dark-scheme-btn-inside');
+            
+            if (lightBtn && darkBtn) {
+                lightBtn.innerHTML = `${icons.sun} <span class="ml-2">Aydınlık</span>`;
+                darkBtn.innerHTML = `${icons.moon} <span class="ml-2">Karanlık</span>`;
+                
+                [lightBtn, darkBtn].forEach(btn => {
+                    btn.classList.toggle('border-accent', btn.dataset.scheme === scheme);
+                });
+            }
 
-            // Tema butonunun ikonunu güncelle
-            themeMenuBtn.innerHTML = scheme === 'dark' ? icons.moon : icons.sun;
 
-            // Tema menüsündeki seçili butonları güncelle
-            document.querySelectorAll('.theme-scheme-btn').forEach(btn => {
-                btn.classList.toggle('btn-primary', btn.dataset.scheme === scheme);
-                btn.classList.toggle('btn-secondary', btn.dataset.scheme !== scheme);
-            });
-
+            // Tema menüsündeki renk butonlarını güncelle
             document.querySelectorAll('.theme-color-btn').forEach(btn => {
+                const accentColor = themeColors[btn.dataset.color][scheme] || themeColors[btn.dataset.color].light;
+                btn.style.backgroundColor = accentColor;
                 btn.classList.toggle('border-accent', btn.dataset.color === color);
-                btn.classList.toggle('border-transparent', btn.dataset.color !== color);
+                
+                // Tema seçili değilken border'ın görünmesini engelle
+                btn.classList.toggle('border-2', btn.dataset.color === color);
             });
         };
 
-        const getCurrentTheme = () => {
-            return localStorage.getItem('theme') || 'light-default';
+        const applyTheme = (theme) => {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateThemeUI(theme);
         };
 
-        const handleThemeMenuToggle = (e) => {
-            // Dışarı tıklama kontrolü
-            if (themeMenuContainer.classList.contains('hidden') && e.target.closest('#theme-menu-container') === null && e.target !== themeMenuBtn) {
-                 return;
+        const handleThemeSelection = (e) => {
+            const target = e.target.closest('button');
+            if (!target) return;
+
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let [currentScheme, currentColor] = currentTheme.split('-');
+            let newTheme = currentTheme;
+
+            if (target.classList.contains('theme-scheme-btn')) {
+                // Mod (Aydınlık/Karanlık) değişimi
+                const newScheme = target.dataset.scheme;
+                newTheme = `${newScheme}-${currentColor}`;
+            } else if (target.classList.contains('theme-color-btn')) {
+                // Renk paleti değişimi
+                const newColor = target.dataset.color;
+                newTheme = `${currentScheme}-${newColor}`;
             }
-            if (e.target === themeMenuBtn || e.target.closest('#theme-menu-btn')) {
-                themeMenuContainer.classList.toggle('hidden');
-            } else if (!themeMenuContainer.classList.contains('hidden') && e.target.closest('#theme-menu-container') === null) {
-                themeMenuContainer.classList.add('hidden');
-            }
+
+            applyTheme(newTheme);
         };
-        
-        // --- YASAL SAYFA İÇERİKLERİ ---
-        const legalContents = {
-            'privacy': {
-                title: 'Gizlilik Politikası',
-                text: `
-                    ## Gizlilik Politikası
-                    
-                    **Son Güncelleme Tarihi: 25 Ekim 2025**
-                    
-                    Vuelina (bundan sonra "Uygulama" veya "Biz" olarak anılacaktır), kullanıcılarımızın gizliliğini korumayı taahhüt eder. Bu politika, uygulamamızı kullandığınızda topladığımız bilgileri, bu bilgileri nasıl kullandığımızı ve koruduğumuzu açıklamaktadır.
-                    
-                    ### 1. Toplanan Bilgiler
-                    
-                    Uygulamamız aşağıdaki bilgi türlerini toplayabilir:
-                    
-                    * **Kişisel Olarak Tanımlayıcı Olmayan Bilgiler:** Cihaz bilgileri, tarayıcı türü, kullanım verileri (tıklamalar, görüntülenen sayfalar, uygulama içinde geçirilen süre). Bu bilgiler anonim olarak Google Analytics ve AdSense gibi hizmetler aracılığıyla toplanır.
-                    * **Kullanıcı Girişleri:** Yapay zeka asistanına girdiğiniz seyahat planlama metinleri. Bu veriler, yalnızca size öneri oluşturmak ve hizmet kalitemizi artırmak amacıyla işlenir ve kişisel olarak tanımlayıcı hiçbir bilgiyle ilişkilendirilmez.
-                    * **Yerel Depolama Verileri:** Kontrol listeniz ve tema tercihleriniz gibi bilgiler, sadece cihazınızda (localStorage) saklanır ve sunucularımıza iletilmez.
-                    
-                    ### 2. Bilgilerin Kullanımı
-                    
-                    Topladığımız bilgileri aşağıdaki amaçlarla kullanırız:
-                    
-                    * Hizmetlerimizi işletmek ve sürdürmek.
-                    * İçeriği kişiselleştirmek (örneğin, tema tercihinizi kaydetmek).
-                    * Kullanıcı davranışını analiz etmek ve uygulamayı iyileştirmek.
-                    * Google AdSense reklamlarını göstermek ve performanslarını izlemek.
-                    
-                    ### 3. Üçüncü Taraf Hizmetleri
-                    
-                    Uygulamamız, Google AdSense ve Gemini API gibi üçüncü taraf hizmetleri kullanır. Bu hizmetlerin veri toplama ve kullanma uygulamaları kendi gizlilik politikalarına tabidir. Reklamlar ve yapay zeka önerileri, bu platformlar aracılığıyla sunulur.
-                    
-                    ### 4. Gizlilik Hakkında Not
-                    
-                    Uygulamamız herhangi bir kullanıcı kaydı (e-posta/şifre) gerektirmez ve doğrudan kişisel iletişim bilgisi toplamaz.
-                `
-            },
-            'terms': {
-                title: 'Kullanım Şartları',
-                text: `
-                    ## Kullanım Şartları
-                    
-                    **Yürürlük Tarihi: 25 Ekim 2025**
-                    
-                    Vuelina mobil ve web uygulamalarını (bundan sonra "Hizmet" veya "Uygulama" olarak anılacaktır) kullanmadan önce lütfen bu Kullanım Şartları'nı dikkatlice okuyun.
-                    
-                    ### 1. Hizmetin Kabulü
-                    
-                    Hizmet'e erişiminiz ve kullanımınız, bu Şartları kabul etmenize bağlıdır. Bu Şartlar, Hizmet'e erişen veya Hizmeti kullanan tüm ziyaretçiler, kullanıcılar ve diğerleri için geçerlidir. Hizmet'e erişerek veya kullanarak bu şartlara bağlı kalmayı kabul ediyorsunuz.
-                    
-                    ### 2. Yapay Zeka İçeriği ve Sorumluluk Reddi
-                    
-                    Uygulama, seyahat planları, kültürel ipuçları ve destinasyon önerileri gibi içerikleri oluşturmak için yapay zeka (Gemini API) kullanır.
-                    
-                    * **Doğruluk Garantisi Yok:** Yapay zeka tarafından sağlanan bilgilerin (rota, fiyat, vize, güvenlik, acil durum numaraları vb.) %100 güncel, doğru veya eksiksiz olduğunu garanti etmiyoruz. Kullanıcılar, kritik bilgileri (vize, acil durum numarası, sağlık) her zaman resmi kaynaklardan doğrulamalıdır.
-                    * **Zarar Sorumluluğu:** Uygulamayı kullanmanızdan kaynaklanan herhangi bir kayıp, hasar veya yaralanmadan sorumlu tutulamayız. Seyahat kararları tamamen kullanıcıya aittir.
-                    
-                    ### 3. Fikri Mülkiyet
-                    
-                    Uygulamanın orijinal içeriği, özellikleri ve işlevselliği Vuelina'ya aittir ve uluslararası telif hakkı, ticari marka, patent, ticari sır ve diğer fikri mülkiyet veya tescilli hak yasalarıyla korunmaktadır.
-                    
-                    ### 4. Hizmetin Sonlandırılması
-                    
-                    Bu Şartları ihlal etmeniz durumunda, önceden bildirimde bulunmaksızın Hizmet'e erişiminizi derhal sonlandırabilir veya askıya alabiliriz.
-                `
-            },
-            'contact': {
-                title: 'İletişim',
-                text: `
-                    ## İletişim Bilgileri
-                    
-                    Vuelina uygulaması ile ilgili herhangi bir sorunuz, geri bildiriminiz veya teknik desteğe ihtiyacınız olması durumunda aşağıdaki kanalları kullanarak bize ulaşabilirsiniz.
-                    
-                    ### 1. Teknik Destek ve Geri Bildirim
-                    
-                    Uygulama hataları, işlevsellik önerileri veya genel geri bildirimleriniz için:
-                    
-                    * **E-posta:** support@vuelinaapp.com
-                    
-                    ### 2. İş Ortaklığı ve Reklam
-                    
-                    Ticari işbirlikleri, reklam veya sponsorluk talepleriniz için:
-                    
-                    * **E-posta:** partnership@vuelinaapp.com
-                    
-                    ### 3. Adres (Temsili)
-                    
-                    Yasal yazışmalar için temsilci adresimiz:
-                    
-                    * **Adres:** Dijital Seyahat Teknolojileri A.Ş., Teknoloji Parkı No: 42, 34000 İstanbul/Türkiye
-                    
-                    Size en kısa sürede geri dönüş yapılacaktır.
-                `
-            }
-        };
-        
-        // Modal açma fonksiyonu
-        const showLegalModal = (type) => {
-            const content = legalContents[type];
-            if (!content) return;
+        // --- TEMA YÖNETİMİ SONU ---
 
-            legalModalTitle.textContent = content.title;
-            // İçeriği Markdown'dan HTML'e dönüştürerek modal içine yerleştirme
-            legalModalContent.innerHTML = formatGeminiResponse(content.text);
-            legalModal.classList.add('visible');
-        }
-
-        // --- Event Listeners ---
-        
-        checklistContainer.addEventListener('click', handleChecklistInteraction);
-
-        // YENİ EKLEME: Ülke kartları için olay delegasyonu
+        // --- Olay Dinleyicileri ---
+        // Ülke kartı tıklaması: Detay sayfasına git ve URL'yi güncelle
         countryListContainer.addEventListener('click', (e) => {
             const card = e.target.closest('.country-card');
-            if (card && card.dataset.country) {
-                displayCountryDetail(card.dataset.country);
+            if (card && card.dataset.countryName) {
+                displayCountryDetail(card.dataset.countryName);
             }
         });
         
-        addChecklistItemBtn.addEventListener('click', () => {
-            const text = newChecklistItemInput.value.trim();
-            if (text) {
-                const items = JSON.parse(localStorage.getItem('travelChecklist'));
-                items.push({ text: text, completed: false, id: Date.now() });
-                saveChecklistState(items);
-                renderChecklist();
-                newChecklistItemInput.value = '';
+        themeMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            themeMenuContainer.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!themeMenuContainer.classList.contains('hidden') && !themeMenuContainer.contains(e.target) && e.target !== themeMenuBtn) {
+                themeMenuContainer.classList.add('hidden');
             }
         });
-        
-        // Tema menüsünü açma/kapama ve dışarı tıklama
-        document.addEventListener('click', handleThemeMenuToggle);
 
-        // Tema şeması (Aydınlık/Karanlık) değiştirme
-        document.querySelectorAll('.theme-scheme-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const currentTheme = getCurrentTheme();
-                const currentColor = currentTheme.split('-')[1];
-                const newScheme = btn.dataset.scheme;
-                applyTheme(`${newScheme}-${currentColor}`);
-            });
-        });
+        // Tarayıcı Geri/İleri butonu ile sayfa değişimi
+        window.onpopstate = function(event) {
+            checkURLForCountry();
+        };
 
-        // Tema rengi değiştirme
-        document.querySelectorAll('.theme-color-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const currentTheme = getCurrentTheme();
-                const currentScheme = currentTheme.split('-')[0];
-                const newColor = btn.dataset.color;
-                applyTheme(`${currentScheme}-${newColor}`);
-            });
-        });
+        // Tema menüsü içindeki tıklamaları yönetme
+        themeMenuContainer.addEventListener('click', handleThemeSelection);
 
         homeLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1218,13 +1238,14 @@
             countryListView.classList.remove('hidden');
             searchInput.value = '';
             displayCountries();
+            // Yeni: Ana sayfaya dönerken URL'yi temizle
+            window.history.pushState({}, document.title, window.location.pathname);
         });
         
         suggestPlaceBtn.addEventListener('click', () => {
+            aiSuggestionResult.innerHTML = ''; // Önceki sonuçları temizle
+            aiPromptInput.value = ''; // Input'u temizle
             aiSuggestModal.classList.add('visible');
-            aiSuggestionResult.innerHTML = ''; // Temizle
-            aiPromptInput.value = ''; // Temizle
-            getAiSuggestionBtn.innerHTML = 'Önerileri Getir'; // Buton metnini sıfırla
         });
         aiModalCloseBtn.addEventListener('click', () => aiSuggestModal.classList.remove('visible'));
         aiSuggestModal.addEventListener('click', (e) => {
@@ -1241,19 +1262,24 @@
             if (e.target === checklistModal) checklistModal.classList.remove('visible');
         });
 
+        checklistContainer.addEventListener('click', handleChecklistInteraction);
+        
+        addChecklistItemBtn.addEventListener('click', () => {
+            const text = newChecklistItemInput.value.trim();
+            if (text) {
+                const items = JSON.parse(localStorage.getItem('travelChecklist') || '[]');
+                items.push({ text: text, completed: false, id: Date.now() });
+                saveChecklistState(items);
+                renderChecklist();
+                newChecklistItemInput.value = '';
+            }
+        });
+        
         itineraryModalCloseBtn.addEventListener('click', () => itineraryModal.classList.remove('visible'));
         itineraryModal.addEventListener('click', (e) => {
             if (e.target === itineraryModal) itineraryModal.classList.remove('visible');
         });
         
-        // Yasal Sayfa Bağlantıları için Event Listener'lar
-        privacyPolicyLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
-        termsOfUseLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
-        contactLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
-        legalModal.addEventListener('click', (e) => {
-            if (e.target === legalModal || e.target.id === 'legal-modal-close-btn') legalModal.classList.remove('visible');
-        });
-
         searchInput.addEventListener('input', (e) => displayCountries(e.target.value));
         
         modalCloseBtn.addEventListener('click', () => {
@@ -1263,12 +1289,27 @@
             if (e.target === infoModal) infoModal.classList.remove('visible');
         });
 
+        privacyPolicyLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
+        termsOfUseLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
+        contactLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
+        legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); // Hata burada çözüldü
+
+
         const initApp = async () => {
-            const savedTheme = getCurrentTheme();
+            // 1. Tema yüklenmesini en üste taşıdık.
+            const savedTheme = localStorage.getItem('theme') || 'light-indigo';
             applyTheme(savedTheme);
+
+            // 2. Gerekli ikonları yükle
+            themeMenuBtn.innerHTML = icons.palette;
+
+            // 3. Para birimi kurlarını yükle
             await fetchCurrencyRates();
-            displayCountries();
             
+            // 4. URL kontrolü: Eğer bir ülke parametresi varsa detay sayfasını yükle
+            checkURLForCountry();
+            
+            // 5. Preloader'ı kaldır
             setTimeout(() => {
                 preloader.style.opacity = '0';
                 preloader.addEventListener('transitionend', () => preloader.remove());
