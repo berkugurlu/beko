@@ -117,13 +117,22 @@
               background-color: rgba(18, 18, 18, 0.8);
         }
         
-        .country-card { 
+        .country-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer; /* Tıklanabilir olduğunu gösterir */
         }
-        .country-card:hover { 
-            transform: translateY(-8px); 
+        .country-card:hover {
+            transform: translateY(-8px);
             box-shadow: 0 10px 25px var(--shadow-color);
+        }
+
+        .collection-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .collection-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 24px var(--shadow-color);
         }
 
         .tab-button { 
@@ -298,7 +307,19 @@
                     Vuelina, sıradan seyahat planlarının ötesine geçerek size kişiselleştirilmiş, kültürel açıdan zengin deneyimler sunar. 30'dan fazla ülkeye ait detaylı yerel bilgi, gastronomi ipuçları ve ulaşım rehberlerini tek bir platformda topladık. Yapay zeka asistanımız sayesinde, seyahat sürenize, ilgi alanlarınıza ve bütçenize uygun olarak tasarlanmış özgün rotalar oluşturabilir, böylece her anınızı en iyi şekilde değerlendirebilirsiniz. Unutulmaz bir maceraya hazır mısınız? Aşağıdaki ülkelerden birini seçin veya size özel bir öneri isteyin!
                 </p>
             </div>
-            
+
+            <section class="max-w-5xl mx-auto mb-12" aria-labelledby="collection-section-title">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                    <div>
+                        <h3 id="collection-section-title" class="text-2xl font-bold text-primary">Koleksiyonlarla Keşfet</h3>
+                        <p class="text-secondary text-sm sm:text-base mt-1">Ruh haline veya planladığın tatil türüne göre seçilmiş destinasyonları tek tıkla keşfet.</p>
+                    </div>
+                    <button id="clear-collection-btn" type="button" class="btn btn-secondary hidden px-4 py-2 self-start sm:self-auto">Filtreyi Sıfırla</button>
+                </div>
+                <div id="collection-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+                <p id="collection-active-hint" class="text-sm text-accent mt-4 hidden"></p>
+            </section>
+
             <div class="sticky top-[73px] z-40 mb-10 py-2">
                 <div class="max-w-2xl mx-auto content-card !shadow-none !border-none !p-0">
                     <input type="text" id="search-input" class="w-full p-4 rounded-xl border border-border-color focus:outline-none" placeholder="Bir ülke ara (örn: Japonya)...">
@@ -459,6 +480,9 @@
         const countryListContainer = document.getElementById('country-list-container');
         const searchInput = document.getElementById('search-input');
         const noResults = document.getElementById('no-results');
+        const collectionContainer = document.getElementById('collection-container');
+        const collectionActiveHint = document.getElementById('collection-active-hint');
+        const clearCollectionBtn = document.getElementById('clear-collection-btn');
         const preloader = document.getElementById('preloader');
         const themeMenuBtn = document.getElementById('theme-menu-btn');
         const themeMenuContainer = document.getElementById('theme-menu-container');
@@ -493,6 +517,8 @@
         
         let currencyRates = null;
         let aiGeneratedContent = {}; // Yeni: Dinamik olarak üretilen içerikleri saklamak için
+        let activeCollection = null;
+        let activeCollectionSet = null;
 
         const icons = {
             sun: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
@@ -506,6 +532,37 @@
             fastfood: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1"></path><path d="M17 11V7.1a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2V11"></path><path d="M7 11v-2.5a1.5 1.5 0 1 1 3 0V11"></path><path d="M14 11v-2.5a1.5 1.5 0 1 1 3 0V11"></path></svg>`,
             palette: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7V3"></path><path d="M15.5 17.5l-3-3l-3 3"></path><path d="M17 10h5"></path><path d="M22 15a7 7 0 1 1-13.8-3.4c.5-1.4 1.2-2.8 2.3-4.1C11.6 6.3 12 4 12 4s.4 2.3 1.5 3.5c1.1 1.3 1.8 2.7 2.3 4.1A7 7 0 0 1 22 15Z"></path></svg>`
         };
+
+        const curatedCollections = [
+            {
+                id: 'culture-history',
+                title: 'Kültür & Tarih',
+                emoji: '🏛️',
+                description: 'Antik medeniyetlerin izini sür, müzeleri ve sarayları keşfet.',
+                countries: ['Türkiye', 'İtalya', 'Fransa', 'Mısır', 'Japonya']
+            },
+            {
+                id: 'tropical-escape',
+                title: 'Tropik Kaçamaklar',
+                emoji: '🏝️',
+                description: 'Turkuaz sular, palmiyeler ve yıl boyu yaz hissi arayanlara.',
+                countries: ['Tayland', 'Endonezya', 'Filipinler', 'Sri Lanka', 'Malezya']
+            },
+            {
+                id: 'adventure-nature',
+                title: 'Macera & Doğa',
+                emoji: '⛰️',
+                description: 'Fiyortlardan fiyortlara, dağlardan yağmur ormanlarına uzanan adrenalin rotaları.',
+                countries: ['Yeni Zelanda', 'Norveç', 'Peru', 'Kanada', 'Tanzanya']
+            },
+            {
+                id: 'city-lights',
+                title: 'Şehir Işıkları',
+                emoji: '🌆',
+                description: 'Modern mimarisi ve gece hayatıyla enerjisi yüksek mega şehirler.',
+                countries: ['Singapur', 'Birleşik Arap Emirlikleri', 'Güney Kore', 'Avustralya', 'İspanya']
+            }
+        ];
         
         const countriesData = {
             "Türkiye": { flag: "🇹🇷", description: "Tarihi ve doğal güzellikleriyle ünlü, Asya ve Avrupa kıtalarını birleştiren eşsiz bir ülke.", searchTerms: { flights: 'Turkiye', booking: 'Turkey' }, whatToDo: ["Ayasofya & Sultanahmet'i keşfet", "Kapadokya'da sıcak hava balonuyla uç", "Pamukkale travertenlerinde yürü", "Efes Antik Kenti'nin tarihini hisset"], whatToEat: ["Zengin Kebap çeşitleri", "Antep Baklavası", "Serpme Kahvaltı", "Meze kültürü ve Rakı"], whereToStay: ["İstanbul: Tarihi Yarımada veya Karaköy", "Kapadokya: Otantik mağara oteller", "Ege/Akdeniz: Butik oteller ve resortlar"], popularApps: [{name: "Getir", category: "Market & Yemek"}, {name: "BiTaksi", category: "Ulaşım"}, {name: "Yemeksepeti", category: "Yemek Siparişi"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Burger King", "Popeyes", "Usta Dönerci"], currency: "TRY", language: "Türkçe", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Merhaba"}, {tr:"Teşekkürler", local:"Teşekkürler"}], climate: "Genel olarak Akdeniz iklimi hakimdir; yazlar sıcak ve kurak, kışlar ılıman ve yağışlı geçer." },
@@ -634,32 +691,104 @@
             }
             document.body.removeChild(textArea);
         };
-        
+
+        const renderCollections = () => {
+            if (!collectionContainer) return;
+            collectionContainer.innerHTML = curatedCollections.map(collection => `
+                <button type="button" class="collection-card content-card text-left p-5 flex flex-col gap-3 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent" data-collection-id="${collection.id}">
+                    <span class="text-3xl">${collection.emoji}</span>
+                    <div>
+                        <h4 class="text-lg font-semibold text-primary">${collection.title}</h4>
+                        <p class="text-sm text-secondary leading-relaxed">${collection.description}</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 pt-2 border-t border-border-color text-xs text-secondary">
+                        ${collection.countries.map(country => `<span class="px-2 py-1 rounded-full border border-border-color">${country}</span>`).join('')}
+                    </div>
+                </button>
+            `).join('');
+        };
+
+        const updateCollectionUI = () => {
+            if (!collectionContainer) return;
+
+            collectionContainer.querySelectorAll('.collection-card').forEach(card => {
+                const isActive = card.dataset.collectionId === activeCollection;
+                card.classList.toggle('ring-2', isActive);
+                card.classList.toggle('ring-accent', isActive);
+                card.classList.toggle('shadow-xl', isActive);
+                card.setAttribute('aria-pressed', isActive);
+            });
+
+            if (activeCollection) {
+                const selected = curatedCollections.find(item => item.id === activeCollection);
+                if (selected && collectionActiveHint) {
+                    collectionActiveHint.textContent = `${selected.emoji} ${selected.title} koleksiyonu aktif. Arama sonuçların bu tema ile sınırlandı.`;
+                    collectionActiveHint.classList.remove('hidden');
+                }
+                if (clearCollectionBtn) {
+                    clearCollectionBtn.classList.remove('hidden');
+                }
+            } else {
+                if (collectionActiveHint) {
+                    collectionActiveHint.classList.add('hidden');
+                    collectionActiveHint.textContent = '';
+                }
+                if (clearCollectionBtn) {
+                    clearCollectionBtn.classList.add('hidden');
+                }
+            }
+        };
+
+        const resetCollectionFilter = () => {
+            activeCollection = null;
+            activeCollectionSet = null;
+            displayCountries(searchInput.value);
+            updateCollectionUI();
+        };
+
+        const activateCollection = (collectionId) => {
+            const collection = curatedCollections.find(item => item.id === collectionId);
+            if (!collection) return;
+            activeCollection = collectionId;
+            activeCollectionSet = new Set(collection.countries.filter(countryName => countriesData[countryName]));
+            displayCountries(searchInput.value);
+            updateCollectionUI();
+        };
+
+        renderCollections();
+        updateCollectionUI();
+
         // Olay Delegasyonu kullanılarak kart listeleme işlevi
         const displayCountries = (filter = '') => {
             countryListContainer.innerHTML = '';
             const normalizedFilter = filter.toLowerCase().trim();
             const countryNames = Object.keys(countriesData).sort((a,b) => a.localeCompare(b, 'tr'));
             let adInserted = false;
+            let visibleCount = 0;
+            const isCollectionActive = Boolean(activeCollectionSet);
 
-            countryNames.forEach((name, index) => {
+            countryNames.forEach((name) => {
+                if (activeCollectionSet && !activeCollectionSet.has(name)) {
+                    return;
+                }
                 // Sadece ülke adı veya bayrak filtreye uyuyorsa göster
                 if (name.toLowerCase().includes(normalizedFilter) || countriesData[name].flag.toLowerCase().includes(normalizedFilter)) {
                     const country = countriesData[name];
                     const card = document.createElement('div');
                     card.className = 'country-card content-card p-6 text-center';
                     // SEO için temiz URL'ler: Country adını URL'ye eklemek için data attribute kullanılıyor
-                    card.setAttribute('data-country-name', name); 
+                    card.setAttribute('data-country-name', name);
                     card.innerHTML = `
                         <p class="text-6xl mb-4">${country.flag}</p>
                         <h3 class="text-lg font-semibold mb-1">${name}</h3>
                         <p class="text-sm text-secondary">${country.description.length > 50 ? country.description.substring(0, 50) + '...' : country.description}</p>
                     `;
                     countryListContainer.appendChild(card);
+                    visibleCount += 1;
                 }
 
                 // AdSense placeholder'ı ekle
-                if (index === 7 && !adInserted && !filter) {
+                if (!adInserted && !normalizedFilter && !isCollectionActive && visibleCount === 8) {
                     const adCard = document.createElement('div');
                     adCard.className = 'ad-placeholder content-card p-6 text-center lg:col-span-2 md:col-span-1 sm:col-span-2 col-span-1';
                     adCard.innerHTML = `
@@ -680,6 +809,24 @@
                 displayCountryDetail(card.dataset.countryName);
             }
         });
+
+        if (collectionContainer) {
+            collectionContainer.addEventListener('click', (event) => {
+                const card = event.target.closest('.collection-card');
+                if (!card) return;
+                const collectionId = card.dataset.collectionId;
+                if (!collectionId) return;
+                if (activeCollection === collectionId) {
+                    resetCollectionFilter();
+                } else {
+                    activateCollection(collectionId);
+                }
+            });
+        }
+
+        if (clearCollectionBtn) {
+            clearCollectionBtn.addEventListener('click', () => resetCollectionFilter());
+        }
 
         // Yeni: URL'deki ülke adını alıp detay sayfasını yükler
         const checkURLForCountry = () => {
@@ -1237,7 +1384,7 @@
             countryDetailView.classList.add('hidden');
             countryListView.classList.remove('hidden');
             searchInput.value = '';
-            displayCountries();
+            resetCollectionFilter();
             // Yeni: Ana sayfaya dönerken URL'yi temizle
             window.history.pushState({}, document.title, window.location.pathname);
         });
