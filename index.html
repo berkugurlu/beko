@@ -7,9 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
-    <!-- Google AdSense Kodu (Kullanıcının eklediği kodlar korunmuştur) -->
+    <!-- Google AdSense Kodu -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838"
      crossorigin="anonymous"></script>
 
@@ -19,7 +18,7 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
+     
       gtag('config', 'G-E483B9402G');
     </script>
 
@@ -77,11 +76,11 @@
         [data-theme*="forest"] { --accent: #10B981; --accent-dark: #059669; } /* Light */
         [data-theme="dark-forest"] { --accent: #34D399; --accent-dark: #10B981; } /* Dark */
         
-        /* 4. CHERRY (Vişne / Red) - Yeni eklendi */
+        /* 4. CHERRY (Vişne / Red) */
         [data-theme*="cherry"] { --accent: #E11D48; --accent-dark: #BE123C; } /* Light (Red 600) */
         [data-theme="dark-cherry"] { --accent: #F87171; --accent-dark: #EF4444; } /* Dark (Red 400) */
 
-        /* 5. ORANGE (Portakal / Amber) - Yeni eklendi */
+        /* 5. ORANGE (Portakal / Amber) */
         [data-theme*="orange"] { --accent: #F59E0B; --accent-dark: #D97706; } /* Light (Amber 500) */
         [data-theme="dark-orange"] { --accent: #FCD34D; --accent-dark: #F59E0B; } /* Dark (Amber 300) */
         
@@ -119,7 +118,7 @@
         
         .country-card { 
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer; /* Tıklanabilir olduğunu gösterir */
+            cursor: pointer;
         }
         .country-card:hover { 
             transform: translateY(-8px); 
@@ -146,7 +145,7 @@
         .modal-content { 
             transform: scale(0.95) translateY(10px); 
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
-            max-height: 90vh; /* Modal içeriği çok uzunsa kaydırma çubuğu çıksın */
+            max-height: 90vh;
             overflow-y: auto;
         }
         .modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
@@ -160,7 +159,6 @@
         
         @keyframes fadeInAnimation { from { opacity: 0; } to { opacity: 1; } }
         
-        /* YENİ: Logo için parlama animasyonu */
         @keyframes glow {
             0%, 100% { filter: drop-shadow(0 0 1px var(--accent)) drop-shadow(0 0 3px var(--accent-dark)); }
             50% { filter: drop-shadow(0 0 6px var(--accent)) drop-shadow(0 0 12px var(--accent-dark)); }
@@ -226,7 +224,6 @@
             min-height: 100px;
         }
         
-        /* Yeni: Yapay zeka içeriği butonu stilini ekle */
         .ai-result-embed-btn {
             background-color: var(--accent);
             color: white;
@@ -239,6 +236,13 @@
         .ai-result-embed-btn:hover {
             background-color: var(--accent-dark);
         }
+        /* Markdown Styling for AI Results */
+        .markdown-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .markdown-content h3 { font-size: 1.25rem; font-weight: 600; margin-top: 0.75rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        .markdown-content li { margin-bottom: 0.25rem; color: var(--text-secondary); }
+        .markdown-content p { margin-bottom: 0.75rem; color: var(--text-secondary); }
+        .markdown-content strong { color: var(--text-primary); font-weight: 600; }
 
     </style>
 </head>
@@ -324,7 +328,6 @@
             Google AdSense Reklam Alanı
         </div>
         
-        <!-- AdSense Onayı için EKLENEN BÖLÜM: Yasal Sayfa Bağlantıları -->
         <div class="max-w-7xl mx-auto px-4 text-sm mb-3 space-x-4">
             <a href="#" id="privacy-policy-link" class="text-secondary hover:text-accent transition-colors">Privacy Policy</a>
             <span class="text-secondary">|</span>
@@ -332,7 +335,6 @@
             <span class="text-secondary">|</span>
             <a href="#" id="contact-link" class="text-secondary hover:text-accent transition-colors">Contact</a>
         </div>
-        <!-- AdSense Onayı için EKLENEN BÖLÜM SONU -->
 
         <p class="text-sm text-secondary">&copy; 2025 Vuelina </p>
     </footer>
@@ -358,7 +360,7 @@
                 <textarea id="ai-prompt-input" rows="4" class="w-full p-3 mb-4 rounded-lg bg-background border border-border-color focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Örnek: Aralık ayında, bir haftalığına, romantik ve tarihi bir gezi arıyorum. Çok pahalı olmasın."></textarea>
                 <button id="get-ai-suggestion-btn" class="btn btn-primary w-full py-3 text-lg">Önerileri Getir</button>
             </div>
-            <div id="ai-suggestion-result" class="mt-4 prose [data-theme*='dark']:prose-invert max-w-none"></div>
+            <div id="ai-suggestion-result" class="mt-4 markdown-content"></div>
         </div>
     </div>
 
@@ -395,7 +397,7 @@
         </div>
     </div>
 
-    <!-- YASAL METİN MODALI (LEGAL TEXT MODAL) - Yeni eklendi -->
+    <!-- YASAL METİN MODALI (LEGAL TEXT MODAL) -->
     <div id="legal-modal" class="modal-overlay" aria-modal="true" role="dialog">
         <div class="modal-content content-card w-full max-w-3xl p-8">
             <div class="flex justify-between items-center mb-4">
@@ -403,7 +405,6 @@
                 <button id="legal-modal-close-btn" class="text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white">&times;</button>
             </div>
             <div id="legal-modal-content" class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none text-secondary">
-                <!-- İçerik buraya yüklenecek -->
             </div>
             <div class="mt-6 text-right">
                  <button onclick="document.getElementById('legal-modal').classList.remove('visible')" class="btn btn-secondary py-2 px-4">Kapat</button>
@@ -411,7 +412,7 @@
         </div>
     </div>
     
-    <!-- Tema Seçim Menüsü (Hata Düzeltildi) -->
+    <!-- Tema Seçim Menüsü -->
     <div id="theme-menu-container" class="absolute top-16 right-4 z-50 hidden">
         <div class="content-card p-4 w-64 shadow-xl">
             <h4 class="font-bold text-lg mb-3 border-b pb-2 border-border-color">Tema Ayarları</h4>
@@ -482,7 +483,6 @@
         const itineraryModal = document.getElementById('itinerary-modal');
         const itineraryModalCloseBtn = document.getElementById('itinerary-modal-close-btn');
         const getItineraryBtn = document.getElementById('get-itinerary-btn');
-        // Yasal modal elementleri
         const legalModal = document.getElementById('legal-modal');
         const legalModalTitle = document.getElementById('legal-modal-title');
         const legalModalContent = document.getElementById('legal-modal-content');
@@ -491,8 +491,83 @@
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
         
+        const apiKey = ""; // API Anahtarı sistem tarafından çalışma zamanında enjekte edilir.
+
+        // --- GEMINI AI API ENTEGRASYONU ---
+        // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
+        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                         if (response.status === 429) {
+                             // Rate limit durumunda bekle ve tekrar dene
+                             throw new Error(`Rate limit exceeded (429)`);
+                         }
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                }
+            }
+        }
+
+        // Ana Gemini API Çağırma Fonksiyonu
+        const callGeminiAPI = async (prompt, triggerBtn, resultContainer) => {
+            const originalBtnText = triggerBtn.innerText;
+            triggerBtn.disabled = true;
+            triggerBtn.innerText = "Düşünüyor...";
+            triggerBtn.classList.add('opacity-75', 'cursor-wait');
+
+            try {
+                // Gemini 1.5 Flash modeli kullanımı
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                const data = await fetchWithRetry(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (!generatedText) {
+                    throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
+                }
+
+                return generatedText;
+
+            } catch (error) {
+                console.error("Gemini API Hatası:", error);
+                if (resultContainer) {
+                    resultContainer.innerHTML = `
+                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+                            <p class="font-bold">Üzgünüm, bir hata oluştu.</p>
+                            <p class="text-sm">Lütfen internet bağlantınızı kontrol edip tekrar deneyin. (${error.message})</p>
+                        </div>
+                    `;
+                }
+                showInfoModal("Hata", "Yapay zeka şu an yanıt veremiyor. Lütfen daha sonra tekrar deneyin.");
+                return null;
+            } finally {
+                triggerBtn.disabled = false;
+                triggerBtn.innerText = originalBtnText;
+                triggerBtn.classList.remove('opacity-75', 'cursor-wait');
+            }
+        };
+
         let currencyRates = null;
-        let aiGeneratedContent = {}; // Yeni: Dinamik olarak üretilen içerikleri saklamak için
+        let aiGeneratedContent = {}; 
 
         const icons = {
             sun: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
@@ -601,11 +676,11 @@
                 line = line.trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
                 
                 if (line.startsWith('###')) {
-                     html += `${inList ? '</ul>' : ''}<h3 class="text-xl font-semibold mt-4 mb-2 text-primary">${line.replace(/###\s*/, '')}</h3>`;
-                     inList = false;
+                      html += `${inList ? '</ul>' : ''}<h3 class="text-xl font-semibold mt-4 mb-2 text-primary">${line.replace(/###\s*/, '')}</h3>`;
+                      inList = false;
                 } else if (line.startsWith('##')) {
-                     html += `${inList ? '</ul>' : ''}<h2 class="text-2xl font-bold mt-5 mb-3 text-primary">${line.replace(/##\s*/, '')}</h2>`;
-                     inList = false;
+                      html += `${inList ? '</ul>' : ''}<h2 class="text-2xl font-bold mt-5 mb-3 text-primary">${line.replace(/##\s*/, '')}</h2>`;
+                      inList = false;
                 } else if (line.startsWith('-') || line.startsWith('*')) {
                     if (!inList) {
                         html += '<ul class="list-disc pl-5 space-y-2 mt-2">';
@@ -648,7 +723,6 @@
                     const country = countriesData[name];
                     const card = document.createElement('div');
                     card.className = 'country-card content-card p-6 text-center';
-                    // SEO için temiz URL'ler: Country adını URL'ye eklemek için data attribute kullanılıyor
                     card.setAttribute('data-country-name', name); 
                     card.innerHTML = `
                         <p class="text-6xl mb-4">${country.flag}</p>
@@ -730,19 +804,19 @@
                     <h3 class="text-3xl font-bold text-center mb-6">✨ Yapay Zeka Asistanın</h3>
                     
                     <!-- Dinamik olarak eklenen AI içerikleri -->
-                    <div id="ai-itinerary-embed" class="content-card p-6 rounded-2xl mb-6">
+                    <div id="ai-itinerary-embed" class="content-card p-6 rounded-2xl mb-6 markdown-content">
                         <h4 class="text-2xl font-bold mb-4 text-primary">🗺️ Kişiselleştirilmiş Seyahat Planı</h4>
                         <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${itineraryContent}</div>
                         <button id="open-itinerary-modal-btn" class="ai-result-embed-btn mt-4 w-full">Planı Özelleştir / Oluştur</button>
                     </div>
 
-                    <div id="ai-tips-embed" class="content-card p-6 rounded-2xl mb-6">
+                    <div id="ai-tips-embed" class="content-card p-6 rounded-2xl mb-6 markdown-content">
                         <h4 class="text-2xl font-bold mb-4 text-primary">💡 Yerel Kültürel İpuçları</h4>
                         <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${culturalTipsContent}</div>
                         <button id="get-cultural-tips-btn" class="ai-result-embed-btn mt-4 w-full">İpuçları Oluştur / Güncelle</button>
                     </div>
 
-                    <div id="ai-packing-embed" class="content-card p-6 rounded-2xl mb-6">
+                    <div id="ai-packing-embed" class="content-card p-6 rounded-2xl mb-6 markdown-content">
                         <h4 class="text-2xl font-bold mb-4 text-primary">📦 Akıllı Bavul Hazırlık Listesi</h4>
                         <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${packingListContent}</div>
                          <button id="open-packing-list-btn" class="ai-result-embed-btn mt-4 w-full">Listeyi Oluştur / Güncelle</button>
@@ -942,8 +1016,7 @@
             }
         };
         
-        // Diğer fonksiyonlar (getAiDestinationSuggestion, fetchCurrencyRates, initCurrencyConverter, legalTexts, showLegalModal, renderChecklist, saveChecklistState, handleChecklistInteraction) aynı kalmıştır.
-        // ... (Diğer fonksiyonların kodları burada) ...
+        // Diğer fonksiyonlar (getAiDestinationSuggestion, fetchCurrencyRates, initCurrencyConverter, legalTexts, showLegalModal, renderChecklist, saveChecklistState, handleChecklistInteraction)
 
         const getAiDestinationSuggestion = async () => {
             const userInput = aiPromptInput.value;
@@ -1292,7 +1365,7 @@
         privacyPolicyLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
         termsOfUseLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
         contactLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
-        legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); // Hata burada çözüldü
+        legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); 
 
 
         const initApp = async () => {
