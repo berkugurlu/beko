@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
     <title>Vuelina | Akıllı Seyahat Rehberi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -413,8 +414,8 @@
     </div>
 
     <!-- Tema Seçim Menüsü -->
-    <div id="theme-menu-container" class="absolute top-16 right-4 z-50 hidden">
-        <div class="content-card p-4 w-64 shadow-xl">
+    <div id="theme-menu-container" class="fixed top-20 right-4 z-[60] hidden">
+        <div class="content-card p-4 w-64 shadow-xl border border-gray-100 dark:border-gray-700">
             <h4 class="font-bold text-lg mb-3 border-b pb-2 border-border-color">Tema Ayarları</h4>
 
             <div class="mb-4">
@@ -516,6 +517,21 @@
 
         // Ana Gemini API Çağırma Fonksiyonu
         const callGeminiAPI = async (prompt, triggerBtn, resultContainer) => {
+            if (!apiKey) {
+                const errorMsg = "API anahtarı eksik. Lütfen geçerli bir API anahtarı tanımlayın.";
+                console.error(errorMsg);
+                if (resultContainer) {
+                    resultContainer.innerHTML = `
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700">
+                            <p class="font-bold">Yapılandırma Hatası</p>
+                            <p class="text-sm">${errorMsg}</p>
+                        </div>
+                    `;
+                }
+                showInfoModal("Eksik Anahtar", errorMsg);
+                return null;
+            }
+
             const originalBtnText = triggerBtn.innerText;
             triggerBtn.disabled = true;
             triggerBtn.innerText = "Düşünüyor...";
@@ -549,15 +565,19 @@
 
             } catch (error) {
                 console.error("Gemini API Hatası:", error);
+                let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
+                if (error.message.includes("403")) userMessage = "API anahtarı geçersiz veya yetkisiz.";
+                if (error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen bekleyin.";
+
                 if (resultContainer) {
                     resultContainer.innerHTML = `
                         <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
                             <p class="font-bold">Üzgünüm, bir hata oluştu.</p>
-                            <p class="text-sm">Lütfen internet bağlantınızı kontrol edip tekrar deneyin. (${error.message})</p>
+                            <p class="text-sm">${userMessage} (${error.message})</p>
                         </div>
                     `;
                 }
-                showInfoModal("Hata", "Yapay zeka şu an yanıt veremiyor. Lütfen daha sonra tekrar deneyin.");
+                showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
                 return null;
             } finally {
                 triggerBtn.disabled = false;
@@ -1370,6 +1390,8 @@
 
         const initApp = async () => {
             // 1. Tema yüklenmesini en üste taşıdık.
+            // Varsayılan olarak her zaman Indigo (light-indigo) seçili olsun isteniyor, ancak kullanıcı değiştirdiyse hatırlasın.
+            // Eğer "her cihazda varsayılan" deniyorsa, ilk girişte light-indigo olmalı.
             const savedTheme = localStorage.getItem('theme') || 'light-indigo';
             applyTheme(savedTheme);
 
