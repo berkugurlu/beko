@@ -492,7 +492,7 @@
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
 
-        const apiKey = ""; // API Anahtarı sistem tarafından çalışma zamanında enjekte edilir.
+        const apiKey = ""; // LÜTFEN BURAYA GEÇERLİ BİR GEMINI API ANAHTARI GİRİN (Örn: AIza...)
 
         // --- GEMINI AI API ENTEGRASYONU ---
         // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
@@ -566,6 +566,7 @@
             } catch (error) {
                 console.error("Gemini API Hatası:", error);
                 let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
+                if (error.message.includes("400")) userMessage = "İstek geçersiz. API anahtarınızı kontrol edin.";
                 if (error.message.includes("403")) userMessage = "API anahtarı geçersiz veya yetkisiz.";
                 if (error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen bekleyin.";
 
@@ -599,7 +600,7 @@
             smartphone: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`,
             tools: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>`,
             fastfood: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1"></path><path d="M17 11V7.1a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2V11"></path><path d="M7 11v-2.5a1.5 1.5 0 1 1 3 0V11"></path><path d="M14 11v-2.5a1.5 1.5 0 1 1 3 0V11"></path></svg>`,
-            palette: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7V3"></path><path d="M15.5 17.5l-3-3l-3 3"></path><path d="M17 10h5"></path><path d="M22 15a7 7 0 1 1-13.8-3.4c.5-1.4 1.2-2.8 2.3-4.1C11.6 6.3 12 4 12 4s.4 2.3 1.5 3.5c1.1 1.3 1.8 2.7 2.3 4.1A7 7 0 0 1 22 15Z"></path></svg>`
+            palette: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.37 2.63 14 7l-1.59-1.59a2 2 0 0 0-2.82 0L8 7l9 9 1.59-1.59a2 2 0 0 0 0-2.82L17 10l4.37-4.37a2.12 2.12 0 1 0-3-3Z"/><path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/><path d="M14.5 17.5 4.5 15"/></svg>`
         };
 
         const countriesData = {
