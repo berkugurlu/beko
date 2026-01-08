@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
-    
+
     <!-- Google AdSense Kodu -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838"
      crossorigin="anonymous"></script>
@@ -18,7 +18,7 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-     
+
       gtag('config', 'G-E483B9402G');
     </script>
 
@@ -27,7 +27,7 @@
          * Temel Renk Tanımları: Işık ve Koyu Şema için ortak değişkenler.
          * data-theme="scheme-color" formatını kullanır (örn: light-indigo, dark-ocean)
          */
-        
+
         /* --- Ortak Değişkenler (Mod bağımsız) --- */
         :root {
             --text-primary: #18181B;
@@ -44,7 +44,7 @@
             --background-base: #121212;
             --card-bg-base: #1E1E1E;
         }
-        
+
         [data-theme*="light"] {
             --background-base: #F8F9FA;
             --card-bg-base: #FFFFFF;
@@ -75,7 +75,7 @@
         /* 3. FOREST (Emerald) */
         [data-theme*="forest"] { --accent: #10B981; --accent-dark: #059669; } /* Light */
         [data-theme="dark-forest"] { --accent: #34D399; --accent-dark: #10B981; } /* Dark */
-        
+
         /* 4. CHERRY (Vişne / Red) */
         [data-theme*="cherry"] { --accent: #E11D48; --accent-dark: #BE123C; } /* Light (Red 600) */
         [data-theme="dark-cherry"] { --accent: #F87171; --accent-dark: #EF4444; } /* Dark (Red 400) */
@@ -83,7 +83,7 @@
         /* 5. ORANGE (Portakal / Amber) */
         [data-theme*="orange"] { --accent: #F59E0B; --accent-dark: #D97706; } /* Light (Amber 500) */
         [data-theme="dark-orange"] { --accent: #FCD34D; --accent-dark: #F59E0B; } /* Dark (Amber 300) */
-        
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background);
@@ -92,7 +92,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        
+
         .logo-font {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -104,9 +104,9 @@
             transition: all 0.3s ease;
             border-radius: 20px;
         }
-        
-        header { 
-            position: sticky; top: 0; z-index: 50; 
+
+        header {
+            position: sticky; top: 0; z-index: 50;
             background-color: rgba(248, 249, 250, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -115,50 +115,50 @@
         [data-theme*="dark"] header {
               background-color: rgba(18, 18, 18, 0.8);
         }
-        
-        .country-card { 
+
+        .country-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
         }
-        .country-card:hover { 
-            transform: translateY(-8px); 
+        .country-card:hover {
+            transform: translateY(-8px);
             box-shadow: 0 10px 25px var(--shadow-color);
         }
 
-        .tab-button { 
-            transition: all 0.2s ease; 
+        .tab-button {
+            transition: all 0.2s ease;
             border-bottom: 2px solid transparent;
             padding: 1rem 0.25rem;
         }
         .tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeInAnimation 0.4s ease forwards; }
-        
-        .modal-overlay { 
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background-color: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(4px); 
-            z-index: 100; display: flex; align-items: center; justify-content: center; 
-            opacity: 0; transition: opacity 0.3s ease; pointer-events: none; 
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
         }
         .modal-overlay.visible { opacity: 1; pointer-events: auto; }
-        .modal-content { 
-            transform: scale(0.95) translateY(10px); 
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+        .modal-content {
+            transform: scale(0.95) translateY(10px);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             max-height: 90vh;
             overflow-y: auto;
         }
         .modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
-        
-        #preloader { 
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background-color: var(--background); 
-            z-index: 9999; display: flex; align-items: center; justify-content: center; 
-            transition: opacity 0.5s ease; 
+
+        #preloader {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--background);
+            z-index: 9999; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease;
         }
-        
+
         @keyframes fadeInAnimation { from { opacity: 0; } to { opacity: 1; } }
-        
+
         @keyframes glow {
             0%, 100% { filter: drop-shadow(0 0 1px var(--accent)) drop-shadow(0 0 3px var(--accent-dark)); }
             50% { filter: drop-shadow(0 0 6px var(--accent)) drop-shadow(0 0 12px var(--accent-dark)); }
@@ -168,27 +168,27 @@
             animation: glow 1.5s ease-in-out infinite;
         }
 
-        .btn { 
-            transition: all 0.2s ease; 
+        .btn {
+            transition: all 0.2s ease;
             border-radius: 12px;
             font-weight: 600;
         }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;}
-        .btn-primary { 
-            background-color: var(--accent); 
-            color: white; 
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
         }
-        .btn-primary:hover:not(:disabled) { 
-            background-color: var(--accent-dark); 
-            transform: translateY(-2px); 
+        .btn-primary:hover:not(:disabled) {
+            background-color: var(--accent-dark);
+            transform: translateY(-2px);
             box-shadow: 0 6px 15px var(--shadow-color);
         }
-        .btn-secondary { 
-            background-color: var(--card-bg); 
-            border: 1px solid var(--border-color); 
+        .btn-secondary {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             color: var(--text-primary);
         }
-        .btn-secondary:hover { 
+        .btn-secondary:hover {
             border-color: var(--accent);
             color: var(--accent);
         }
@@ -223,7 +223,7 @@
             font-size: 0.8rem;
             min-height: 100px;
         }
-        
+
         .ai-result-embed-btn {
             background-color: var(--accent);
             color: white;
@@ -247,7 +247,7 @@
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-    
+
     <div id="preloader" class="fade-in">
           <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -259,7 +259,7 @@
               <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="url(#logo-gradient-preloader)"/>
           </svg>
     </div>
-    
+
     <header>
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="#" id="home-link" class="flex items-center gap-3">
@@ -294,7 +294,7 @@
                     ✨ Bana Bir Yer Öner
                 </button>
             </div>
-            
+
             <!-- Ana ekranda AdSense uyumu için kısa metin bloğu -->
             <div class="content-card p-6 sm:p-8 mb-10 max-w-4xl mx-auto text-center" id="main-content-block">
                 <h3 class="text-2xl font-bold text-primary mb-4">Vuelina: Akıllı Gezi Rehberiniz</h3>
@@ -302,7 +302,7 @@
                     Vuelina, sıradan seyahat planlarının ötesine geçerek size kişiselleştirilmiş, kültürel açıdan zengin deneyimler sunar. 30'dan fazla ülkeye ait detaylı yerel bilgi, gastronomi ipuçları ve ulaşım rehberlerini tek bir platformda topladık. Yapay zeka asistanımız sayesinde, seyahat sürenize, ilgi alanlarınıza ve bütçenize uygun olarak tasarlanmış özgün rotalar oluşturabilir, böylece her anınızı en iyi şekilde değerlendirebilirsiniz. Unutulmaz bir maceraya hazır mısınız? Aşağıdaki ülkelerden birini seçin veya size özel bir öneri isteyin!
                 </p>
             </div>
-            
+
             <div class="sticky top-[73px] z-40 mb-10 py-2">
                 <div class="max-w-2xl mx-auto content-card !shadow-none !border-none !p-0">
                     <input type="text" id="search-input" class="w-full p-4 rounded-xl border border-border-color focus:outline-none" placeholder="Bir ülke ara (örn: Japonya)...">
@@ -322,12 +322,12 @@
             <!-- Ülke detayları ve yapay zeka sonuçları buraya yerleştirilecek -->
         </div>
     </main>
-    
+
     <footer class="text-center py-8 border-t border-border-color mt-12">
         <div class="ad-placeholder content-card p-4 max-w-3xl mx-auto mb-6">
             Google AdSense Reklam Alanı
         </div>
-        
+
         <div class="max-w-7xl mx-auto px-4 text-sm mb-3 space-x-4">
             <a href="#" id="privacy-policy-link" class="text-secondary hover:text-accent transition-colors">Privacy Policy</a>
             <span class="text-secondary">|</span>
@@ -347,7 +347,7 @@
         <button id="modal-close-btn" class="btn btn-primary w-full py-3">Anladım</button>
       </div>
     </div>
-    
+
     <!-- YAPAY ZEKA ÖNERİ MODALI (AI SUGGEST MODAL) -->
     <div id="ai-suggest-modal" class="modal-overlay" aria-modal="true" role="dialog">
         <div class="modal-content content-card w-full max-w-2xl p-8">
@@ -411,12 +411,12 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Tema Seçim Menüsü -->
     <div id="theme-menu-container" class="absolute top-16 right-4 z-50 hidden">
         <div class="content-card p-4 w-64 shadow-xl">
             <h4 class="font-bold text-lg mb-3 border-b pb-2 border-border-color">Tema Ayarları</h4>
-            
+
             <div class="mb-4">
                 <p class="font-medium text-primary mb-2">Mod Seçimi</p>
                 <div class="flex space-x-2" id="theme-scheme-selector">
@@ -449,11 +449,11 @@
             </div>
         </div>
     </div>
-    
+
     <script>
     // --- UYGULAMA BAŞLANGICI ---
     document.addEventListener('DOMContentLoaded', () => {
-    
+
         // --- Sabitler ve DOM Elementleri ---
         const countryListView = document.getElementById('country-list-view');
         const countryDetailView = document.getElementById('country-detail-view');
@@ -486,11 +486,11 @@
         const legalModal = document.getElementById('legal-modal');
         const legalModalTitle = document.getElementById('legal-modal-title');
         const legalModalContent = document.getElementById('legal-modal-content');
-        const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
+        const legalModalCloseBtn = document.getElementById('legal-modal-close-btn');
         const privacyPolicyLink = document.getElementById('privacy-policy-link');
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
-        
+
         const apiKey = ""; // API Anahtarı sistem tarafından çalışma zamanında enjekte edilir.
 
         // --- GEMINI AI API ENTEGRASYONU ---
@@ -523,8 +523,8 @@
 
             try {
                 // Gemini 1.5 Flash modeli kullanımı
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-                
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
                 const payload = {
                     contents: [{
                         parts: [{ text: prompt }]
@@ -540,7 +540,7 @@
                 });
 
                 const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                
+
                 if (!generatedText) {
                     throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
                 }
@@ -567,7 +567,7 @@
         };
 
         let currencyRates = null;
-        let aiGeneratedContent = {}; 
+        let aiGeneratedContent = {};
 
         const icons = {
             sun: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
@@ -581,7 +581,7 @@
             fastfood: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11v1a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-1"></path><path d="M17 11V7.1a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2V11"></path><path d="M7 11v-2.5a1.5 1.5 0 1 1 3 0V11"></path><path d="M14 11v-2.5a1.5 1.5 0 1 1 3 0V11"></path></svg>`,
             palette: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7V3"></path><path d="M15.5 17.5l-3-3l-3 3"></path><path d="M17 10h5"></path><path d="M22 15a7 7 0 1 1-13.8-3.4c.5-1.4 1.2-2.8 2.3-4.1C11.6 6.3 12 4 12 4s.4 2.3 1.5 3.5c1.1 1.3 1.8 2.7 2.3 4.1A7 7 0 0 1 22 15Z"></path></svg>`
         };
-        
+
         const countriesData = {
             "Türkiye": { flag: "🇹🇷", description: "Tarihi ve doğal güzellikleriyle ünlü, Asya ve Avrupa kıtalarını birleştiren eşsiz bir ülke.", searchTerms: { flights: 'Turkiye', booking: 'Turkey' }, whatToDo: ["Ayasofya & Sultanahmet'i keşfet", "Kapadokya'da sıcak hava balonuyla uç", "Pamukkale travertenlerinde yürü", "Efes Antik Kenti'nin tarihini hisset"], whatToEat: ["Zengin Kebap çeşitleri", "Antep Baklavası", "Serpme Kahvaltı", "Meze kültürü ve Rakı"], whereToStay: ["İstanbul: Tarihi Yarımada veya Karaköy", "Kapadokya: Otantik mağara oteller", "Ege/Akdeniz: Butik oteller ve resortlar"], popularApps: [{name: "Getir", category: "Market & Yemek"}, {name: "BiTaksi", category: "Ulaşım"}, {name: "Yemeksepeti", category: "Yemek Siparişi"}, {name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["McDonald's", "Burger King", "Popeyes", "Usta Dönerci"], currency: "TRY", language: "Türkçe", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Merhaba"}, {tr:"Teşekkürler", local:"Teşekkürler"}], climate: "Genel olarak Akdeniz iklimi hakimdir; yazlar sıcak ve kurak, kışlar ılıman ve yağışlı geçer." },
             "İtalya": { flag: "🇮🇹", description: "Sanat, tarih, moda ve muhteşem yemekleriyle bilinen bir Akdeniz ülkesi.", searchTerms: { flights: 'Italya', booking: 'Italy' }, whatToDo: ["Roma'da Kolezyum ve Antik Forum'u gez", "Venedik kanallarında gondol turu yap", "Floransa'da Rönesans sanatını keşfet", "Amalfi Sahillerinin manzarasına doy"], whatToEat: ["Napoli'de odun ateşinde Pizza", "Taze ev yapımı Makarna (Pasta Fresca)", "Gerçek İtalyan Dondurması (Gelato)", "Espresso ve Tiramisu"], whereToStay: ["Roma: Tarihi merkez (Centro Storico)", "Toskana: Kırsal agriturismo çiftlik evleri", "Venedik: Kanallara bakan oteller"], popularApps: [{name: "Trenitalia", category: "Tren"}, {name: "TheFork", category: "Restoran Rezervasyon"}, {name: "FREE NOW", category: "Taksi"}, {name: "Booking.com", category: "Konaklama"}], fastFoodChains: ["McDonald's", "Burger King", "KFC", "Spizzico"], currency: "EUR", language: "İtalyanca", emergencyNumber: "112", basicPhrases: [{tr:"Merhaba", local:"Ciao"}, {tr:"Teşekkürler", local:"Grazie"}], climate: "Akdeniz iklimi. Kuzeyde kışlar daha soğuk ve kar yağışlı olabilir." },
@@ -666,7 +666,7 @@
             modalText.textContent = text;
             infoModal.classList.add('visible');
         };
-        
+
         const formatGeminiResponse = (text) => {
             let html = '';
             const lines = text.split('\n').filter(line => line.trim() !== '');
@@ -674,7 +674,7 @@
 
             lines.forEach(line => {
                 line = line.trim().replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
-                
+
                 if (line.startsWith('###')) {
                       html += `${inList ? '</ul>' : ''}<h3 class="text-xl font-semibold mt-4 mb-2 text-primary">${line.replace(/###\s*/, '')}</h3>`;
                       inList = false;
@@ -709,7 +709,7 @@
             }
             document.body.removeChild(textArea);
         };
-        
+
         // Olay Delegasyonu kullanılarak kart listeleme işlevi
         const displayCountries = (filter = '') => {
             countryListContainer.innerHTML = '';
@@ -723,7 +723,7 @@
                     const country = countriesData[name];
                     const card = document.createElement('div');
                     card.className = 'country-card content-card p-6 text-center';
-                    card.setAttribute('data-country-name', name); 
+                    card.setAttribute('data-country-name', name);
                     card.innerHTML = `
                         <p class="text-6xl mb-4">${country.flag}</p>
                         <h3 class="text-lg font-semibold mb-1">${name}</h3>
@@ -747,7 +747,7 @@
             const hasResults = countryListContainer.querySelectorAll('.country-card').length > 0;
             noResults.classList.toggle('hidden', hasResults);
         };
-        
+
         countryListContainer.addEventListener('click', (e) => {
             const card = e.target.closest('.country-card');
             if (card && card.dataset.countryName) {
@@ -771,7 +771,7 @@
 
         const displayCountryDetail = (countryName) => {
             const country = countriesData[countryName];
-            
+
             // Yeni: URL'yi güncelle (SEO için kritik)
             const newUrl = `${window.location.pathname}?country=${encodeURIComponent(countryName)}`;
             window.history.pushState({ country: countryName }, countryName, newUrl);
@@ -791,18 +791,18 @@
             `).join('');
 
             // AI içeriğini dinamik olarak kontrol et ve HTML'e ekle
-            const itineraryContent = aiGeneratedContent[countryName]?.itinerary ? formatGeminiResponse(aiGeneratedContent[countryName].itinerary) : 
+            const itineraryContent = aiGeneratedContent[countryName]?.itinerary ? formatGeminiResponse(aiGeneratedContent[countryName].itinerary) :
                 `<p class="text-center text-secondary">Seyahat planı oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
-            const culturalTipsContent = aiGeneratedContent[countryName]?.tips ? formatGeminiResponse(aiGeneratedContent[countryName].tips) : 
+            const culturalTipsContent = aiGeneratedContent[countryName]?.tips ? formatGeminiResponse(aiGeneratedContent[countryName].tips) :
                 `<p class="text-center text-secondary">Kültürel ipuçları henüz oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
-            const packingListContent = aiGeneratedContent[countryName]?.packing ? formatGeminiResponse(aiGeneratedContent[countryName].packing) : 
+            const packingListContent = aiGeneratedContent[countryName]?.packing ? formatGeminiResponse(aiGeneratedContent[countryName].packing) :
                 `<p class="text-center text-secondary">Bavul hazırlama listesi oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
 
             // Yeni AI sonuçlarını detay görünümüne yerleştirmek için konteynerleri dinamik oluştur
             const aiResultsContainerHtml = `
                 <div class="mt-12 pt-8 border-t border-border-color">
                     <h3 class="text-3xl font-bold text-center mb-6">✨ Yapay Zeka Asistanın</h3>
-                    
+
                     <!-- Dinamik olarak eklenen AI içerikleri -->
                     <div id="ai-itinerary-embed" class="content-card p-6 rounded-2xl mb-6 markdown-content">
                         <h4 class="text-2xl font-bold mb-4 text-primary">🗺️ Kişiselleştirilmiş Seyahat Planı</h4>
@@ -824,7 +824,7 @@
 
                 </div>
             `;
-            
+
             countryListView.classList.add('hidden');
             countryDetailView.innerHTML = `
                 <div class="fade-in">
@@ -859,7 +859,7 @@
                                 <button data-tab="tools" class="tab-button font-medium text-base sm:text-lg flex items-center flex-shrink-0">${icons.tools}<span class="ml-2">Araçlar</span></button>
                             </nav>
                         </div>
-                        
+
                         <div id="tab-content-container" class="text-secondary">
                             <div id="tab-todo" class="tab-content active">
                                 <ul class="list-disc pl-5 space-y-2">${country.whatToDo.map(i => `<li>${i}</li>`).join('')}</ul>
@@ -898,7 +898,7 @@
                 </div>`;
             countryDetailView.classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            
+
             initCurrencyConverter(country.currency);
 
             document.getElementById('back-to-list').addEventListener('click', () => {
@@ -907,7 +907,7 @@
                 // Yeni: Ana sayfaya dönerken URL'yi temizle
                 window.history.pushState({}, document.title, window.location.pathname);
             });
-            
+
             const tabs = document.getElementById('detail-tabs').querySelectorAll('button');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
@@ -917,13 +917,13 @@
                     document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
                 });
             });
-            
+
             // Yapay Zeka Butonları için olay dinleyicilerini yeniden ata (Yeni butonu bulmak için)
             document.getElementById('open-itinerary-modal-btn').onclick = () => {
                 document.getElementById('itinerary-modal-subtitle').textContent = `${countryName} için plan oluştur.`;
                 itineraryModal.classList.add('visible');
             };
-            
+
             // Itinerary modal içindeki butona yeni işlev atama (önceki atanmış işlevi ezer)
             const itineraryDurationInput = document.getElementById('itinerary-duration');
             const itineraryInterestsInput = document.getElementById('itinerary-interests');
@@ -949,7 +949,7 @@
         const generateItinerary = async (countryName, duration, interests) => {
             const resultEmbed = document.getElementById('ai-itinerary-embed');
             const triggerBtn = document.getElementById('open-itinerary-modal-btn');
-            
+
             // Geçici olarak sonucu gösteren bir alan oluştur
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için planı hazırlıyor...</div>`;
@@ -957,7 +957,7 @@
 
 
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, heyecan verici ve detaylı bir seyahat planı oluştur. İlgi alanları: ${interests}. Plan, her gün için Sabah, Öğle, Akşam aktiviteleri içermeli. Her aktivite için kısa ve ilgi çekici bir açıklama ekle. Cevabını Türkçe ve Markdown formatında, başlıklar ve listeler kullanarak ver. Ana başlıklar için '##', alt başlıklar için '###' kullan.`;
-            
+
             const text = await callGeminiAPI(prompt, triggerBtn, tempResultDiv);
             if(text) {
                 // Kalıcı içeriği sakla
@@ -971,7 +971,7 @@
                         <button id="copy-itinerary-btn" class="btn btn-secondary px-3 py-1 rounded-md text-sm">Kopyala</button>
                     </div>
                     ${formatGeminiResponse(text)}`;
-                
+
                 document.getElementById('copy-itinerary-btn').addEventListener('click', () => copyToClipboard(text));
             }
         };
@@ -979,7 +979,7 @@
         const getCulturalTips = async (countryName) => {
             const resultEmbed = document.getElementById('ai-tips-embed');
             const tipsBtn = document.getElementById('get-cultural-tips-btn');
-            
+
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için ipuçlarını hazırlıyor...</div>`;
             resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
@@ -999,13 +999,13 @@
         const generatePackingList = async (countryName, duration, season) => {
             const resultEmbed = document.getElementById('ai-packing-embed');
             const packingBtn = document.getElementById('open-packing-list-btn');
-            
+
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için listeyi hazırlıyor...</div>`;
             resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
 
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, ${season} bir seyahate yönelik detaylı bir bavul hazırlama listesi oluştur. Listeyi Giyim, Elektronik, Kişisel Bakım ve Belgeler gibi pratik kategorilere ayır. Cevabını Türkçe ve Markdown formatında ver.`;
-            
+
             const text = await callGeminiAPI(prompt, packingBtn, tempResultDiv);
             if(text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
@@ -1015,7 +1015,7 @@
                     ${formatGeminiResponse(text)}`;
             }
         };
-        
+
         // Diğer fonksiyonlar (getAiDestinationSuggestion, fetchCurrencyRates, initCurrencyConverter, legalTexts, showLegalModal, renderChecklist, saveChecklistState, handleChecklistInteraction)
 
         const getAiDestinationSuggestion = async () => {
@@ -1031,7 +1031,7 @@
                 resultContainer.innerHTML = formatGeminiResponse(text);
             }
         };
-        
+
         const fetchCurrencyRates = async () => {
             if (currencyRates) return;
             try {
@@ -1068,12 +1068,12 @@
                     <input type="text" id="to-amount" readonly class="w-full p-2 rounded-lg bg-background border border-border-color">
                     <select id="to-currency" class="p-2 rounded-lg bg-background border border-border-color">${localOptionsHtml}</select>
                 </div>`;
-            
+
             const fromAmount = document.getElementById('from-amount');
             const fromCurrency = document.getElementById('from-currency');
             const toAmount = document.getElementById('to-amount');
             const toCurrency = document.getElementById('to-currency');
-            
+
             const calculateCurrency = () => {
                 const amount = parseFloat(fromAmount.value);
                 const fromRate = currencyRates[fromCurrency.value];
@@ -1091,7 +1091,7 @@
             fromAmount.addEventListener('input', calculateCurrency);
             fromCurrency.addEventListener('change', calculateCurrency);
             toCurrency.addEventListener('change', calculateCurrency);
-            
+
             calculateCurrency();
         };
 
@@ -1100,7 +1100,7 @@
                 <h2>Gizlilik Politikası</h2>
                 <p><strong>Son Güncelleme: Ekim 2025</strong></p>
                 <p>Vuelina, akıllı seyahat rehberi olarak, kullanıcı gizliliğini ciddiye alır. Bu politika, uygulamamız aracılığıyla topladığımız, kullandığımız ve paylaştığımız bilgileri açıklamaktadır.</p>
-                
+
                 <h3>1. Toplanan Bilgiler</h3>
                 <p>Uygulamamız sadece tarayıcınızın yerel depolamasını (Local Storage) kullanarak aşağıdaki bilgileri cihazınızda saklar:</p>
                 <ul>
@@ -1108,13 +1108,13 @@
                     <li><strong>Kontrol Listesi Verileri:</strong> Eklediğiniz seyahat görevleri ve tamamlanma durumları.</li>
                 </ul>
                 <p>Bu bilgiler, sunucularımızda saklanmaz veya üçüncü taraflarla paylaşılmaz. Yapay Zeka sorguları, Google'ın Gemini API'sine anonim olarak gönderilir ve sorgu içeriği kalıcı olarak saklanmaz.</p>
-                
+
                 <h3>2. Üçüncü Taraf Bağlantıları</h3>
                 <p>Uygulamamız, uçuş arama, otel rezervasyonu ve tur/aktivite platformları gibi üçüncü taraf web sitelerine bağlantılar içerir. Bu sitelerin gizlilik uygulamaları üzerinde kontrolümüz yoktur ve bu siteleri ziyaret ettiğinizde kendi gizlilik politikaları geçerli olacaktır.</p>
-                
+
                 <h3>3. Google AdSense</h3>
                 <p>Uygulamamız, reklam sunmak için Google AdSense'i kullanır. Google, DART çerezi kullanarak kullanıcıların sitemize ve internetteki diğer sitelere yaptıkları ziyaretlere göre reklamlar sunar. Kullanıcılar, Google Reklam ve İçerik Ağı gizlilik politikasını ziyaret ederek DART çerezinin kullanımını devre dışı bırakabilirler.</p>
-                
+
                 <h3>4. Politika Değişiklikleri</h3>
                 <p>Gizlilik politikamızı zaman zaman güncelleyebiliriz. Herhangi bir değişiklik durumunda, bu sayfada yeni politikayı yayınlayarak sizi bilgilendireceğiz. Değişiklikler, yayınlandığı anda yürürlüğe girer.</p>
             `,
@@ -1125,10 +1125,10 @@
 
                 <h3>1. Uygulamanın Kullanımı</h3>
                 <p>Uygulama, kişisel, ticari olmayan seyahat planlama ve bilgi amaçlı kullanımınız için tasarlanmıştır. Uygulamayı yasa dışı, zararlı veya bu Şartları ihlal eden herhangi bir amaçla kullanamazsınız.</p>
-                
+
                 <h3>2. Fikri Mülkiyet</h3>
                 <p>Uygulamanın tüm içeriği, metinleri, grafikleri, logoları, ikonları ve yazılımı Vuelina'ya aittir ve telif hakkı yasalarıyla korunmaktadır. Uygulamadan elde edilen hiçbir içeriği ticari amaçlarla kopyalayamaz, çoğaltamaz veya dağıtamazsınız.</p>
-                
+
                 <h3>3. Harici Bağlantılar ve İçerik Doğruluğu</h3>
                 <p>Uygulama, üçüncü taraf kaynaklara (uçuş, otel, aktivite vb.) bağlantılar içerebilir. Bu bağlantıların içeriğinden sorumlu değiliz. Seyahat bilgileri (döviz kurları, acil durum numaraları vb.) en güncel olmaya çalışılsa da, herhangi bir rezervasyon veya acil durum öncesinde her zaman bağımsız olarak doğrulamanız önerilir. Uygulama, sağlanan bilgilerin doğruluğu konusunda garanti vermez.</p>
 
@@ -1161,7 +1161,7 @@
             legalModalContent.innerHTML = text;
             legalModal.classList.add('visible');
         };
-        
+
         const renderChecklist = () => {
             const items = JSON.parse(localStorage.getItem('travelChecklist')) || [
                 { text: "Pasaport ve Vize", completed: false, id: 1},
@@ -1170,7 +1170,7 @@
                 { text: "Priz Dönüştürücü (Adaptör)", completed: false, id: 4},
                 { text: "Kişisel İlaçlar ve İlk Yardım Seti", completed: false, id: 5}
             ];
-            
+
             checklistContainer.innerHTML = items.map(item => `
                 <div class="checklist-item flex items-center justify-between p-3 rounded-lg bg-background ${item.completed ? 'completed' : ''}" data-id="${item.id}">
                     <div class="flex items-center">
@@ -1183,11 +1183,11 @@
 
             saveChecklistState(items);
         };
-        
+
         const saveChecklistState = (items) => {
             localStorage.setItem('travelChecklist', JSON.stringify(items));
         };
-        
+
         const handleChecklistInteraction = (e) => {
             const items = JSON.parse(localStorage.getItem('travelChecklist'));
             const target = e.target;
@@ -1216,7 +1216,7 @@
             cherry: { light: '#E11D48', dark: '#F87171', name: 'Cherry' },
             orange: { light: '#F59E0B', dark: '#FCD34D', name: 'Orange' },
         };
-        
+
         const updateThemeUI = (currentTheme) => {
             const [scheme, color] = currentTheme.split('-');
             const isDark = scheme === 'dark';
@@ -1227,11 +1227,11 @@
             // Tema menüsündeki mod butonlarını güncelle
             const lightBtn = document.getElementById('light-scheme-btn-inside');
             const darkBtn = document.getElementById('dark-scheme-btn-inside');
-            
+
             if (lightBtn && darkBtn) {
                 lightBtn.innerHTML = `${icons.sun} <span class="ml-2">Aydınlık</span>`;
                 darkBtn.innerHTML = `${icons.moon} <span class="ml-2">Karanlık</span>`;
-                
+
                 [lightBtn, darkBtn].forEach(btn => {
                     btn.classList.toggle('border-accent', btn.dataset.scheme === scheme);
                 });
@@ -1243,7 +1243,7 @@
                 const accentColor = themeColors[btn.dataset.color][scheme] || themeColors[btn.dataset.color].light;
                 btn.style.backgroundColor = accentColor;
                 btn.classList.toggle('border-accent', btn.dataset.color === color);
-                
+
                 // Tema seçili değilken border'ın görünmesini engelle
                 btn.classList.toggle('border-2', btn.dataset.color === color);
             });
@@ -1285,7 +1285,7 @@
                 displayCountryDetail(card.dataset.countryName);
             }
         });
-        
+
         themeMenuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             themeMenuContainer.classList.toggle('hidden');
@@ -1314,7 +1314,7 @@
             // Yeni: Ana sayfaya dönerken URL'yi temizle
             window.history.pushState({}, document.title, window.location.pathname);
         });
-        
+
         suggestPlaceBtn.addEventListener('click', () => {
             aiSuggestionResult.innerHTML = ''; // Önceki sonuçları temizle
             aiPromptInput.value = ''; // Input'u temizle
@@ -1336,7 +1336,7 @@
         });
 
         checklistContainer.addEventListener('click', handleChecklistInteraction);
-        
+
         addChecklistItemBtn.addEventListener('click', () => {
             const text = newChecklistItemInput.value.trim();
             if (text) {
@@ -1347,14 +1347,14 @@
                 newChecklistItemInput.value = '';
             }
         });
-        
+
         itineraryModalCloseBtn.addEventListener('click', () => itineraryModal.classList.remove('visible'));
         itineraryModal.addEventListener('click', (e) => {
             if (e.target === itineraryModal) itineraryModal.classList.remove('visible');
         });
-        
+
         searchInput.addEventListener('input', (e) => displayCountries(e.target.value));
-        
+
         modalCloseBtn.addEventListener('click', () => {
             infoModal.classList.remove('visible');
         });
@@ -1365,7 +1365,7 @@
         privacyPolicyLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
         termsOfUseLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
         contactLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
-        legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); 
+        legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible'));
 
 
         const initApp = async () => {
@@ -1378,17 +1378,17 @@
 
             // 3. Para birimi kurlarını yükle
             await fetchCurrencyRates();
-            
+
             // 4. URL kontrolü: Eğer bir ülke parametresi varsa detay sayfasını yükle
             checkURLForCountry();
-            
+
             // 5. Preloader'ı kaldır
             setTimeout(() => {
                 preloader.style.opacity = '0';
                 preloader.addEventListener('transitionend', () => preloader.remove());
             }, 500);
         };
-        
+
         initApp();
 
     });
