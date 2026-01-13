@@ -22,6 +22,16 @@
      
       gtag('config', 'G-E483B9402G');
     </script>
+    
+    <!-- Theme Script to prevent FOUC -->
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem('theme') || 'light-indigo';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } catch (e) {}
+        })();
+    </script>
 
     <style>
         /*
@@ -312,10 +322,15 @@
 
             <div id="country-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             </div>
-            <div id="no-results" class="hidden text-center py-16 content-card">
-                <p class="text-5xl mb-4">🗺️</p>
-                <h3 class="text-2xl font-bold">Sonuç Bulunamadı</h3>
-                <p class="text-secondary">Farklı bir anahtar kelimeyle tekrar dene.</p>
+            <div id="no-results" class="hidden flex flex-col items-center justify-center py-16 content-card bg-transparent shadow-none border-none">
+                <div class="bg-gray-100 dark:bg-zinc-800 p-6 rounded-full mb-6 animate-bounce">
+                    <span class="text-6xl">🤔</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Aradığınız yeri bulamadık</h3>
+                <p class="text-secondary mb-6 max-w-md mx-auto">Yazım hatası yapmış olabilir misiniz? Veya listemizde henüz bu ülke olmayabilir.</p>
+                <button onclick="document.getElementById('search-input').value = ''; document.getElementById('search-input').dispatchEvent(new Event('input'));" class="btn btn-primary px-6 py-3 shadow-lg hover:shadow-xl transition-shadow">
+                    Listeyi Sıfırla
+                </button>
             </div>
         </div>
 
@@ -325,10 +340,6 @@
     </main>
     
     <footer class="text-center py-8 border-t border-border-color mt-12">
-        <div class="ad-placeholder content-card p-4 max-w-3xl mx-auto mb-6">
-            Google AdSense Reklam Alanı
-        </div>
-        
         <div class="max-w-7xl mx-auto px-4 text-sm mb-3 space-x-4">
             <a href="#" id="privacy-policy-link" class="text-secondary hover:text-accent transition-colors">Privacy Policy</a>
             <span class="text-secondary">|</span>
@@ -492,7 +503,7 @@
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
         
-        const apiKey = ""; // LÜTFEN BURAYA GEÇERLİ BİR GEMINI API ANAHTARI GİRİN (Örn: AIza...)
+        const apiKey = "AIzaSyAZ6ZGO13RwEAMvz73lpDwKF_0vFItaM0g"; 
 
         // --- GEMINI AI API ENTEGRASYONU ---
         // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
@@ -539,7 +550,7 @@
 
             try {
                 // Gemini 1.5 Flash modeli kullanımı
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
                 
                 const payload = {
                     contents: [{
@@ -734,14 +745,20 @@
         // Olay Delegasyonu kullanılarak kart listeleme işlevi
         const displayCountries = (filter = '') => {
             countryListContainer.innerHTML = '';
-            const normalizedFilter = filter.toLowerCase().trim();
+            const normalizedFilter = filter.toLocaleLowerCase('tr').trim();
             const countryNames = Object.keys(countriesData).sort((a,b) => a.localeCompare(b, 'tr'));
             let adInserted = false;
 
             countryNames.forEach((name, index) => {
-                // Sadece ülke adı veya bayrak filtreye uyuyorsa göster
-                if (name.toLowerCase().includes(normalizedFilter) || countriesData[name].flag.toLowerCase().includes(normalizedFilter)) {
-                    const country = countriesData[name];
+                const country = countriesData[name];
+                const searchScope = [
+                    name.toLocaleLowerCase('tr'),
+                    country.flag,
+                    ...Object.values(country.searchTerms).map(t => t.toLowerCase())
+                ];
+
+                // Sadece ülke adı, bayrak veya arama terimleri filtreye uyuyorsa göster
+                if (searchScope.some(term => term.includes(normalizedFilter))) {
                     const card = document.createElement('div');
                     card.className = 'country-card content-card p-6 text-center';
                     card.setAttribute('data-country-name', name); 
@@ -753,12 +770,20 @@
                     countryListContainer.appendChild(card);
                 }
 
-                // AdSense placeholder'ı ekle
+                // "Smart Travel Card" (Native Ad / Affiliate)
                 if (index === 7 && !adInserted && !filter) {
                     const adCard = document.createElement('div');
-                    adCard.className = 'ad-placeholder content-card p-6 text-center lg:col-span-2 md:col-span-1 sm:col-span-2 col-span-1';
+                    adCard.className = 'content-card p-6 text-center lg:col-span-2 md:col-span-1 sm:col-span-2 col-span-1 flex flex-col justify-center items-center relative overflow-hidden group';
+                    adCard.style.background = 'linear-gradient(135deg, var(--card-bg) 0%, color-mix(in srgb, var(--accent) 10%, var(--card-bg)) 100%)';
                     adCard.innerHTML = `
-                        <p>Google AdSense Reklam Alanı</p>
+                        <div class="absolute top-0 right-0 bg-accent text-white text-xs px-2 py-1 rounded-bl-lg font-bold">ÖNERİ</div>
+                        <div class="text-4xl mb-2">✈️🏨</div>
+                        <h3 class="text-xl font-bold mb-2 text-primary">Seyahatini Ucuza Getir</h3>
+                        <p class="text-secondary mb-4 text-sm max-w-md">En iyi uçuş fırsatlarını ve konforlu otelleri keşfetmek için partnerlerimize göz at.</p>
+                        <div class="flex gap-3 justify-center">
+                            <a href="https://www.skyscanner.com.tr" target="_blank" rel="nofollow" class="btn btn-primary py-2 px-4 text-sm">Ucuz Uçak Bileti</a>
+                            <a href="https://www.booking.com" target="_blank" rel="nofollow" class="btn btn-secondary py-2 px-4 text-sm">Otel Fırsatları</a>
+                        </div>
                     `;
                     countryListContainer.appendChild(adCard);
                     adInserted = true;
@@ -1418,4 +1443,3 @@
     </script>
 </body>
 </html>
-
