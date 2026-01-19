@@ -562,19 +562,19 @@
             triggerBtn.classList.add('opacity-75', 'cursor-wait');
 
             try {
-    // 1. ADIM: Google linki yerine kendi Netlify fonksiyonuna yönlendir
-    const response = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
+    
+    try {
+
+    const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        // 2. ADIM: Sadece prompt bilgisini gönder (anahtar backend'de gizli)
         body: JSON.stringify({ prompt: prompt }) 
     });
 
-    const data = await response.json();
+    
 
-    // 3. ADIM: Gelen veriyi işle
     const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
      
                 if (!generatedText) {
@@ -1712,4 +1712,5 @@
     </script>
 </body>
 </html>
+
 
