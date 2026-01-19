@@ -6,6 +6,11 @@
     <meta name="description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
     <title>Vuelina | Akıllı Seyahat Rehberi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
 
@@ -29,6 +34,11 @@
             try {
                 const savedTheme = localStorage.getItem('theme') || 'light-indigo';
                 document.documentElement.setAttribute('data-theme', savedTheme);
+                if (savedTheme.includes('dark')) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             } catch (e) {}
         })();
     </script>
@@ -313,7 +323,7 @@
     <main class="container mx-auto px-4 py-10 sm:py-12 flex-grow">
         <div id="country-list-view">
             <div class="text-center mb-10 py-10 px-4 rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-sm border border-border-color">
-                <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-accent to-accent-dark">Hayalindeki Macerayı Bul</h2>
+                <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm">Hayalindeki Macerayı Bul</h2>
                 <p class="text-lg md:text-xl text-secondary mb-8 max-w-2xl mx-auto">Dünyanın en popüler destinasyonlarını keşfet, yapay zeka ile kişiselleştirilmiş rotalar oluştur.</p>
 
                 <div class="max-w-2xl mx-auto relative mb-8">
@@ -1489,6 +1499,11 @@
 
         const applyTheme = (theme) => {
             document.documentElement.setAttribute('data-theme', theme);
+            if (theme.includes('dark')) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
             localStorage.setItem('theme', theme);
             updateThemeUI(theme);
         };
@@ -1698,19 +1713,19 @@
             fetchCurrencyRates(); // Run without await to not block initApp promise, though logic is async inside.
 
             // Eğer detay sayfasındaysa ve currency converter varsa güncelle
-            if(document.getElementById('currency-converter-content')) {
+            if (document.getElementById('currency-converter-content')) {
                 const params = new URLSearchParams(window.location.search);
                 const countryName = params.get('country');
-                if(countryName && countriesData[countryName]) {
+                if (countryName && countriesData[countryName]) {
                     initCurrencyConverter(countriesData[countryName].currency);
                 }
             }
-            } catch (error) {
-                console.error("Init Error:", error);
-            }
-        };
+        } catch (error) {
+            console.error("Init Error:", error);
+        }
+    };
 
-        initApp();
+    initApp();
 
     });
     </script>
