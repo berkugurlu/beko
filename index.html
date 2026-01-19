@@ -516,22 +516,27 @@
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
         
-        const apiKey = "AIzaSyAZ6ZGO13RwEAMvz73lpDwKF_0vFItaM0g"; 
-
         // --- GEMINI AI API ENTEGRASYONU ---
         // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
-        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
+        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch(url, options);
+                    
+                    // Eğer Proxy'den (Netlify'dan) hata dönerse bunu yakala
                     if (!response.ok) {
+                         // 429 (Too Many Requests) ise bekle ve tekrar dene
                          if (response.status === 429) {
-                             // Rate limit durumunda bekle ve tekrar dene
-                             throw new Error(`Rate limit exceeded (429)`);
+                             console.warn("Rate limit, tekrar deneniyor...");
+                         } else {
+                             // Diğer hatalarda (400, 403, 500) direkt hata fırlat
+                             const errorData = await response.json();
+                             throw new Error(errorData.error?.message || `HTTP Error: ${response.status}`);
                          }
-                        throw new Error(`HTTP Error: ${response.status}`);
+                    } else {
+                        // Başarılıysa sonucu döndür
+                        return await response.json();
                     }
-                    return await response.json();
                 } catch (error) {
                     if (i === retries - 1) throw error;
                     await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
@@ -541,72 +546,55 @@
 
         // Ana Gemini API Çağırma Fonksiyonu
         const callGeminiAPI = async (prompt, triggerBtn, resultContainer) => {
-            if (!apiKey) {
-                const errorMsg = "API anahtarı eksik. Lütfen geçerli bir API anahtarı tanımlayın.";
-                console.error(errorMsg);
-                if (resultContainer) {
-                    resultContainer.innerHTML = `
-                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700">
-                            <p class="font-bold">Yapılandırma Hatası</p>
-                            <p class="text-sm">${errorMsg}</p>
-                        </div>
-                    `;
-                }
-                showInfoModal("Eksik Anahtar", errorMsg);
-                return null;
-            }
-
+            
+            // UI Güncellemeleri (Butonu pasifleştir)
             const originalBtnText = triggerBtn.innerText;
             triggerBtn.disabled = true;
             triggerBtn.innerText = "Düşünüyor...";
             triggerBtn.classList.add('opacity-75', 'cursor-wait');
 
             try {
-            // Arka plandaki Netlify fonksiyonuna güvenli istek gönderiyoruz
-            // fetchWithRetry veriyi otomatik çözdüğü için doğrudan "data" alıyoruz
-            const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ prompt: prompt }) 
-            });
+                // Netlify üzerindeki güvenli köprüye istek atıyoruz
+                // DİKKAT: Artık burada API KEY yok, çünkü anahtar Netlify'da gizli!
+                const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: prompt }) 
+                });
 
-            // Gelen veriden Gemini'nin yanıtını ayıkla
-            const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                // Gelen verinin yapısını kontrol et ve yanıtı al
+                if (data && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                    return data.candidates[0].content.parts[0].text;
+                } else {
+                    console.error("API Veri Hatası:", data);
+                    throw new Error("Yapay zekadan anlamlı bir yanıt alınamadı.");
+                }
 
-            if (!generatedText) {
-                throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
+            } catch (error) {
+                console.error("Gemini API Hatası:", error);
+                let userMessage = "Şu an yanıt veremiyorum.";
+                
+                if (error.message.includes("403")) userMessage = "Güvenlik kısıtlaması (API Key hatası).";
+                if (error.message.includes("429")) userMessage = "Çok yoğunum, lütfen biraz bekle.";
+                if (error.message.includes("500")) userMessage = "Sunucu tarafında bir hata oluştu.";
+
+                if (resultContainer) {
+                    resultContainer.innerHTML = `
+                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+                            <p class="font-bold text-sm">Hata Oluştu</p>
+                            <p class="text-xs">${userMessage}</p>
+                        </div>`;
+                }
+                
+                showInfoModal("Hata", userMessage);
+                return null;
+
+            } finally {
+                // İşlem bittiğinde butonları her durumda eski haline getir
+                triggerBtn.disabled = false;
+                triggerBtn.innerText = originalBtnText;
+                triggerBtn.classList.remove('opacity-75', 'cursor-wait');
             }
-
-            return generatedText;
-
-        } catch (error) {
-            console.error("Gemini API Hatası:", error);
-            let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
-            
-            // Hata kodlarına göre kullanıcıyı bilgilendir
-            if (error.message.includes("400")) userMessage = "İstek geçersiz. Ayarları kontrol edin.";
-            if (error.message.includes("403")) userMessage = "API anahtarı yetkisiz (İfşa olmuş olabilir).";
-            if (error.message.includes("429")) userMessage = "Çok fazla istek, lütfen biraz bekleyin.";
-
-            if (resultContainer) {
-                resultContainer.innerHTML = `
-                    <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                        <p class="font-bold text-sm">Üzgünüm, bir hata oluştu.</p>
-                        <p class="text-xs">${userMessage} (${error.message})</p>
-                    </div>`;
-            }
-            
-            showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
-            return null;
-
-        } finally {
-            // İşlem bittiğinde butonları eski haline getir
-            triggerBtn.disabled = false;
-            triggerBtn.innerText = originalBtnText;
-            triggerBtn.classList.remove('opacity-75', 'cursor-wait');
-        }
         };
 
         let currencyRates = null;
@@ -1714,3 +1702,4 @@
     </script>
 </body>
 </html>
+
