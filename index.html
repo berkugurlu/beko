@@ -562,49 +562,51 @@
             triggerBtn.classList.add('opacity-75', 'cursor-wait');
 
             try {
-    
-    try {
+            // Arka plandaki Netlify fonksiyonuna güvenli istek gönderiyoruz
+            // fetchWithRetry veriyi otomatik çözdüğü için doğrudan "data" alıyoruz
+            const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt }) 
+            });
 
-    const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ prompt: prompt }) 
-    });
+            // Gelen veriden Gemini'nin yanıtını ayıkla
+            const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    
-
-    const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-     
-                if (!generatedText) {
-                    throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
-                }
-
-                return generatedText;
-
-            } catch (error) {
-                console.error("Gemini API Hatası:", error);
-                let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
-                if (error.message.includes("400")) userMessage = "İstek geçersiz. API anahtarınızı kontrol edin.";
-                if (error.message.includes("403")) userMessage = "API anahtarı geçersiz veya yetkisiz.";
-                if (error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen bekleyin.";
-                
-                if (resultContainer) {
-                    resultContainer.innerHTML = `
-                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                            <p class="font-bold">Üzgünüm, bir hata oluştu.</p>
-                            <p class="text-sm">${userMessage} (${error.message})</p>
-                        </div>
-                    `;
-                }
-                showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
-                return null;
-            } finally {
-                triggerBtn.disabled = false;
-                triggerBtn.innerText = originalBtnText;
-                triggerBtn.classList.remove('opacity-75', 'cursor-wait');
+            if (!generatedText) {
+                throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
             }
+
+            return generatedText;
+
+        } catch (error) {
+            console.error("Gemini API Hatası:", error);
+            let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
+            
+            // Hata kodlarına göre kullanıcıyı bilgilendir
+            if (error.message.includes("400")) userMessage = "İstek geçersiz. Ayarları kontrol edin.";
+            if (error.message.includes("403")) userMessage = "API anahtarı yetkisiz (İfşa olmuş olabilir).";
+            if (error.message.includes("429")) userMessage = "Çok fazla istek, lütfen biraz bekleyin.";
+
+            if (resultContainer) {
+                resultContainer.innerHTML = `
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+                        <p class="font-bold text-sm">Üzgünüm, bir hata oluştu.</p>
+                        <p class="text-xs">${userMessage} (${error.message})</p>
+                    </div>`;
+            }
+            
+            showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
+            return null;
+
+        } finally {
+            // İşlem bittiğinde butonları eski haline getir
+            triggerBtn.disabled = false;
+            triggerBtn.innerText = originalBtnText;
+            triggerBtn.classList.remove('opacity-75', 'cursor-wait');
+        }
         };
 
         let currencyRates = null;
@@ -1712,5 +1714,6 @@
     </script>
 </body>
 </html>
+
 
 
