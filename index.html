@@ -562,53 +562,46 @@
             triggerBtn.classList.add('opacity-75', 'cursor-wait');
 
             try {
-            // Arka plandaki Netlify fonksiyonuna güvenli istek gönderiyoruz
-            // fetchWithRetry veriyi otomatik çözdüğü için doğrudan "data" alıyoruz
+            // Netlify üzerindeki güvenli köprüye istek atıyoruz
             const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt: prompt }) 
             });
 
-            // Gelen veriden Gemini'nin yanıtını ayıkla
-            const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (!generatedText) {
-                throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
+            // Gelen verinin yapısını kontrol et
+            if (data && data.candidates && data.candidates[0] && data.candidates[0].content) {
+                const generatedText = data.candidates[0].content.parts[0].text;
+                return generatedText;
+            } else {
+                // Eğer Google hata mesajı döndürdüyse konsola yazdır
+                console.error("API Veri Yapısı Bozuk:", data);
+                throw new Error(data.error?.message || "API'den beklenen yapıda yanıt alınamadı.");
             }
-
-            return generatedText;
 
         } catch (error) {
             console.error("Gemini API Hatası:", error);
-            let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
+            let userMessage = "Yapay zeka şu an yanıt veremiyor.";
             
-            // Hata kodlarına göre kullanıcıyı bilgilendir
-            if (error.message.includes("400")) userMessage = "İstek geçersiz. Ayarları kontrol edin.";
-            if (error.message.includes("403")) userMessage = "API anahtarı yetkisiz (İfşa olmuş olabilir).";
-            if (error.message.includes("429")) userMessage = "Çok fazla istek, lütfen biraz bekleyin.";
+            if (error.message.includes("403")) userMessage = "API anahtarı hatası veya kısıtlama engeli.";
+            if (error.message.includes("429")) userMessage = "Çok fazla istek, lütfen bekleyin.";
 
             if (resultContainer) {
                 resultContainer.innerHTML = `
                     <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                        <p class="font-bold text-sm">Üzgünüm, bir hata oluştu.</p>
+                        <p class="font-bold text-sm">Hata Oluştu</p>
                         <p class="text-xs">${userMessage} (${error.message})</p>
                     </div>`;
             }
-            
-            showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
+            showInfoModal("Hata", userMessage);
             return null;
 
         } finally {
-            // İşlem bittiğinde butonları eski haline getir
+            // İşlem bittiğinde butonları her durumda eski haline getir
             triggerBtn.disabled = false;
             triggerBtn.innerText = originalBtnText;
             triggerBtn.classList.remove('opacity-75', 'cursor-wait');
         }
-        };
-
         let currencyRates = null;
         let aiGeneratedContent = {}; 
 
@@ -1714,6 +1707,7 @@
     </script>
 </body>
 </html>
+
 
 
 
