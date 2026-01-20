@@ -835,7 +835,14 @@
         };
         
         // --- FAVORITES SYSTEM ---
-        const getFavorites = () => JSON.parse(localStorage.getItem('favorites') || '[]');
+        const getFavorites = () => {
+            try {
+                return JSON.parse(localStorage.getItem('favorites') || '[]');
+            } catch (e) {
+                console.error("Error parsing favorites:", e);
+                return [];
+            }
+        };
         const toggleFavorite = (countryName) => {
             const favorites = getFavorites();
             const index = favorites.indexOf(countryName);
@@ -1411,13 +1418,22 @@
         };
         
         const renderChecklist = () => {
-            const items = JSON.parse(localStorage.getItem('travelChecklist')) || [
-                { text: "Pasaport ve Vize", completed: false, id: 1},
+            let items;
+            try {
+                items = JSON.parse(localStorage.getItem('travelChecklist'));
+            } catch (e) {
+                console.error("Error parsing checklist:", e);
+            }
+
+            if (!items || !Array.isArray(items)) {
+                items = [
+                    { text: "Pasaport ve Vize", completed: false, id: 1},
                 { text: "Uçak Biletleri ve Konfirmasyonlar", completed: false, id: 2},
                 { text: "Nakit ve Kredi Kartları", completed: false, id: 3},
                 { text: "Priz Dönüştürücü (Adaptör)", completed: false, id: 4},
                 { text: "Kişisel İlaçlar ve İlk Yardım Seti", completed: false, id: 5}
             ];
+            }
             
             checklistContainer.innerHTML = items.map(item => `
                 <div class="checklist-item flex items-center justify-between p-3 rounded-lg bg-background ${item.completed ? 'completed' : ''}" data-id="${item.id}">
@@ -1437,7 +1453,15 @@
         };
         
         const handleChecklistInteraction = (e) => {
-            const items = JSON.parse(localStorage.getItem('travelChecklist'));
+            let items;
+            try {
+                items = JSON.parse(localStorage.getItem('travelChecklist')) || [];
+            } catch (e) {
+                console.error("Error parsing checklist for interaction:", e);
+                return;
+            }
+            if (!Array.isArray(items)) return;
+
             const target = e.target;
             const itemDiv = target.closest('.checklist-item');
             if(!itemDiv) return;
@@ -1655,7 +1679,14 @@
         addChecklistItemBtn.addEventListener('click', () => {
             const text = newChecklistItemInput.value.trim();
             if (text) {
-                const items = JSON.parse(localStorage.getItem('travelChecklist') || '[]');
+                let items;
+                try {
+                    items = JSON.parse(localStorage.getItem('travelChecklist') || '[]');
+                } catch(e) {
+                    items = [];
+                }
+                if (!Array.isArray(items)) items = [];
+
                 items.push({ text: text, completed: false, id: Date.now() });
                 saveChecklistState(items);
                 renderChecklist();
