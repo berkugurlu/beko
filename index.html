@@ -6,6 +6,11 @@
     <meta name="description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
     <title>Vuelina | Akıllı Seyahat Rehberi</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
     
@@ -29,6 +34,11 @@
             try {
                 const savedTheme = localStorage.getItem('theme') || 'light-indigo';
                 document.documentElement.setAttribute('data-theme', savedTheme);
+                if (savedTheme.includes('dark')) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             } catch (e) {}
         })();
     </script>
@@ -313,7 +323,7 @@
     <main class="container mx-auto px-4 py-10 sm:py-12 flex-grow">
         <div id="country-list-view">
             <div class="text-center mb-10 py-10 px-4 rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-sm border border-border-color">
-                <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-accent to-accent-dark">Hayalindeki Macerayı Bul</h2>
+                <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm">Hayalindeki Macerayı Bul</h2>
                 <p class="text-lg md:text-xl text-secondary mb-8 max-w-2xl mx-auto">Dünyanın en popüler destinasyonlarını keşfet, yapay zeka ile kişiselleştirilmiş rotalar oluştur.</p>
                 
                 <div class="max-w-2xl mx-auto relative mb-8">
@@ -516,27 +526,22 @@
         const termsOfUseLink = document.getElementById('terms-of-use-link');
         const contactLink = document.getElementById('contact-link');
         
+        const apiKey = "AIzaSyAZ6ZGO13RwEAMvz73lpDwKF_0vFItaM0g"; 
+
         // --- GEMINI AI API ENTEGRASYONU ---
         // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
-        async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch(url, options);
-                    
-                    // Eğer Proxy'den (Netlify'dan) hata dönerse bunu yakala
                     if (!response.ok) {
-                         // 429 (Too Many Requests) ise bekle ve tekrar dene
                          if (response.status === 429) {
-                             console.warn("Rate limit, tekrar deneniyor...");
-                         } else {
-                             // Diğer hatalarda (400, 403, 500) direkt hata fırlat
-                             const errorData = await response.json();
-                             throw new Error(errorData.error?.message || `HTTP Error: ${response.status}`);
+                             // Rate limit durumunda bekle ve tekrar dene
+                             throw new Error(`Rate limit exceeded (429)`);
                          }
-                    } else {
-                        // Başarılıysa sonucu döndür
-                        return await response.json();
+                        throw new Error(`HTTP Error: ${response.status}`);
                     }
+                    return await response.json();
                 } catch (error) {
                     if (i === retries - 1) throw error;
                     await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
@@ -546,51 +551,70 @@
 
         // Ana Gemini API Çağırma Fonksiyonu
         const callGeminiAPI = async (prompt, triggerBtn, resultContainer) => {
-            
-            // UI Güncellemeleri (Butonu pasifleştir)
+            if (!apiKey) {
+                const errorMsg = "API anahtarı eksik. Lütfen geçerli bir API anahtarı tanımlayın.";
+                console.error(errorMsg);
+                if (resultContainer) {
+                    resultContainer.innerHTML = `
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700">
+                            <p class="font-bold">Yapılandırma Hatası</p>
+                            <p class="text-sm">${errorMsg}</p>
+                        </div>
+                    `;
+                }
+                showInfoModal("Eksik Anahtar", errorMsg);
+                return null;
+            }
+
             const originalBtnText = triggerBtn.innerText;
             triggerBtn.disabled = true;
             triggerBtn.innerText = "Düşünüyor...";
             triggerBtn.classList.add('opacity-75', 'cursor-wait');
 
             try {
-                // Netlify üzerindeki güvenli köprüye istek atıyoruz
-                // DİKKAT: Artık burada API KEY yok, çünkü anahtar Netlify'da gizli!
-                const data = await fetchWithRetry('/.netlify/functions/gemini-proxy', {
+                // Gemini 1.5 Flash modeli kullanımı
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                const data = await fetchWithRetry(url, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt }) 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
                 });
 
-                // Gelen verinin yapısını kontrol et ve yanıtı al
-                if (data && data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-                    return data.candidates[0].content.parts[0].text;
-                } else {
-                    console.error("API Veri Hatası:", data);
-                    throw new Error("Yapay zekadan anlamlı bir yanıt alınamadı.");
+                const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (!generatedText) {
+                    throw new Error("API'den geçerli bir metin yanıtı alınamadı.");
                 }
+
+                return generatedText;
 
             } catch (error) {
                 console.error("Gemini API Hatası:", error);
-                let userMessage = "Şu an yanıt veremiyorum.";
+                let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
+                if (error.message.includes("400")) userMessage = "İstek geçersiz. API anahtarınızı kontrol edin.";
+                if (error.message.includes("403")) userMessage = "API anahtarı geçersiz veya yetkisiz.";
+                if (error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen bekleyin.";
                 
-                if (error.message.includes("403")) userMessage = "Güvenlik kısıtlaması (API Key hatası).";
-                if (error.message.includes("429")) userMessage = "Çok yoğunum, lütfen biraz bekle.";
-                if (error.message.includes("500")) userMessage = "Sunucu tarafında bir hata oluştu.";
-
                 if (resultContainer) {
                     resultContainer.innerHTML = `
                         <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                            <p class="font-bold text-sm">Hata Oluştu</p>
-                            <p class="text-xs">${userMessage}</p>
-                        </div>`;
+                            <p class="font-bold">Üzgünüm, bir hata oluştu.</p>
+                            <p class="text-sm">${userMessage} (${error.message})</p>
+                        </div>
+                    `;
                 }
-                
-                showInfoModal("Hata", userMessage);
+                showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
                 return null;
-
             } finally {
-                // İşlem bittiğinde butonları her durumda eski haline getir
                 triggerBtn.disabled = false;
                 triggerBtn.innerText = originalBtnText;
                 triggerBtn.classList.remove('opacity-75', 'cursor-wait');
@@ -1475,6 +1499,11 @@
 
         const applyTheme = (theme) => {
             document.documentElement.setAttribute('data-theme', theme);
+            if (theme.includes('dark')) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
             localStorage.setItem('theme', theme);
             updateThemeUI(theme);
         };
@@ -1684,22 +1713,21 @@
             fetchCurrencyRates(); // Run without await to not block initApp promise, though logic is async inside.
 
             // Eğer detay sayfasındaysa ve currency converter varsa güncelle
-            if(document.getElementById('currency-converter-content')) {
+            if (document.getElementById('currency-converter-content')) {
                 const params = new URLSearchParams(window.location.search);
                 const countryName = params.get('country');
-                if(countryName && countriesData[countryName]) {
+                if (countryName && countriesData[countryName]) {
                     initCurrencyConverter(countriesData[countryName].currency);
                 }
             }
-            } catch (error) {
-                console.error("Init Error:", error);
-            }
-        };
-        
-        initApp();
+        } catch (error) {
+            console.error("Init Error:", error);
+        }
+    };
+    
+    initApp();
 
     });
     </script>
 </body>
 </html>
-
