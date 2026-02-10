@@ -378,7 +378,9 @@
         <div id="blog-detail-view" class="hidden">
             <!-- Blog detay içeriği buraya gelecek -->
         </div>
+        <div id="legal-view" class="hidden max-w-4xl mx-auto py-8"><div class="content-card glass-card p-8 md:p-12"><h1 id="legal-view-title" class="text-3xl font-bold mb-6 text-primary"></h1><div id="legal-view-content" class="prose prose-lg [data-theme*='dark']:prose-invert max-w-none text-secondary"></div></div></div>
     </main>
+    <div id="cookie-consent-banner" class="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-border-color p-4 shadow-2xl z-[9999] hidden transform transition-transform duration-300 translate-y-full"><div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4"><p class="text-sm text-secondary text-center md:text-left">Size daha iyi bir deneyim sunmak ve trafiği analiz etmek için çerezleri kullanıyoruz. Sitemizi kullanarak <a href="?page=privacy" class="text-accent hover:underline">Gizlilik Politikamızı</a> kabul etmiş olursunuz.</p><div class="flex gap-2"><button id="cookie-accept-btn" class="btn btn-primary py-2 px-6 text-sm">Kabul Et</button></div></div></div>
     
     <footer class="border-t border-border-color mt-16 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
         <div class="container mx-auto px-4 py-12">
@@ -416,9 +418,9 @@
                 <div>
                     <h4 class="font-bold text-primary mb-4">Kurumsal</h4>
                     <ul class="space-y-2 text-sm text-secondary">
-                        <li><a href="#" id="footer-privacy-link" class="hover:text-accent transition-colors">Gizlilik Politikası</a></li>
-                        <li><a href="#" id="footer-terms-link" class="hover:text-accent transition-colors">Kullanım Şartları</a></li>
-                        <li><a href="#" id="footer-contact-link" class="hover:text-accent transition-colors">İletişim</a></li>
+                        <li><a href="?page=privacy" id="footer-privacy-link" class="hover:text-accent transition-colors">Gizlilik Politikası</a></li>
+                        <li><a href="?page=terms" id="footer-terms-link" class="hover:text-accent transition-colors">Kullanım Şartları</a></li>
+                        <li><a href="?page=contact" id="footer-contact-link" class="hover:text-accent transition-colors">İletişim</a></li>
                     </ul>
                 </div>
 
@@ -1172,6 +1174,59 @@
 
         const blogData = [
             {
+                id: "kis-gunesi-2025",
+                title: "Kış Güneşi: Soğuktan Kaçabileceğiniz 5 Sıcak Rota",
+                summary: "Paltoyu evde bırakın! Kışın ortasında yazı yaşayabileceğiniz, Türkiye'ye yakın ve uzak rotalar.",
+                image: "https://images.unsplash.com/photo-1545579133-99c99bc189c2?q=80&w=800&auto=format&fit=crop",
+                date: "20 Kasım 2025",
+                content: `
+                    <p class="mb-4">Kışın kasvetli havasından sıkıldınız mı? İşte D vitamini depolayabileceğiniz en iyi rotalar.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">1. Sharm El Sheikh, Mısır</h3>
+                    <p class="mb-4">Vizesiz (kapıda vize) ve her daim sıcak. Kızıldeniz'in su altı dünyası sizi bekliyor.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">2. Dubai, BAE</h3>
+                    <p class="mb-4">Alışveriş, lüks ve çöl safarisi. Kış ayları Dubai'yi gezmek için en ideal sıcaklığa sahip.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">3. Maldivler</h3>
+                    <p class="mb-4">Balayı klasiği olsa da, kışın turkuaz sulara dalmak herkesin hakkı. Vizesiz olması cabası.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">4. Kaş, Antalya</h3>
+                    <p class="mb-4">Türkiye sınırları içinde kalsın derseniz, Kaş kışın bile ılıman havası ve sakinliğiyle büyüleyici.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">5. Tayland</h3>
+                    <p class="mb-4">Tropikal cennet. Phuket veya Koh Samui'de hindistan cevizi suyunuzu yudumlayın.</p>
+                `
+            },
+            {
+                id: "butce-dostu-seyahat-2025",
+                title: "2025 İçin Bütçe Dostu Seyahat Tüyoları",
+                summary: "Ekonomik koşullara meydan okuyun! Daha az harcayarak daha çok gezmenin yolları.",
+                image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop",
+                date: "18 Kasım 2025",
+                content: `
+                    <p class="mb-4">Seyahat etmek pahalı olmak zorunda değil. İşte 2025'te cüzdanınızı koruyacak taktikler.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Esnek Tarihler</h3>
+                    <p class="mb-4">Skyscanner'ın "Tüm Ay" seçeneğini kullanarak en ucuz uçuş günlerini yakalayın. Hafta içi uçmak genellikle daha ucuzdur.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Konaklama Alternatifleri</h3>
+                    <p class="mb-4">Oteller yerine Hostel veya Couchsurfing deneyimlerini düşünün. Hem ucuz hem de sosyalleşmek için harika.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Yerel Lezzetler</h3>
+                    <p class="mb-4">Turistik restoranlardan kaçının. Yerel halkın yediği "esnaf lokantaları" veya sokak lezzetleri her zaman daha ucuz ve lezzetlidir.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Ücretsiz Aktiviteler</h3>
+                    <p class="mb-4">Her şehrin ücretsiz müzeleri, parkları ve yürüyüş turları vardır. "Free Walking Tour" konseptini araştırın.</p>
+                `
+            },
+            {
+                id: "balkanlarin-sakli-hazineleri",
+                title: "Balkanların Saklı Hazineleri: Arnavutluk ve Makedonya",
+                summary: "Vizesiz, yakın ve keşfedilmemiş. Balkan turu planlayanlar için alternatif duraklar.",
+                image: "https://images.unsplash.com/photo-1565624523992-628f932eb516?q=80&w=800&auto=format&fit=crop",
+                date: "12 Kasım 2025",
+                content: `
+                    <p class="mb-4">Balkanlar sadece Belgrad veya Saraybosna'dan ibaret değil. İşte rotanıza eklemeniz gereken iki mücevher.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Arnavutluk Rivierası</h3>
+                    <p class="mb-4">Ksamil ve Himare plajları, Yunan adalarını aratmayan güzellikte ve çok daha uygun fiyatlı. Berat şehri ise "Bin Pencereli Şehir" lakabıyla Osmanlı mimarisini yaşatıyor.</p>
+                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Makedonya: Ohri ve Matka</h3>
+                    <p class="mb-4">Üsküp'ün heykellerinden sıkıldıysanız, Ohri Gölü'nün huzuruna kaçın. Ayrıca Üsküp'e çok yakın olan Matka Kanyonu, doğa severler için tekne turu ve yürüyüş imkanı sunuyor.</p>
+                    <p class="mb-4"><strong>Ulaşım:</strong> İki ülke arasında otobüsle geçiş oldukça kolay ve ucuz.</p>
+                `
+            },
+            {
                 id: "vizesiz-ucuz-ulkeler-2026",
                 title: "2026'da Vizesiz Gidilebilecek En Ucuz 5 Ülke",
                 summary: "Bütçe dostu ve vizesiz bir tatil mi arıyorsunuz? İşte Türk vatandaşları için 2026'nın gözdeleri.",
@@ -1536,6 +1591,8 @@
                 displayBlogList();
             } else if (postId) {
                 displayBlogPost(postId);
+            } else if (['privacy', 'terms', 'contact'].includes(page)) {
+                displayLegalPage(page);
             } else {
                 // Varsayılan: Ana sayfa
                 updateSchema('website');
@@ -2422,6 +2479,54 @@
         legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); 
 
 
+        const displayLegalPage = (pageType) => {
+            const content = legalTexts[pageType];
+            if (!content) {
+                handleRouting();
+                return;
+            }
+
+            const legalView = document.getElementById("legal-view");
+            const titleEl = document.getElementById("legal-view-title");
+            const contentEl = document.getElementById("legal-view-content");
+
+            countryListView.classList.add("hidden");
+            countryDetailView.classList.add("hidden");
+            blogListView.classList.add("hidden");
+            blogDetailView.classList.add("hidden");
+
+            legalView.classList.remove("hidden");
+
+            titleEl.textContent = pageType === "privacy" ? "Gizlilik Politikası" : pageType === "terms" ? "Kullanım Şartları" : "İletişim";
+            contentEl.innerHTML = content;
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        const checkCookieConsent = () => {
+            const banner = document.getElementById("cookie-consent-banner");
+            const acceptBtn = document.getElementById("cookie-accept-btn");
+
+            if (!banner || !acceptBtn) return;
+
+            const consent = localStorage.getItem("cookie_consent");
+
+            if (!consent) {
+                banner.classList.remove("hidden");
+                setTimeout(() => {
+                    banner.classList.remove("translate-y-full");
+                }, 100);
+            }
+
+            acceptBtn.addEventListener("click", () => {
+                localStorage.setItem("cookie_consent", "true");
+                banner.classList.add("translate-y-full");
+                setTimeout(() => {
+                    banner.classList.add("hidden");
+                }, 300);
+            });
+        };
+
         const initApp = async () => {
             console.log("initApp started");
             try {
@@ -2440,6 +2545,8 @@
                 // 4. URL kontrolü: Eğer bir ülke parametresi varsa detay sayfasını yükle (Render önce çalışsın)
                 handleRouting();
                 console.log("URL checked and content rendered");
+
+                checkCookieConsent();
 
                 // 5. Preloader'ı kaldır (Kullanıcı bekletilmesin)
             setTimeout(() => {
@@ -2466,13 +2573,19 @@
     
     
         // Footer Links Event Listeners
-        const footerPrivacy = document.getElementById('footer-privacy-link');
-        const footerTerms = document.getElementById('footer-terms-link');
-        const footerContact = document.getElementById('footer-contact-link');
-        
-        if(footerPrivacy) footerPrivacy.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
-        if(footerTerms) footerTerms.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
-        if(footerContact) footerContact.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
+        const footerPrivacy = document.getElementById("footer-privacy-link");
+        const footerTerms = document.getElementById("footer-terms-link");
+        const footerContact = document.getElementById("footer-contact-link");
+
+        const handleFooterLink = (e, page) => {
+            e.preventDefault();
+            window.history.pushState({ page }, "", "?page=" + page);
+            handleRouting();
+        };
+
+        if(footerPrivacy) footerPrivacy.addEventListener("click", (e) => handleFooterLink(e, "privacy"));
+        if(footerTerms) footerTerms.addEventListener("click", (e) => handleFooterLink(e, "terms"));
+        if(footerContact) footerContact.addEventListener("click", (e) => handleFooterLink(e, "contact"));
         
     initApp();
 
