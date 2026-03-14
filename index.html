@@ -619,7 +619,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         console.log("DOM Content Loaded");
 
-        // Ülke ISO Kodlarını Ata
         const countryCodes = {
             "Türkiye": "TR", "İtalya": "IT", "Japonya": "JP", "Fransa": "FR", "Birleşik Krallık": "GB",
             "ABD": "US", "Brezilya": "BR", "Mısır": "EG", "Avustralya": "AU", "İspanya": "ES",
@@ -637,11 +636,6 @@
             "Ürdün": "JO", "Sri Lanka": "LK", "Ermenistan": "AM", "Gürcistan": "GE", "Kazakistan": "KZ",
             "Tunus": "TN", "Cezayir": "DZ", "Tanzanya": "TZ", "Libya": "LY", "Moldova": "MD", "Yemen": "YE"
         };
-        Object.keys(countriesData).forEach(name => {
-            if (countryCodes[name]) {
-                countriesData[name].code = countryCodes[name];
-            }
-        });
     
         // --- Sabitler ve DOM Elementleri ---
         const countryListView = document.getElementById('country-list-view');
@@ -1349,6 +1343,11 @@
 
         // Merge tags into main data
         Object.keys(countriesData).forEach(country => {
+            // Assign ISO Code from mapping
+            if (countryCodes[country]) {
+                countriesData[country].code = countryCodes[country];
+            }
+            
             countriesData[country].tags = countryCategoryMap[country] || [];
             // Auto-tag continents/regions based on description if missing
             if (countriesData[country].description.toLowerCase().includes("avrupa")) countriesData[country].tags.push("avrupa");
@@ -1555,7 +1554,6 @@
                         </div>
                     `;
                     countryListContainer.appendChild(adCard);
-                    adInserted = true;
                 }
             });
 
