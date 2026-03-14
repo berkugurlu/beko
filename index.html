@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr" data-theme="light-indigo">
-<head>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
@@ -11,6 +11,10 @@
             darkMode: 'class',
         }
     </script>
+
+    <!-- GOOGLE ADSENSE YER TUTUCU -->
+    <!-- Buraya Google AdSense kodunuzu yapıştırın -->
+    <!-- <script> ... ADSENSE KODU ... </script> -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700&display=swap" rel="stylesheet">
     
@@ -408,38 +412,34 @@
                     <ul class="space-y-2 text-sm text-secondary">
                         <li><a href="#" onclick="window.scrollTo(0,0); return false;" class="hover:text-accent transition-colors">Ana Sayfa</a></li>
                         <li><a href="?page=blog" onclick="event.preventDefault(); window.history.pushState({page:'blog'},'', '?page=blog'); handleRouting();" class="hover:text-accent transition-colors">Blog & Rehberler</a></li>
-                        <li><a href="#" onclick="document.getElementById('ai-suggest-modal').classList.add('visible'); return false;" class="hover:text-accent transition-colors">AI Asistan</a></li>
+                        <li><a href="#ai-chat-section" class="hover:text-accent transition-colors">AI Asistan</a></li>
                     </ul>
                 </div>
 
                 <!-- Legal -->
-                <div>
-                    <h4 class="font-bold text-primary mb-4">Kurumsal</h4>
-                    <ul class="space-y-2 text-sm text-secondary">
-                        <li><a href="#" id="footer-privacy-link" class="hover:text-accent transition-colors">Gizlilik Politikası</a></li>
-                        <li><a href="#" id="footer-terms-link" class="hover:text-accent transition-colors">Kullanım Şartları</a></li>
-                        <li><a href="#" id="footer-contact-link" class="hover:text-accent transition-colors">İletişim</a></li>
-                    </ul>
-                </div>
-
-                <!-- Social / Newsletter -->
-                <div>
-                    <h4 class="font-bold text-primary mb-4">Takip Et</h4>
-                    <div class="flex gap-4">
-                        <a href="#" class="p-2 rounded-full bg-card-bg border border-border-color hover:border-accent hover:text-accent text-secondary transition-all">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
-                        </a>
-                        <a href="#" class="p-2 rounded-full bg-card-bg border border-border-color hover:border-accent hover:text-accent text-secondary transition-all">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 014.42 1.21c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clip-rule="evenodd" /></svg>
-                        </a>
-                    </div>
-                </div>
+                <div></div>
             </div>
             
-            <div class="border-t border-border-color mt-12 pt-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-secondary">&copy; 2025 Vuelina. Tüm hakları saklıdır.</p>
-                <div class="text-xs text-secondary mt-4 md:mt-0">
-                    İstanbul, Türkiye'de sevgiyle tasarlandı ❤️
+            <div class="border-t border-border-color mt-12 pt-6 pb-4 space-y-4">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                    <p class="text-sm text-secondary">&copy; 2025 Vuelina. Tüm hakları saklıdır.</p>
+                    <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-secondary">
+                        <button id="footer-privacy-link" class="hover:text-accent transition-colors">
+                            Gizlilik Politikası
+                        </button>
+                        <span class="h-3 w-px bg-border-color hidden sm:inline-block"></span>
+                        <button id="footer-terms-link" class="hover:text-accent transition-colors">
+                            Kullanım Koşulları
+                        </button>
+                        <span class="h-3 w-px bg-border-color hidden sm:inline-block"></span>
+                        <button id="footer-cookies-link" class="hover:text-accent transition-colors">
+                            Çerez Politikası
+                        </button>
+                        <span class="h-3 w-px bg-border-color hidden sm:inline-block"></span>
+                        <button id="footer-contact-link" class="hover:text-accent transition-colors">
+                            İletişim
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -454,21 +454,59 @@
       </div>
     </div>
     
-    <!-- YAPAY ZEKA ÖNERİ MODALI (AI SUGGEST MODAL) -->
-    <div id="ai-suggest-modal" class="modal-overlay" aria-modal="true" role="dialog">
-        <div class="modal-content content-card w-full max-w-2xl p-8">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">✨ Yapay Zeka Seyahat Danışmanı</h3>
-                <button id="ai-modal-close-btn" class="text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white">&times;</button>
+        <!-- YAPAY ZEKA SOHBET ALANI (ANA ODAK) -->
+        <section id="ai-chat-section" class="mt-16">
+            <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+                <div class="space-y-4">
+                    <h3 class="text-3xl md:text-4xl font-extrabold tracking-tight text-primary">
+                        Premium Yapay Zeka Seyahat Asistanın
+                    </h3>
+                    <p class="text-lg text-secondary leading-relaxed">
+                        Vuelina, milyonlarca seyahat verisini ve gerçek zamanlı bilgileri kullanarak senin için
+                        kişiselleştirilmiş rota, konaklama ve deneyim önerileri üretir. Sadece hayalindeki tatili anlat;
+                        gerisini akıllı asistanın planlasın.
+                    </p>
+                    <ul class="space-y-2 text-sm text-secondary">
+                        <li>• Kişiselleştirilmiş destinasyon ve rota önerileri</li>
+                        <li>• Bütçe ve tarih aralığına göre akıllı filtreleme</li>
+                        <li>• Tek tıkla kopyalanabilir, paylaşılabilir planlar</li>
+                    </ul>
+                </div>
+                <div class="content-card glass-card p-6 md:p-8 flex flex-col min-h-[360px]">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-secondary mb-1">Akıllı Asistan</p>
+                            <h4 class="text-xl font-semibold text-primary">Vuelina AI Chat</h4>
+                        </div>
+                        <span class="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Canlı
+                        </span>
+                    </div>
+                    <div id="ai-suggestion-form" class="flex-1 flex flex-col">
+                        <p class="text-sm text-secondary mb-3">
+                            Nasıl bir macera aradığını birkaç cümleyle anlat, senin için en iyi 3 ülkeyi ve nedenlerini önerelim.
+                        </p>
+                        <textarea
+                            id="ai-prompt-input"
+                            rows="4"
+                            class="w-full p-3 mb-3 rounded-xl bg-background border border-border-color focus:outline-none focus:ring-2 focus:ring-accent text-sm resize-none"
+                            placeholder="Örnek: Mayıs ayında 5 günlüğüne, gastronomi ve kültür ağırlıklı, bütçe dostu bir Avrupa kaçamağı arıyorum."
+                        ></textarea>
+                        <button
+                            id="get-ai-suggestion-btn"
+                            class="btn btn-primary w-full py-3 text-sm md:text-base mb-3"
+                        >
+                            Önerileri Getir
+                        </button>
+                        <div
+                            id="ai-suggestion-result"
+                            class="mt-1 markdown-content prose prose-sm max-w-none text-left overflow-y-auto"
+                        ></div>
+                    </div>
+                </div>
             </div>
-            <div id="ai-suggestion-form">
-                <p class="text-secondary mb-4">Nasıl bir macera aradığını anlat, sana en uygun 3 yeri önereyim.</p>
-                <textarea id="ai-prompt-input" rows="4" class="w-full p-3 mb-4 rounded-lg bg-background border border-border-color focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Örnek: Aralık ayında, bir haftalığına, romantik ve tarihi bir gezi arıyorum. Çok pahalı olmasın."></textarea>
-                <button id="get-ai-suggestion-btn" class="btn btn-primary w-full py-3 text-lg">Önerileri Getir</button>
-            </div>
-            <div id="ai-suggestion-result" class="mt-4 markdown-content"></div>
-        </div>
-    </div>
+        </section>
 
     <!-- KONTROL LİSTESİ MODALI (CHECKLIST MODAL) -->
     <div id="checklist-modal" class="modal-overlay" aria-modal="true" role="dialog">
@@ -578,8 +616,7 @@
         const modalCloseBtn = document.getElementById('modal-close-btn');
         const homeLink = document.getElementById('home-link');
         const suggestPlaceBtn = document.getElementById('suggest-place-btn');
-        const aiSuggestModal = document.getElementById('ai-suggest-modal');
-        const aiModalCloseBtn = document.getElementById('ai-modal-close-btn');
+        const aiChatSection = document.getElementById('ai-chat-section');
         const getAiSuggestionBtn = document.getElementById('get-ai-suggestion-btn');
         const aiPromptInput = document.getElementById('ai-prompt-input');
         const aiSuggestionResult = document.getElementById('ai-suggestion-result');
@@ -2038,66 +2075,94 @@
         const legalTexts = {
             'privacy': `
                 <h2>Gizlilik Politikası</h2>
-                <p><strong>Son Güncelleme: Ekim 2025</strong></p>
-                <p>Vuelina, akıllı seyahat rehberi olarak, kullanıcı gizliliğini ciddiye alır. Bu politika, uygulamamız aracılığıyla topladığımız, kullandığımız ve paylaştığımız bilgileri açıklamaktadır.</p>
+                <p><strong>Son Güncelleme: Mart 2026</strong></p>
+                <p>Vuelina ("Site" veya "Hizmet"), kullanıcılarının gizliliğine saygı duyar ve kişisel verilerin korunmasını öncelik haline getirir. Bu Gizlilik Politikası, 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") ve ilgili mevzuata uygun olarak, Site'yi kullanırken hangi verilerin işlendiğini ve bu verilerin nasıl korunduğunu açıklar.</p>
                 
-                <h3>1. Toplanan Bilgiler</h3>
-                <p>Uygulamamız sadece tarayıcınızın yerel depolamasını (Local Storage) kullanarak aşağıdaki bilgileri cihazınızda saklar:</p>
+                <h3>1. Toplanan Veriler ve İşleme Amaçları</h3>
+                <p>Site'yi ziyaret ettiğinizde aşağıdaki veri kategorileri işlenebilir:</p>
                 <ul>
-                    <li><strong>Tema Seçimi:</strong> Tercih ettiğiniz aydınlık/karanlık modu ve renk paleti.</li>
-                    <li><strong>Kontrol Listesi Verileri:</strong> Eklediğiniz seyahat görevleri ve tamamlanma durumları.</li>
+                    <li><strong>Cihaz ve kullanım verileri:</strong> IP adresi, tarayıcı türü, işletim sistemi, ziyaret edilen sayfalar, tıklama ve gezinme bilgileri, oturum süresi.</li>
+                    <li><strong>Çerezler ve benzeri teknolojiler:</strong> Tercihlerinizi (tema seçimi vb.) ve kullanıcı deneyimini iyileştirmek için kullanılan teknik ve fonksiyonel çerezler.</li>
+                    <li><strong>İletişim verileri:</strong> İletişim formu veya e-posta yoluyla bizimle paylaştığınız ad, e-posta adresi ve mesaj içeriği.</li>
                 </ul>
-                <p>Bu bilgiler, sunucularımızda saklanmaz veya üçüncü taraflarla paylaşılmaz. Yapay Zeka sorguları, Google'ın Gemini API'sine anonim olarak gönderilir ve sorgu içeriği kalıcı olarak saklanmaz.</p>
+                <p>Bu veriler; hizmetin sunulması, performansın izlenmesi, güvenliğin sağlanması, hataların tespiti ve kullanıcı deneyiminin iyileştirilmesi amaçlarıyla işlenir.</p>
                 
-                <h3>2. Üçüncü Taraf Bağlantıları</h3>
-                <p>Uygulamamız, uçuş arama, otel rezervasyonu ve tur/aktivite platformları gibi üçüncü taraf web sitelerine bağlantılar içerir. Bu sitelerin gizlilik uygulamaları üzerinde kontrolümüz yoktur ve bu siteleri ziyaret ettiğinizde kendi gizlilik politikaları geçerli olacaktır.</p>
+                <h3>2. Google AdSense ve Reklam Ortakları</h3>
+                <p>Site, içerik ve reklamların kişiselleştirilmesi, reklam performansının ölçülmesi ve hileli etkinliklerin önlenmesi amacıyla Google AdSense ve diğer reklam iş ortaklarından hizmet alabilir. Bu kapsamda üçüncü taraf sağlayıcılar, tarayıcınıza çerez yerleştirebilir ve cihazınızla ilişkilendirilen benzersiz tanımlayıcılar aracılığıyla kullanım verilerinizi işleyebilir.</p>
+                <p>Google tarafından çerezlerin kullanımı ve kişiselleştirilmiş reklamlar hakkında daha fazla bilgi için lütfen Google'ın <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Reklamcılık Politikaları</a> sayfasını ziyaret edin.</p>
                 
-                <h3>3. Google AdSense</h3>
-                <p>Uygulamamız, reklam sunmak için Google AdSense'i kullanır. Google, DART çerezi kullanarak kullanıcıların sitemize ve internetteki diğer sitelere yaptıkları ziyaretlere göre reklamlar sunar. Kullanıcılar, Google Reklam ve İçerik Ağı gizlilik politikasını ziyaret ederek DART çerezinin kullanımını devre dışı bırakabilirler.</p>
+                <h3>3. Çerez Yönetimi</h3>
+                <p>Tarayıcınızın ayarlarını kullanarak çerezleri kabul edebilir, reddedebilir veya mevcut çerezleri silebilirsiniz. Çerezleri devre dışı bırakmanız durumunda, Site'nin bazı bölümleri beklenen şekilde çalışmayabilir.</p>
                 
-                <h3>4. Politika Değişiklikleri</h3>
-                <p>Gizlilik politikamızı zaman zaman güncelleyebiliriz. Herhangi bir değişiklik durumunda, bu sayfada yeni politikayı yayınlayarak sizi bilgilendireceğiz. Değişiklikler, yayınlandığı anda yürürlüğe girer.</p>
+                <h3>4. Verilerin Saklanma Süresi</h3>
+                <p>Kişisel verileriniz, ilgili mevzuatta öngörülen veya işleme amaçları için gerekli olan süre boyunca saklanır; bu süre sonunda mevzuata uygun yöntemlerle silinir, yok edilir veya anonim hale getirilir.</p>
+                
+                <h3>5. Haklarınız</h3>
+                <p>KVKK kapsamında; kişisel verilerinize erişme, düzeltme, silinmesini veya işlemeye kısıt getirilmesini talep etme, işlenmesine itiraz etme ve veri taşınabilirliği haklarına sahipsiniz. Bu haklarınızı kullanmak için aşağıda yer alan iletişim kanalları üzerinden bizimle irtibata geçebilirsiniz.</p>
             `,
             'terms': `
-                <h2>Kullanım Şartları</h2>
-                <p><strong>Son Güncelleme: Ekim 2025</strong></p>
-                <p>Bu Kullanım Şartları ("Şartlar"), Vuelina akıllı seyahat rehberi uygulamasının ("Uygulama") kullanımını düzenler.</p>
-
-                <h3>1. Uygulamanın Kullanımı</h3>
-                <p>Uygulama, kişisel, ticari olmayan seyahat planlama ve bilgi amaçlı kullanımınız için tasarlanmıştır. Uygulamayı yasa dışı, zararlı veya bu Şartları ihlal eden herhangi bir amaçla kullanamazsınız.</p>
+                <h2>Kullanım Koşulları</h2>
+                <p><strong>Son Güncelleme: Mart 2026</strong></p>
+                <p>Bu Kullanım Koşulları ("Koşullar"), Vuelina tarafından sunulan web sitesi ve yapay zeka destekli seyahat asistanı hizmetinin kullanımına ilişkin kuralları düzenler. Site'ye erişerek veya Hizmet'i kullanarak bu Koşulları kabul etmiş sayılırsınız.</p>
+    
+                <h3>1. Hizmetin Kapsamı</h3>
+                <p>Vuelina, seyahat planlamanıza yardımcı olmak amacıyla yapay zeka tabanlı öneriler, bilgilendirici içerikler ve yönlendirmeler sunar. Sunulan içerikler yalnızca genel bilgilendirme niteliğindedir ve hukuki, finansal veya profesyonel danışmanlık olarak yorumlanmamalıdır.</p>
                 
-                <h3>2. Fikri Mülkiyet</h3>
-                <p>Uygulamanın tüm içeriği, metinleri, grafikleri, logoları, ikonları ve yazılımı Vuelina'ya aittir ve telif hakkı yasalarıyla korunmaktadır. Uygulamadan elde edilen hiçbir içeriği ticari amaçlarla kopyalayamaz, çoğaltamaz veya dağıtamazsınız.</p>
+                <h3>2. Sorumluluk Reddi</h3>
+                <p>Uçuş saatleri, vize koşulları, döviz kurları ve diğer seyahat bilgilerinin doğruluğu için azami özen gösterilmekle birlikte, bu bilgilerin her zaman güncel olacağı garanti edilmez. Nihai kararlarınızı vermeden önce, ilgili resmi kurum ve kuruluşlardan bilgi almanız önerilir. Vuelina, Site'nin kullanımından doğabilecek doğrudan veya dolaylı zararlardan sorumlu değildir.</p>
                 
-                <h3>3. Harici Bağlantılar ve İçerik Doğruluğu</h3>
-                <p>Uygulama, üçüncü taraf kaynaklara (uçuş, otel, aktivite vb.) bağlantılar içerebilir. Bu bağlantıların içeriğinden sorumlu değiliz. Seyahat bilgileri (döviz kurları, acil durum numaraları vb.) en güncel olmaya çalışılsa da, herhangi bir rezervasyon veya acil durum öncesinde her zaman bağımsız olarak doğrulamanız önerilir. Uygulama, sağlanan bilgilerin doğruluğu konusunda garanti vermez.</p>
-
-                <h3>4. Garanti Reddi</h3>
-                <p>Uygulama "olduğu gibi" ve "mevcut olduğu gibi" esasına göre sağlanır. Vuelina, uygulamanın kesintisiz, hatasız veya virüssüz olacağına dair hiçbir garanti vermez.</p>
+                <h3>3. Fikri Mülkiyet Hakları</h3>
+                <p>Site'de yer alan tüm metin, görsel, logo, ikon, tasarım ve yazılım bileşenleri Vuelina'ya veya lisans veren üçüncü kişilere aittir ve telif hakkı mevzuatı ile korunur. Önceden yazılı izin alınmaksızın, bu içerikler çoğaltılamaz, dağıtılamaz, kamuya açık şekilde kullanıma sunulamaz.</p>
+                
+                <h3>4. Kullanıcı Yükümlülükleri</h3>
+                <p>Site'yi hukuka, kamu düzenine, genel ahlaka ve üçüncü kişilerin haklarına aykırı şekilde kullanamazsınız. Hizmet'e zarar verebilecek, işleyişi bozabilecek veya diğer kullanıcıların deneyimini olumsuz etkileyebilecek her türlü davranıştan kaçınmayı kabul edersiniz.</p>
+                
+                <h3>5. Değişiklikler</h3>
+                <p>Vuelina, Site'yi ve bu Koşulları önceden bildirimde bulunmaksızın güncelleme veya sona erdirme hakkını saklı tutar. Güncel Koşullar her zaman bu sayfada yayımlanır.</p>
+            `,
+            'cookies': `
+                <h2>Çerez Politikası</h2>
+                <p><strong>Son Güncelleme: Mart 2026</strong></p>
+                <p>Bu Çerez Politikası, Vuelina tarafından kullanılan çerez türlerini ve bu çerezlerin hangi amaçlarla işlendiğini açıklar. Site'yi kullanmaya devam ederek, bu Politikada açıklanan çerez kullanımını kabul etmiş olursunuz.</p>
+                
+                <h3>1. Çerez Nedir?</h3>
+                <p>Çerezler, bir web sitesini ziyaret ettiğinizde tarayıcınıza veya cihazınıza kaydedilen küçük metin dosyalarıdır. Çerezler, Site'nin düzgün çalışmasını sağlamak, tercihlerinizi hatırlamak ve istatistiksel analizler yapmak için kullanılır.</p>
+                
+                <h3>2. Kullandığımız Çerez Türleri</h3>
+                <ul>
+                    <li><strong>Zorunlu çerezler:</strong> Site'nin temel işlevlerinin çalışması için gereklidir. Oturumun devam ettirilmesi ve güvenlik gibi amaçlarla kullanılır.</li>
+                    <li><strong>Performans ve analiz çerezleri:</strong> Site trafiğini ve kullanım istatistiklerini anlamamıza yardımcı olur. Bu veriler anonim olarak değerlendirilir.</li>
+                    <li><strong>Reklam ve hedefleme çerezleri:</strong> Google AdSense ve benzeri reklam ortakları tarafından, ilgi alanlarınıza daha uygun reklamlar göstermek amacıyla kullanılabilir.</li>
+                </ul>
+                
+                <h3>3. Çerezleri Nasıl Yönetebilirsiniz?</h3>
+                <p>Tarayıcı ayarlarınızı kullanarak çerezleri kabul edebilir, reddedebilir veya belirli türdeki çerezleri engelleyebilirsiniz. Bununla birlikte, bazı çerezleri devre dışı bırakmanız, Site'nin fonksiyonlarının kısmen veya tamamen etkilenmesine neden olabilir.</p>
+                
+                <h3>4. Üçüncü Taraf Çerezleri</h3>
+                <p>Google ve diğer iş ortakları, Site ziyaretleriniz hakkında istatistik toplamak ve reklamları kişiselleştirmek için kendi çerezlerini kullanabilir. Bu çerezler üzerinde doğrudan kontrolümüz bulunmamaktadır. Ayrıntılı bilgi için ilgili üçüncü taraf sağlayıcıların gizlilik ve çerez politikalarını incelemenizi öneririz.</p>
             `,
             'contact': `
                 <h2>İletişim</h2>
-                <p>Vuelina ile ilgili herhangi bir sorunuz, öneriniz veya geri bildiriminiz için lütfen aşağıdaki yöntemleri kullanın:</p>
-
-                <h3>1. Geri Bildirim ve Destek</h3>
-                <p>Uygulama ile ilgili teknik sorunlar veya önerileriniz için lütfen bize e-posta yoluyla ulaşın. Tüm geri bildirimler değerlidir ve uygulamayı iyileştirmemize yardımcı olur.</p>
+                <p>Gizlilik, çerezler, reklam politikaları veya Hizmet'in kullanımı ile ilgili her türlü soru ve talebiniz için bizimle iletişime geçebilirsiniz.</p>
+    
+                <h3>1. İletişim Kanalları</h3>
                 <ul>
-                    <li><strong>E-posta Adresi:</strong> support@vuelina.com (Kurgusal)</li>
+                    <li><strong>E-posta:</strong> privacy@vuelina.com (örnek adres)</li>
+                    <li><strong>Destek:</strong> support@vuelina.com (örnek adres)</li>
                 </ul>
-
-                <h3>2. Kurumsal Sorular</h3>
-                <p>Basın, iş ortaklığı veya diğer kurumsal konular için lütfen aşağıdaki adrese yazın:</p>
-                <ul>
-                    <li><strong>Kurumsal İletişim:</strong> info@vuelina.com (Kurgusal)</li>
-                </ul>
-                <p>Size en kısa sürede geri dönüş yapılacaktır.</p>
+    
+                <h3>2. Geri Dönüş Süresi</h3>
+                <p>Talep ve sorularınıza, yoğunluğa bağlı olarak makul bir süre içinde yanıt verilmesi hedeflenir. Kişisel verilerinizle ilgili başvurularınız, ilgili mevzuatta öngörülen yasal süreler içerisinde değerlendirilecektir.</p>
             `
         };
 
         const showLegalModal = (type) => {
             const text = legalTexts[type];
             if (!text) return;
-            legalModalTitle.textContent = type === 'privacy' ? 'Gizlilik Politikası' : type === 'terms' ? 'Kullanım Şartları' : 'İletişim Bilgileri';
+            if (type === 'privacy') legalModalTitle.textContent = 'Gizlilik Politikası';
+            else if (type === 'terms') legalModalTitle.textContent = 'Kullanım Koşulları';
+            else if (type === 'cookies') legalModalTitle.textContent = 'Çerez Politikası';
+            else legalModalTitle.textContent = 'İletişim';
             legalModalContent.innerHTML = text;
             legalModal.classList.add('visible');
         };
@@ -2348,11 +2413,10 @@
         suggestPlaceBtn.addEventListener('click', () => {
             aiSuggestionResult.innerHTML = ''; // Önceki sonuçları temizle
             aiPromptInput.value = ''; // Input'u temizle
-            aiSuggestModal.classList.add('visible');
-        });
-        aiModalCloseBtn.addEventListener('click', () => aiSuggestModal.classList.remove('visible'));
-        aiSuggestModal.addEventListener('click', (e) => {
-            if (e.target === aiSuggestModal) aiSuggestModal.classList.remove('visible');
+            if (aiChatSection) {
+                aiChatSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            aiPromptInput.focus();
         });
         getAiSuggestionBtn.addEventListener('click', getAiDestinationSuggestion);
 
@@ -2451,10 +2515,12 @@
         // Footer Links Event Listeners
         const footerPrivacy = document.getElementById('footer-privacy-link');
         const footerTerms = document.getElementById('footer-terms-link');
+        const footerCookies = document.getElementById('footer-cookies-link');
         const footerContact = document.getElementById('footer-contact-link');
         
         if(footerPrivacy) footerPrivacy.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
         if(footerTerms) footerTerms.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
+        if(footerCookies) footerCookies.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('cookies'); });
         if(footerContact) footerContact.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
         
     initApp();
