@@ -654,16 +654,18 @@
 
             } catch (error) {
                 console.error("Yapay Zeka API Hatası:", error);
+                alert('Hata detayı: ' + (error?.message || error));
+
                 let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
-                if (error.message.includes("400")) userMessage = "İstek geçersiz görünüyor. Lütfen girdiğiniz metni kontrol edin.";
-                if (error.message.includes("403")) userMessage = "Bu işlem için yetkiniz olmayabilir.";
-                if (error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen kısa bir süre bekleyip tekrar deneyin.";
+                if (error.message && error.message.includes("400")) userMessage = "İstek geçersiz görünüyor. Lütfen girdiğiniz metni kontrol edin.";
+                if (error.message && error.message.includes("403")) userMessage = "Bu işlem için yetkiniz olmayabilir.";
+                if (error.message && error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen kısa bir süre bekleyip tekrar deneyin.";
                 
                 if (resultContainer) {
                     resultContainer.innerHTML = `
                         <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
                             <p class="font-bold">Üzgünüm, bir hata oluştu.</p>
-                            <p class="text-sm">${userMessage} (${error.message})</p>
+                            <p class="text-sm">${userMessage} (${error?.message || 'Bilinmeyen hata'})</p>
                         </div>
                     `;
                 }

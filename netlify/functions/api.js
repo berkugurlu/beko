@@ -1,9 +1,28 @@
 const https = require("https");
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 exports.handler = async function (event, context) {
+  // CORS preflight (OPTIONS) isteğini hemen yanıtla
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: CORS_HEADERS,
+      body: "",
+    };
+  }
+
   // Sadece POST isteklerini kabul et (Güvenlik için)
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Sadece POST istekleri kabul edilir." };
+    return {
+      statusCode: 405,
+      headers: CORS_HEADERS,
+      body: "Sadece POST istekleri kabul edilir.",
+    };
   }
 
   try {
@@ -14,7 +33,10 @@ exports.handler = async function (event, context) {
     if (!userMessage || typeof userMessage !== "string") {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "Geçerli bir 'message' alanı gönderilmedi." }),
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          error: "Geçerli bir 'message' alanı gönderilmedi.",
+        }),
       };
     }
 
@@ -24,7 +46,10 @@ exports.handler = async function (event, context) {
     if (!apiKey) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "Sunucu yapılandırma hatası: GEMINI_API_KEY tanımlı değil." }),
+        headers: CORS_HEADERS,
+        body: JSON.stringify({
+          error: "Sunucu yapılandırma hatası: GEMINI_API_KEY tanımlı değil.",
+        }),
       };
     }
 
@@ -93,6 +118,7 @@ exports.handler = async function (event, context) {
     if (!reply) {
       return {
         statusCode: 500,
+        headers: CORS_HEADERS,
         body: JSON.stringify({
           error: "Gemini API'den geçerli bir yanıt alınamadı.",
         }),
@@ -102,12 +128,14 @@ exports.handler = async function (event, context) {
     // Gemini'den gelen cevabı frontend'e (kullanıcıya) geri yolla
     return {
       statusCode: 200,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ reply }),
     };
   } catch (error) {
     console.error("Netlify function error:", error);
     return {
       statusCode: 500,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: "Sunucuda bir hata oluştu." }),
     };
   }
