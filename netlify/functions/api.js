@@ -12,7 +12,48 @@ exports.handler = async function (event, context) {
     return { statusCode: 200, headers, body: '' };
   }
 
-  // Sadece POST isteğine izin ver
+  // Sadece POST isteğine izin ver (Gemini için)
+  // Contentful için GET isteğine de izin veriyoruz
+  if (event.httpMethod === 'GET') {
+    const type = event.queryStringParameters.type;
+    
+    if (type === 'contentful-homepage') {
+      try {
+        const spaceId = process.env.CONTENTFUL_SPACE_ID;
+        const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
+
+        if (!spaceId || !accessToken) {
+          return {
+            statusCode: 500,
+            headers,
+            body: JSON.stringify({ error: "Contentful credentials are missing in environment variables." })
+          };
+        }
+
+        // pageLanding içerik tipindeki Homepage girişini çek
+        const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=pageLanding&fields.internalName=Homepage&include=2`;
+        
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Contentful API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify(data)
+        };
+      } catch (error) {
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ error: error.message })
+        };
+      }
+    }
+  }
+
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers, body: 'Sadece POST istekleri kabul edilir.' };
   }

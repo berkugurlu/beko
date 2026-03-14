@@ -15,7 +15,10 @@
     <!-- GOOGLE ADSENSE YER TUTUCU -->
     <!-- Buraya Google AdSense kodunuzu yapıştırın -->
     <!-- <script> ... ADSENSE KODU ... </script> -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Google AdSense Kodu -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838"
@@ -109,7 +112,8 @@
         [data-theme="dark-orange"] { --accent: #FCD34D; --accent-dark: #F59E0B; } /* Dark (Amber 300) */
         
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
             background-color: var(--background);
             color: var(--text-primary);
             transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -117,8 +121,10 @@
             -moz-osx-font-smoothing: grayscale;
         }
         
-        h1, h2, h3, .logo-font {
-            font-family: 'Playfair Display', serif;
+        h1, h2, h3, h4, h5, h6, .logo-font {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
 
         .content-card {
@@ -147,7 +153,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
         #search-input:focus {
             box-shadow: 0 0 0 4px var(--accent-dark)1a, 0 10px 25px -5px var(--shadow-color);
@@ -247,6 +253,17 @@
         .btn-primary { 
             background-color: var(--accent); 
             color: white; 
+        }
+
+        /* Skeleton Loader */
+        .skeleton {
+            background: linear-gradient(90deg, var(--card-bg) 25%, var(--border-color) 50%, var(--card-bg) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
         .btn-primary:hover:not(:disabled) { 
             background-color: var(--accent-dark); 
@@ -1605,28 +1622,94 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        const displayBlogList = () => {
+        const displayBlogList = async () => {
             blogListView.classList.remove('hidden');
             const container = document.getElementById('blog-list-container');
-            container.innerHTML = blogData.map(post => `
-                <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
-                    <div class="h-48 overflow-hidden">
-                        <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <div class="text-xs text-accent font-bold mb-2 uppercase tracking-wider">Seyahat Rehberi</div>
-                        <h3 class="text-xl font-bold mb-3 text-primary line-clamp-2">${post.title}</h3>
-                        <p class="text-secondary text-sm mb-4 line-clamp-3 flex-grow">${post.summary}</p>
-                        <div class="flex justify-between items-center mt-auto pt-4 border-t border-border-color">
-                            <span class="text-xs text-secondary">${post.date}</span>
-                            <span class="text-sm font-semibold text-accent flex items-center group">
-                                Oku 
-                                <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                            </span>
-                        </div>
+            
+            // Show skeletons while loading
+            container.innerHTML = Array(3).fill(0).map(() => `
+                <div class="content-card glass-card overflow-hidden flex flex-col h-full">
+                    <div class="h-48 skeleton"></div>
+                    <div class="p-6 flex flex-col flex-grow space-y-4">
+                        <div class="h-4 w-24 skeleton rounded"></div>
+                        <div class="h-8 w-full skeleton rounded"></div>
+                        <div class="h-20 w-full skeleton rounded"></div>
                     </div>
                 </div>
             `).join('');
+
+            try {
+                // Fetch from Contentful via our proxy
+                const response = await fetch('/.netlify/functions/api?type=contentful-homepage');
+                if (!response.ok) throw new Error('Failed to fetch from Contentful');
+                
+                const data = await response.json();
+                
+                // Extract featured post (adjusting to Contentful's response structure)
+                // Assuming pageLanding has a field 'featuredBlogPost' which is a reference
+                const entry = data.items.find(item => item.sys.contentType.sys.id === 'pageLanding');
+                const featuredPostRef = entry?.fields?.featuredBlogPost;
+                
+                let featuredPost = null;
+                if (featuredPostRef) {
+                    const postEntry = data.includes.Entry.find(e => e.sys.id === featuredPostRef.sys.id);
+                    const asset = data.includes.Asset.find(a => a.sys.id === postEntry.fields.featuredImage.sys.id);
+                    
+                    featuredPost = {
+                        id: postEntry.fields.slug,
+                        title: postEntry.fields.title,
+                        summary: postEntry.fields.summary || "Bu harika yazıyı okumak için tıklayın.",
+                        image: `https:${asset.fields.file.url}`,
+                        date: new Date(postEntry.sys.createdAt).toLocaleDateString('tr-TR'),
+                        content: postEntry.fields.content // Simplified for this example
+                    };
+                }
+
+                // Combine with local static data
+                const allPosts = featuredPost ? [featuredPost, ...blogData] : blogData;
+
+                container.innerHTML = allPosts.map(post => `
+                    <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
+                        <div class="h-48 overflow-hidden">
+                            <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <div class="text-xs text-accent font-bold mb-2 uppercase tracking-wider">Seyahat Rehberi</div>
+                            <h3 class="text-xl font-bold mb-3 text-primary line-clamp-2">${post.title}</h3>
+                            <p class="text-secondary text-sm mb-4 line-clamp-3 flex-grow">${post.summary}</p>
+                            <div class="flex justify-between items-center mt-auto pt-4 border-t border-border-color">
+                                <span class="text-xs text-secondary">${post.date}</span>
+                                <span class="text-sm font-semibold text-accent flex items-center group">
+                                    Oku 
+                                    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error("Contentful Error:", error);
+                // Fallback to local data on error
+                container.innerHTML = blogData.map(post => `
+                    <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
+                        <div class="h-48 overflow-hidden">
+                            <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <div class="text-xs text-accent font-bold mb-2 uppercase tracking-wider">Seyahat Rehberi</div>
+                            <h3 class="text-xl font-bold mb-3 text-primary line-clamp-2">${post.title}</h3>
+                            <p class="text-secondary text-sm mb-4 line-clamp-3 flex-grow">${post.summary}</p>
+                            <div class="flex justify-between items-center mt-auto pt-4 border-t border-border-color">
+                                <span class="text-xs text-secondary">${post.date}</span>
+                                <span class="text-sm font-semibold text-accent flex items-center group">
+                                    Oku 
+                                    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
             
             const newUrl = `${window.location.pathname}?page=blog`;
             if (window.location.search !== '?page=blog') {
