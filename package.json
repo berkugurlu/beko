@@ -1,0 +1,12 @@
+{
+    "name": "vuelina",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Vuelina Travel AI",
+    "scripts": {
+      "build": "echo 'No build step needed'"
+    },
+    "dependencies": {
+      "node-fetch": "^2.6.7"
+    }
+  }
