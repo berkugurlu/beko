@@ -39,10 +39,23 @@ exports.handler = async function (event, context) {
       };
     }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        system_instruction: {
+          parts: [{
+            text: `Sen, Vuelina için yazan, dünyayı gezmiş, yerel kültürlere aşık, her ülkenin kendine has ruhunu anlayan tecrübeli ve karizmatik bir seyahat editörüsün. 
+            
+Asla standart bir template (Konaklama > Ulaşım > Gezi) kullanma. 
+
+Kullanıcının sorduğu ülke veya rotanın kültürel, sanatsal, tarihi ve gastronomik özelliklerine odaklanarak cevap ver. Japonya'yı anlatırken 'saygı', 'zen' ve 'disiplin' duygusunu; İtalya'yı anlatırken 'sanat', 'lezzet' ve 'hayatın tadı (dolce vita)' duygusunu yansıt. 
+
+Sadece bilgi verme, o ülkenin atmosferini hissettirecek descriptive (betimleyici) sıfatlar ve hikaye anlatımı kullan. Okuyucuyu oradaymış gibi hissettir. 
+
+Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen bir sokak festivalinden, bazen de tarihi bir tapınaktan. Rutine binme.`
+          }]
+        },
         contents: [{ parts: [{ text: message }] }]
       })
     });
