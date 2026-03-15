@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr" data-theme="dark-indigo" class="dark">
     <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" id="meta-description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
@@ -239,8 +240,8 @@
         
         .modal-overlay { 
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background-color: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(4px); 
+            background-color: rgba(0, 0, 0, 0.72); 
+            backdrop-filter: blur(6px); 
             z-index: 100; display: flex; align-items: center; justify-content: center; 
             opacity: 0; transition: opacity 0.3s ease; pointer-events: none; 
         }
@@ -250,6 +251,7 @@
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
             max-height: 90vh;
             overflow-y: auto;
+            border-radius: 20px;
         }
         .modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
         
@@ -275,6 +277,78 @@
             transition: all 0.2s ease; 
             border-radius: 12px;
             font-weight: 600;
+        }
+
+        #legal-modal-close-btn {
+            border-radius: 12px;
+            padding: 0.25rem 0.75rem;
+            line-height: 1;
+            transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+        #legal-modal-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .about-premium {
+            line-height: 1.75;
+        }
+        .about-premium h2 {
+            color: var(--accent);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+            margin-bottom: 0.75rem;
+        }
+        .about-premium h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .about-premium .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 0.75rem;
+        }
+        .about-premium .compare-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .about-premium .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .about-premium .pill.accent {
+            border-color: rgba(79, 70, 229, 0.35);
+            background-color: rgba(79, 70, 229, 0.12);
+            color: #c7d2fe;
+        }
+        .about-premium .quote {
+            margin-top: 1.25rem;
+            padding: 16px;
+            border-radius: 16px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .about-premium .compare-grid {
+                grid-template-columns: 1fr;
+            }
         }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;}
         .btn-primary { 
@@ -376,7 +450,7 @@
         
         /* Glassmorphism for Modals */
         .modal-overlay {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.72);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
@@ -410,7 +484,7 @@
             </a>
             <nav class="flex items-center gap-6">
                 <a href="?page=blog" id="nav-blog-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
-                <a href="#" id="nav-about-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
+                <a href="/hakkimizda" id="nav-about-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
             </nav>
         </div>
     </header>
@@ -419,7 +493,7 @@
         <div id="country-list-view" class="animate-fade-in-up">
             <div class="text-center mb-16 py-16 px-6 rounded-[3rem] content-card">
                 <h2 class="hero-title font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm animate-fade-in-up stagger-1">Hayalindeki Macerayı Bul</h2>
-                <p class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Dünyanın en popüler destinasyonlarını keşfet ve bir sonraki maceranı planla.</p>
+                <p class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Sekmelerde Kaybolma, Sokaklarda Kaybol.</p>
 
                 <div class="max-w-3xl mx-auto animate-fade-in-up stagger-2">
                     <div class="ad-area ad-leaderboard">[AD_AREA - HEADER_LEADERBOARD]</div>
@@ -467,6 +541,14 @@
 
         <div id="blog-detail-view" class="hidden">
             <!-- Blog detay içeriği buraya gelecek -->
+        </div>
+
+        <div id="about-page-view" class="hidden">
+            <div class="fade-in max-w-4xl mx-auto">
+                <div class="content-card p-8 sm:p-10">
+                    <div id="about-page-content"></div>
+                </div>
+            </div>
         </div>
     </main>
     
@@ -525,9 +607,9 @@
         <div class="modal-content content-card w-full max-w-3xl p-0 overflow-hidden mx-4">
             <div class="p-6 border-b border-border-color flex justify-between items-center bg-card-bg">
                 <h3 id="legal-modal-title" class="text-xl font-bold text-primary"></h3>
-                <button id="legal-modal-close-btn" class="text-2xl text-secondary hover:text-primary">&times;</button>
+                <button id="legal-modal-close-btn" class="text-2xl text-secondary hover:text-primary" aria-label="Kapat">&times;</button>
             </div>
-            <div id="legal-modal-content" class="p-8 prose prose-sm sm:prose-base dark:prose-invert max-w-none max-h-[70vh] overflow-y-auto bg-background">
+            <div id="legal-modal-content" class="p-6 sm:p-8 prose prose-sm sm:prose-base dark:prose-invert max-w-none max-h-[70vh] overflow-y-auto bg-background">
                 <!-- İçerik JS ile dolacak -->
             </div>
         </div>
@@ -604,6 +686,8 @@
         const countryDetailView = document.getElementById('country-detail-view');
         const blogListView = document.getElementById('blog-list-view');
         const blogDetailView = document.getElementById('blog-detail-view');
+        const aboutPageView = document.getElementById('about-page-view');
+        const aboutPageContent = document.getElementById('about-page-content');
         const countryListContainer = document.getElementById('country-list-container');
         const searchInput = document.getElementById('search-input');
         const noResults = document.getElementById('no-results');
@@ -1484,7 +1568,20 @@
                 ];
 
                 const matchesSearch = searchScope.some(term => term.includes(normalizedFilter));
-                const matchesTag = activeTagFilter === 'all' || country.tags.includes(activeTagFilter);
+                const normalizedTags = (country.tags || []).map(t => String(t).toLocaleLowerCase('tr'));
+                const parseBudgetMin = (budgetStr) => {
+                    const m = String(budgetStr || '').match(/(\d+)\s*-\s*(\d+)|(\d+)/);
+                    if (!m) return null;
+                    return Number(m[1] || m[3] || 0) || null;
+                };
+                const isEconomicByBudget = (() => {
+                    const min = parseBudgetMin(country.dailyBudget);
+                    if (min === null) return false;
+                    return min <= 80;
+                })();
+                const matchesTag =
+                    activeTagFilter === 'all' ||
+                    (activeTagFilter === 'ekonomik' ? isEconomicByBudget : normalizedTags.includes(activeTagFilter));
                 const matchesFavorite = !showOnlyFavorites || favorites.includes(name);
 
                 if (matchesSearch && matchesTag && matchesFavorite) {
@@ -1566,12 +1663,15 @@
             let countryName = params.get('country');
             const page = params.get('page');
             const postId = params.get('post');
+            const normalizedPath = window.location.pathname.replace(/\/+$/, '').toLocaleLowerCase('tr');
+            const isAboutRoute = page === 'hakkimizda' || normalizedPath.endsWith('/hakkimizda');
 
             // Tüm görünümleri gizle
             countryListView.classList.add('hidden');
             countryDetailView.classList.add('hidden');
             blogListView.classList.add('hidden');
             blogDetailView.classList.add('hidden');
+            if (aboutPageView) aboutPageView.classList.add('hidden');
 
             // Case-insensitive lookup
             let matchedCountryKey = null;
@@ -1588,6 +1688,14 @@
                 displayBlogPost(postId);
             } else if (page === 'blog') {
                 displayBlogList();
+            } else if (isAboutRoute) {
+                updateSchema('website');
+                if (aboutPageView) aboutPageView.classList.remove('hidden');
+                if (aboutPageContent && typeof aboutPremiumHtml === 'string') {
+                    aboutPageContent.innerHTML = aboutPremiumHtml;
+                }
+                document.title = 'Hakkımızda - Vuelina';
+                document.getElementById('meta-description')?.setAttribute('content', 'Vuelina hakkında: seyahat planlamayı hızlandıran, yapay zeka destekli ücretsiz SaaS platformu.');
             } else {
                 // Varsayılan: Ana sayfa
                 updateSchema('website');
@@ -2375,24 +2483,48 @@
             `
         };
 
-        legalTexts['about'] = `
-            <div class='about-content'>
-                <h3>Seyahat Etmek Bir Tutku, Planlamak Artık Bir Yük Değil</h3>
-                <p>Vuelina, dünyayı keşfetme arzunuzu karmaşık araştırmalarla boğmamak için doğdu. Geleneksel seyahat rehberlerinin sınırlarını aşıyor, yapay zekanın gücünü yerel bir rehberin samimiyetiyle birleştiriyoruz.</p>
-                <h4>Neden Vuelina?</h4>
-                <ul>
-                    <li><strong>Zaman Kazandırır:</strong> Bilgi kirliliği içinde kaybolmana gerek yok. En güncel vize, bütçe ve rota bilgileri anında önünde.</li>
-                    <li><strong>Sana Özel Deneyim:</strong> Her gezgin benzersizdir. Algoritmalarımız sana özel, 'terzi işi' rotalar sunar.</li>
-                    <li><strong>Sınırları Kaldırır:</strong> Uçuşlardan otellere, yerel lezzetlerden gizli kalmış noktalara kadar uçtan uca bir seyahat ekosistemi.</li>
-                </ul>
-                <p>Dünyayı keşfetmek hiç bu kadar akıllıca olmamıştı. Bavulun hazırsa, ilk rotamızı çizelim.</p>
+        const aboutPremiumHtml = `
+            <div class="about-premium">
+                <h2>Vuelina: Planlama Yükünü At, Sadece Yola Odaklan.</h2>
+                <p>Seyahat etmek bir özgürlük hikayesidir; ama o hikaye, sonsuz sekmeler ve karmaşık vize rehberleri arasında boğulmamalı. Vuelina, seyahat planlamayı bir "ev ödevi" olmaktan çıkarıp, maceranın en heyecan verici başlangıcına dönüştürmek için burada.</p>
+
+                <h3>Neyi Değiştiriyoruz?</h3>
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="pill">Eskiden</span>
+                            <span class="pill accent">Vuelina ile</span>
+                        </div>
+                        <div class="text-sm text-secondary mb-2">Rota Araştırması</div>
+                        <div class="text-base font-bold text-primary">Saniyeler içinde hazır planlar.</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="pill">Eskiden</span>
+                            <span class="pill accent">Vuelina ile</span>
+                        </div>
+                        <div class="text-sm text-secondary mb-2">Belirsiz Vize Süreçleri</div>
+                        <div class="text-base font-bold text-primary">Net ve güncel adımlar.</div>
+                    </div>
+                    <div class="compare-card">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="pill">Eskiden</span>
+                            <span class="pill accent">Vuelina ile</span>
+                        </div>
+                        <div class="text-sm text-secondary mb-2">Sıkıcı Bütçeler</div>
+                        <div class="text-base font-bold text-primary">Akıllı bütçe yönetimi.</div>
+                    </div>
+                </div>
+
+                <div class="quote">
+                    Neden Buradayız? Çünkü en güzel anıların, ekran başında değil; o ilk adımı attığın yolda biriktiğini biliyoruz. Vuelina yanındaysa, sana sadece bavulunu hazırlamak ve anı yaşamak kalır.
+                </div>
             </div>
         `;
+        legalTexts['about'] = aboutPremiumHtml;
 
         const footerAbout = document.getElementById('footer-about-link');
-        const navAbout = document.getElementById('nav-about-link');
         if(footerAbout) footerAbout.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('about'); });
-        if(navAbout) navAbout.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('about'); });
         const footerContact = document.getElementById('footer-contact-link');
         if(footerContact) footerContact.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
 
@@ -2402,7 +2534,7 @@
             if (type === 'privacy') legalModalTitle.textContent = 'Gizlilik Politikası';
             else if (type === 'terms') legalModalTitle.textContent = 'Kullanım Koşulları';
             else if (type === 'cookies') legalModalTitle.textContent = 'Çerez Politikası';
-            else if (type === 'about') legalModalTitle.textContent = 'About Vuelina';
+            else if (type === 'about') legalModalTitle.textContent = 'Hakkımızda';
             else legalModalTitle.textContent = 'İletişim';
             legalModalContent.innerHTML = text;
             legalModal.classList.add('visible');
@@ -2546,6 +2678,18 @@
             navBlogLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.history.pushState({ page: 'blog' }, 'Blog', '?page=blog');
+            });
+        }
+
+        const navAboutLink = document.getElementById('nav-about-link');
+        if (navAboutLink) {
+            navAboutLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.location.protocol === 'file:') {
+                    window.history.pushState({ page: 'hakkimizda' }, 'Hakkımızda', '?page=hakkimizda');
+                } else {
+                    window.history.pushState({ page: 'hakkimizda' }, 'Hakkımızda', '/hakkimizda');
+                }
             });
         }
         
