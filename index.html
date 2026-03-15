@@ -102,6 +102,7 @@
         .ad-area.ad-leaderboard { min-height: 120px; }
         .ad-area.ad-infeed { min-height: 140px; }
         .ad-area.ad-square { min-height: 250px; }
+        .ad-area { display: none !important; }
 
         .hero-title {
             font-size: clamp(2rem, 8vw, 4rem);
@@ -476,7 +477,7 @@
     
     <header>
         <div class="container mx-auto px-6 py-3 sm:px-6 sm:py-4 flex justify-between items-center">
-            <a href="#" id="home-link" class="flex items-center gap-3">
+            <a href="/" id="home-link" class="flex items-center gap-3">
                 <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
                 </svg>
@@ -484,6 +485,7 @@
             </a>
             <nav class="flex items-center gap-6">
                 <a href="?page=blog" id="nav-blog-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
+                <a href="/nedir" id="nav-what-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Nedir?</a>
                 <a href="/hakkimizda" id="nav-about-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
             </nav>
         </div>
@@ -547,6 +549,14 @@
             <div class="fade-in max-w-4xl mx-auto">
                 <div class="content-card p-8 sm:p-10">
                     <div id="about-page-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="what-page-view" class="hidden">
+            <div class="fade-in max-w-4xl mx-auto">
+                <div class="content-card p-8 sm:p-10">
+                    <div id="what-page-content"></div>
                 </div>
             </div>
         </div>
@@ -688,6 +698,8 @@
         const blogDetailView = document.getElementById('blog-detail-view');
         const aboutPageView = document.getElementById('about-page-view');
         const aboutPageContent = document.getElementById('about-page-content');
+        const whatPageView = document.getElementById('what-page-view');
+        const whatPageContent = document.getElementById('what-page-content');
         const countryListContainer = document.getElementById('country-list-container');
         const searchInput = document.getElementById('search-input');
         const noResults = document.getElementById('no-results');
@@ -1665,6 +1677,7 @@
             const postId = params.get('post');
             const normalizedPath = window.location.pathname.replace(/\/+$/, '').toLocaleLowerCase('tr');
             const isAboutRoute = page === 'hakkimizda' || normalizedPath.endsWith('/hakkimizda');
+            const isWhatRoute = page === 'nedir' || normalizedPath.endsWith('/nedir');
 
             // Tüm görünümleri gizle
             countryListView.classList.add('hidden');
@@ -1672,6 +1685,7 @@
             blogListView.classList.add('hidden');
             blogDetailView.classList.add('hidden');
             if (aboutPageView) aboutPageView.classList.add('hidden');
+            if (whatPageView) whatPageView.classList.add('hidden');
 
             // Case-insensitive lookup
             let matchedCountryKey = null;
@@ -1696,6 +1710,14 @@
                 }
                 document.title = 'Hakkımızda - Vuelina';
                 document.getElementById('meta-description')?.setAttribute('content', 'Vuelina hakkında: seyahat planlamayı hızlandıran, yapay zeka destekli ücretsiz SaaS platformu.');
+            } else if (isWhatRoute) {
+                updateSchema('website');
+                if (whatPageView) whatPageView.classList.remove('hidden');
+                if (whatPageContent && typeof whatPageHtml === 'string') {
+                    whatPageContent.innerHTML = whatPageHtml;
+                }
+                document.title = 'Nedir? - Vuelina';
+                document.getElementById('meta-description')?.setAttribute('content', 'Vuelina vizyonu: yapay zeka ile akıllı, hızlı ve sade seyahat planlama deneyimi.');
             } else {
                 // Varsayılan: Ana sayfa
                 updateSchema('website');
@@ -2523,6 +2545,17 @@
         `;
         legalTexts['about'] = aboutPremiumHtml;
 
+        const whatPageHtml = `
+            <div class="about-premium">
+                <h2 style="color: var(--text-primary);">Vuelina: Geleceğin Seyahat Deneyimini Bugün Tasarlıyoruz.</h2>
+                <p class="text-secondary">Seyahat etmek bir keşif yolculuğudur; ancak bu yolculuk, sonsuz dijital gürültü ve karmaşık planlama süreçleri arasında kaybolmamalıdır. Vuelina, seyahat planlamayı bir yük olmaktan çıkarıp, keşfin en heyecan verici başlangıcına dönüştüren yapay zeka tabanlı bir ekosistemdir.</p>
+                <p class="text-secondary">Geleneksel rehberlerin statik yapısını, verinin hızı ve yerel bir kaşifin samimiyetiyle harmanlıyoruz. Amacımız; gezginlerin vize prosedürleri, bütçe yönetimi ve rota optimizasyonu gibi teknik detaylarla boğulmak yerine, sadece o anın ruhuna odaklanmasını sağlamaktır.</p>
+                <div class="quote">
+                    Vuelina ile sekmeleri kapatın, dünyayı keşfetmeye odaklanın.
+                </div>
+            </div>
+        `;
+
         const footerAbout = document.getElementById('footer-about-link');
         if(footerAbout) footerAbout.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('about'); });
         const footerContact = document.getElementById('footer-contact-link');
@@ -2670,7 +2703,11 @@
         homeLink.addEventListener('click', (e) => {
             e.preventDefault();
             searchInput.value = '';
-            window.history.pushState({}, document.title, window.location.pathname);
+            if (window.location.protocol === 'file:') {
+                window.history.pushState({}, document.title, window.location.pathname);
+            } else {
+                window.history.pushState({}, document.title, '/');
+            }
         });
 
         const navBlogLink = document.getElementById('nav-blog-link');
@@ -2678,6 +2715,18 @@
             navBlogLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.history.pushState({ page: 'blog' }, 'Blog', '?page=blog');
+            });
+        }
+
+        const navWhatLink = document.getElementById('nav-what-link');
+        if (navWhatLink) {
+            navWhatLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.location.protocol === 'file:') {
+                    window.history.pushState({ page: 'nedir' }, 'Nedir?', '?page=nedir');
+                } else {
+                    window.history.pushState({ page: 'nedir' }, 'Nedir?', '/nedir');
+                }
             });
         }
 
