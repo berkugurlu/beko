@@ -102,6 +102,25 @@
         .ad-area.ad-infeed { min-height: 140px; }
         .ad-area.ad-square { min-height: 250px; }
 
+        .hero-title {
+            font-size: clamp(2rem, 8vw, 4rem);
+            line-height: 1.15;
+            text-wrap: balance;
+        }
+
+        @media (max-width: 640px) {
+            .hero-title {
+                line-height: 1.22;
+            }
+            .ad-area {
+                min-height: 80px;
+                margin: 1.25rem 0;
+            }
+            .ad-area.ad-leaderboard { min-height: 90px; }
+            .ad-area.ad-infeed { min-height: 110px; }
+            .ad-area.ad-square { min-height: 170px; }
+        }
+
         /* AI Toolbox Styling */
         .ai-tool-card {
             background: var(--card-bg);
@@ -382,7 +401,7 @@
     </div>
     
     <header>
-        <div class="container mx-auto px-3 py-3 sm:px-4 sm:py-4 flex justify-between items-center">
+        <div class="container mx-auto px-6 py-3 sm:px-6 sm:py-4 flex justify-between items-center">
             <a href="#" id="home-link" class="flex items-center gap-3">
                 <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
@@ -396,11 +415,11 @@
         </div>
     </header>
 
-    <main class="container mx-auto px-3 sm:px-4 py-8 sm:py-12 flex-grow">
+    <main class="container mx-auto px-6 sm:px-6 py-8 sm:py-12 flex-grow">
         <div id="country-list-view" class="animate-fade-in-up">
             <div class="text-center mb-16 py-16 px-6 rounded-[3rem] content-card">
-                <h2 class="text-6xl md:text-8xl font-extrabold tracking-tight mb-8 text-primary dark:text-indigo-400 drop-shadow-sm animate-fade-in-up stagger-1">Hayalindeki Macerayı Bul</h2>
-                <p class="text-xl md:text-2xl text-secondary mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Dünyanın en popüler destinasyonlarını keşfet ve bir sonraki maceranı planla.</p>
+                <h2 class="hero-title font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm animate-fade-in-up stagger-1">Hayalindeki Macerayı Bul</h2>
+                <p class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Dünyanın en popüler destinasyonlarını keşfet ve bir sonraki maceranı planla.</p>
 
                 <div class="max-w-3xl mx-auto animate-fade-in-up stagger-2">
                     <div class="ad-area ad-leaderboard">[AD_AREA - HEADER_LEADERBOARD]</div>
@@ -452,7 +471,7 @@
     </main>
     
     <footer class="border-t border-border-color mt-20 pt-16 pb-8">
-        <div class="container mx-auto px-4">
+        <div class="container mx-auto px-6">
             <div class="ad-area ad-square mb-12">[AD_AREA - FOOTER_SQUARE]</div>
             
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
@@ -469,7 +488,7 @@
                 <div>
                     <h4 class="font-bold text-primary mb-6">Platform</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="?page=blog" onclick="event.preventDefault(); window.history.pushState({page:'blog'},'', '?page=blog'); handleRouting();" class="text-secondary hover:text-indigo-500 transition-colors">VueBlog</a></li>
+                        <li><a href="?page=blog" onclick="event.preventDefault(); window.history.pushState({page:'blog'},'', '?page=blog');" class="text-secondary hover:text-indigo-500 transition-colors">VueBlog</a></li>
                         <li><a href="#" id="footer-about-link" class="text-secondary hover:text-indigo-500 transition-colors">Hakkımızda</a></li>
                         <li><a href="#" id="footer-contact-link" class="text-secondary hover:text-indigo-500 transition-colors">İletişim</a></li>
                         <li><a href="mailto:support@vuelina.com" class="text-secondary hover:text-indigo-500 transition-colors">Destek</a></li>
@@ -1578,6 +1597,27 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
+        window.handleRouting = handleRouting;
+
+        (function () {
+            const dispatchRouteChange = () => window.dispatchEvent(new Event('vuelina:routechange'));
+
+            const originalPushState = history.pushState;
+            history.pushState = function (...args) {
+                originalPushState.apply(history, args);
+                dispatchRouteChange();
+            };
+
+            const originalReplaceState = history.replaceState;
+            history.replaceState = function (...args) {
+                originalReplaceState.apply(history, args);
+                dispatchRouteChange();
+            };
+
+            window.addEventListener('popstate', () => handleRouting());
+            window.addEventListener('vuelina:routechange', () => handleRouting());
+        })();
+
         const displayBlogList = async () => {
             blogListView.classList.remove('hidden');
             const container = document.getElementById('blog-posts-container');
@@ -1629,7 +1669,7 @@
                 }));
 
                 container.innerHTML = allPosts.map(post => `
-                    <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
+                    <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}');">
                         <div class="h-48 overflow-hidden">
                             <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
                         </div>
@@ -1661,7 +1701,7 @@
                 }
 
                 container.innerHTML = blogData.map(post => `
-                    <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
+                    <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}');">
                         <div class="h-48 overflow-hidden">
                             <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
                         </div>
@@ -1698,7 +1738,7 @@
             blogDetailView.classList.remove('hidden');
             blogDetailView.innerHTML = `
                 <div class="fade-in max-w-4xl mx-auto">
-                    <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog'); handleRouting();" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
+                    <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog');" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                         Blog Listesine Dön
                     </button>
@@ -1737,12 +1777,13 @@
                 const image = item.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=1200&auto=format&fit=crop";
                 const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('tr-TR') : '';
                 const summary = item.summary || '';
+                const contentHtml = item.contentHtml || '';
 
                 updateSchema('blog', { id: slug, title, summary, image, date, content: summary });
 
                 blogDetailView.innerHTML = `
                     <div class="fade-in max-w-4xl mx-auto">
-                        <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog'); handleRouting();" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
+                        <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog');" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                             Blog Listesine Dön
                         </button>
@@ -1756,7 +1797,7 @@
                             </div>
                             <div class="p-8 md:p-12">
                                 <div class="prose prose-lg [data-theme*='dark']:prose-invert max-w-none text-secondary">
-                                    <p>${escapeHtml(summary)}</p>
+                                    ${contentHtml || `<p>${escapeHtml(summary)}</p>`}
                                 </div>
                             </div>
                         </div>
@@ -1766,7 +1807,7 @@
                 console.error("Contentful Error:", error);
                 blogDetailView.innerHTML = `
                     <div class="fade-in max-w-4xl mx-auto">
-                        <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog'); handleRouting();" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
+                        <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog');" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
                             Blog Listesine Dön
                         </button>
@@ -1778,10 +1819,6 @@
                 `;
             }
 
-            const newUrl = `${window.location.pathname}?post=${encodeURIComponent(slug)}`;
-            if (window.location.search !== `?post=${slug}`) {
-                window.history.pushState({ post: slug }, slug, newUrl);
-            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -2498,16 +2535,10 @@
             }
         });
         
-        // Tarayıcı Geri/İleri butonu ile sayfa değişimi
-        window.onpopstate = function(event) {
-            handleRouting();
-        };
-
         homeLink.addEventListener('click', (e) => {
             e.preventDefault();
             searchInput.value = '';
             window.history.pushState({}, document.title, window.location.pathname);
-            handleRouting();
         });
 
         const navBlogLink = document.getElementById('nav-blog-link');
@@ -2515,7 +2546,6 @@
             navBlogLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.history.pushState({ page: 'blog' }, 'Blog', '?page=blog');
-                handleRouting();
             });
         }
         

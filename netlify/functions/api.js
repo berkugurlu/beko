@@ -147,6 +147,82 @@ exports.handler = async function (event, context) {
           return null;
         };
 
+        const escapeHtml = (str) => String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+
+        const renderMarks = (textNode) => {
+          let html = escapeHtml(textNode.value || '');
+          const marks = Array.isArray(textNode.marks) ? textNode.marks : [];
+          for (const mark of marks) {
+            if (!mark || !mark.type) continue;
+            if (mark.type === 'bold') html = `<strong>${html}</strong>`;
+            if (mark.type === 'italic') html = `<em>${html}</em>`;
+            if (mark.type === 'underline') html = `<u>${html}</u>`;
+            if (mark.type === 'code') html = `<code>${html}</code>`;
+          }
+          return html;
+        };
+
+        const renderRichTextNode = (node) => {
+          if (!node || !node.nodeType) return '';
+          const children = Array.isArray(node.content) ? node.content.map(renderRichTextNode).join('') : '';
+
+          switch (node.nodeType) {
+            case 'document':
+              return children;
+            case 'paragraph':
+              return `<p>${children}</p>`;
+            case 'heading-1':
+              return `<h1>${children}</h1>`;
+            case 'heading-2':
+              return `<h2>${children}</h2>`;
+            case 'heading-3':
+              return `<h3>${children}</h3>`;
+            case 'heading-4':
+              return `<h4>${children}</h4>`;
+            case 'heading-5':
+              return `<h5>${children}</h5>`;
+            case 'heading-6':
+              return `<h6>${children}</h6>`;
+            case 'unordered-list':
+              return `<ul>${children}</ul>`;
+            case 'ordered-list':
+              return `<ol>${children}</ol>`;
+            case 'list-item':
+              return `<li>${children}</li>`;
+            case 'blockquote':
+              return `<blockquote>${children}</blockquote>`;
+            case 'hr':
+              return `<hr/>`;
+            case 'hyperlink': {
+              const uri = node.data && node.data.uri ? String(node.data.uri) : '#';
+              const safeUri = escapeHtml(uri);
+              return `<a href="${safeUri}" target="_blank" rel="noopener noreferrer">${children}</a>`;
+            }
+            case 'text':
+              return renderMarks(node);
+            default:
+              return children;
+          }
+        };
+
+        const toHtmlFromField = (value) => {
+          if (!value) return '';
+          if (typeof value === 'string') {
+            const trimmed = value.trim();
+            if (!trimmed) return '';
+            return `<p>${escapeHtml(trimmed)}</p>`;
+          }
+          if (typeof value === 'object' && value.nodeType) {
+            return renderRichTextNode(value);
+          }
+          return '';
+        };
+
         const normalized = (data.items || [])
           .map((item) => {
             const fields = item.fields || {};
@@ -155,6 +231,8 @@ exports.handler = async function (event, context) {
             const summary = pickField(fields, ['summary', 'excerpt', 'description']);
             const imageLink = pickField(fields, ['featuredImage', 'heroImage', 'image', 'thumbnail', 'coverImage']);
             const imageUrl = normalizeImageUrl(imageLink);
+            const contentField = pickField(fields, ['content', 'body', 'postContent', 'articleBody', 'richText', 'richtext']);
+            const contentHtml = toHtmlFromField(contentField);
 
             return {
               id: item.sys.id,
@@ -162,6 +240,7 @@ exports.handler = async function (event, context) {
               slug: slug || item.sys.id,
               summary: summary || '',
               imageUrl,
+              contentHtml,
               publishedAt: item.sys.createdAt,
             };
           })
