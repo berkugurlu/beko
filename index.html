@@ -1565,10 +1565,10 @@
 
             if (matchedCountryKey) {
                 displayCountryDetail(matchedCountryKey);
-            } else if (page === 'blog') {
-                displayBlogList();
             } else if (postId) {
                 displayBlogPost(postId);
+            } else if (page === 'blog') {
+                displayBlogList();
             } else {
                 // Varsayılan: Ana sayfa
                 updateSchema('website');
@@ -1595,34 +1595,38 @@
             `).join('');
 
             try {
-                // Fetch from Contentful via our proxy
-                const response = await fetch('/.netlify/functions/api?type=contentful-homepage');
-                if (!response.ok) throw new Error('Failed to fetch from Contentful');
-                
-                const data = await response.json();
-                
-                // Extract featured post (adjusting to Contentful's response structure)
-                // Assuming pageLanding has a field 'featuredBlogPost' which is a reference
-                const entry = data.items.find(item => item.sys.contentType.sys.id === 'pageLanding');
-                const featuredPostRef = entry?.fields?.featuredBlogPost;
-                
-                let featuredPost = null;
-                if (featuredPostRef) {
-                    const postEntry = data.includes.Entry.find(e => e.sys.id === featuredPostRef.sys.id);
-                    const asset = data.includes.Asset.find(a => a.sys.id === postEntry.fields.featuredImage.sys.id);
-                    
-                    featuredPost = {
-                        id: postEntry.fields.slug,
-                        title: postEntry.fields.title,
-                        summary: postEntry.fields.summary || "Bu harika yazıyı okumak için tıklayın.",
-                        image: `https:${asset.fields.file.url}`,
-                        date: new Date(postEntry.sys.createdAt).toLocaleDateString('tr-TR'),
-                        content: postEntry.fields.content // Simplified for this example
-                    };
+                if (window.location.protocol === 'file:') {
+                    container.innerHTML = `
+                        <div class="content-card p-8 col-span-1 md:col-span-2 lg:col-span-3 text-center">
+                            <h3 class="text-xl font-bold text-primary mb-2">VueBlog içerikleri şu an yüklenemiyor</h3>
+                            <p class="text-secondary text-sm">Contentful verileri, Netlify Function üzerinden çekildiği için sayfayı file:// yerine bir sunucu üzerinden açmanız gerekir.</p>
+                        </div>
+                    `;
+                    return;
                 }
 
-                // Combine with local static data
-                const allPosts = featuredPost ? [featuredPost, ...blogData] : blogData;
+                const response = await fetch('/.netlify/functions/api?type=contentful-blog-posts');
+                if (!response.ok) throw new Error('Failed to fetch blog posts from Contentful');
+
+                const payload = await response.json();
+                const posts = Array.isArray(payload.items) ? payload.items : [];
+                if (!posts.length) {
+                    container.innerHTML = `
+                        <div class="content-card p-8 col-span-1 md:col-span-2 lg:col-span-3 text-center">
+                            <h3 class="text-xl font-bold text-primary mb-2">Henüz blog yazısı bulunmuyor</h3>
+                            <p class="text-secondary text-sm">Contentful'da "Page - Blog post" tipinde içerikler yayınlandığında burada otomatik listelenecek.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const allPosts = posts.map((p) => ({
+                    id: p.slug,
+                    title: p.title,
+                    summary: p.summary || "Bu yazıyı okumak için tıklayın.",
+                    image: p.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=800&auto=format&fit=crop",
+                    date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('tr-TR') : "",
+                }));
 
                 container.innerHTML = allPosts.map(post => `
                     <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
@@ -1646,6 +1650,16 @@
             } catch (error) {
                 console.error("Contentful Error:", error);
                 // Fallback to local data on error
+                if (!blogData.length) {
+                    container.innerHTML = `
+                        <div class="content-card p-8 col-span-1 md:col-span-2 lg:col-span-3 text-center">
+                            <h3 class="text-xl font-bold text-primary mb-2">VueBlog içerikleri yüklenemedi</h3>
+                            <p class="text-secondary text-sm">Contentful bağlantısını kontrol edip tekrar deneyin.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
                 container.innerHTML = blogData.map(post => `
                     <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}'); handleRouting();">
                         <div class="h-48 overflow-hidden">
@@ -1673,13 +1687,13 @@
             }
         };
 
-        const displayBlogPost = (id) => {
-            const post = blogData.find(p => p.id === id);
-            if (!post) {
-                handleRouting();
-                return;
-            }
-            updateSchema('blog', post);
+        const displayBlogPost = async (slug) => {
+            const escapeHtml = (str) => String(str || '')
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
 
             blogDetailView.classList.remove('hidden');
             blogDetailView.innerHTML = `
@@ -1690,24 +1704,83 @@
                     </button>
                     <div class="content-card glass-card overflow-hidden">
                         <div class="h-64 md:h-96 w-full relative">
-                            <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover">
-                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-8">
-                                <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">${post.title}</h1>
-                                <p class="text-white/80 text-sm">${post.date} • Vuelina Editörü</p>
+                            <div class="w-full h-full skeleton"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-8" style="background-color: rgba(0,0,0,0.6);">
+                                <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">Yükleniyor...</h1>
+                                <p class="text-white/80 text-sm">Vuelina Editörü</p>
                             </div>
                         </div>
                         <div class="p-8 md:p-12">
                             <div class="prose prose-lg [data-theme*='dark']:prose-invert max-w-none text-secondary">
-                                ${post.content}
+                                <div class="skeleton h-6 w-2/3 rounded mb-4"></div>
+                                <div class="skeleton h-4 w-full rounded mb-2"></div>
+                                <div class="skeleton h-4 w-11/12 rounded mb-2"></div>
+                                <div class="skeleton h-4 w-10/12 rounded"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             `;
-            
-            const newUrl = `${window.location.pathname}?post=${id}`;
-            if (window.location.search !== `?post=${id}`) {
-                window.history.pushState({ post: id }, post.title, newUrl);
+
+            try {
+                if (window.location.protocol === 'file:') {
+                    throw new Error('Blog içeriği için sunucu gerekli.');
+                }
+
+                const response = await fetch(`/.netlify/functions/api?type=contentful-blog-posts&slug=${encodeURIComponent(slug)}`);
+                if (!response.ok) throw new Error('Failed to fetch blog post');
+                const payload = await response.json();
+                const item = Array.isArray(payload.items) ? payload.items[0] : null;
+                if (!item) throw new Error('Post not found');
+
+                const title = item.title || slug;
+                const image = item.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=1200&auto=format&fit=crop";
+                const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('tr-TR') : '';
+                const summary = item.summary || '';
+
+                updateSchema('blog', { id: slug, title, summary, image, date, content: summary });
+
+                blogDetailView.innerHTML = `
+                    <div class="fade-in max-w-4xl mx-auto">
+                        <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog'); handleRouting();" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            Blog Listesine Dön
+                        </button>
+                        <div class="content-card glass-card overflow-hidden">
+                            <div class="h-64 md:h-96 w-full relative">
+                                <img src="${escapeHtml(image)}" alt="${escapeHtml(title)}" class="w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 p-8" style="background-color: rgba(0,0,0,0.6);">
+                                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-2 drop-shadow-lg">${escapeHtml(title)}</h1>
+                                    <p class="text-white/80 text-sm">${escapeHtml(date)} • Vuelina Editörü</p>
+                                </div>
+                            </div>
+                            <div class="p-8 md:p-12">
+                                <div class="prose prose-lg [data-theme*='dark']:prose-invert max-w-none text-secondary">
+                                    <p>${escapeHtml(summary)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error("Contentful Error:", error);
+                blogDetailView.innerHTML = `
+                    <div class="fade-in max-w-4xl mx-auto">
+                        <button onclick="window.history.pushState({page: 'blog'}, '', '?page=blog'); handleRouting();" class="btn btn-secondary mb-6 py-2 px-4 rounded-lg flex items-center hover:bg-card-bg hover:shadow-md transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                            Blog Listesine Dön
+                        </button>
+                        <div class="content-card p-8 text-center">
+                            <h3 class="text-xl font-bold text-primary mb-2">Bu içerik şu an yüklenemiyor</h3>
+                            <p class="text-secondary text-sm">Lütfen daha sonra tekrar deneyin.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const newUrl = `${window.location.pathname}?post=${encodeURIComponent(slug)}`;
+            if (window.location.search !== `?post=${slug}`) {
+                window.history.pushState({ post: slug }, slug, newUrl);
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
