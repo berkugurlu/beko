@@ -1,124 +1,144 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="light-indigo">
+<html lang="tr" data-theme="dark-indigo" class="dark">
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
-    <title>Vuelina | Akıllı Seyahat Rehberi</title>
+    <meta name="description" id="meta-description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
+    <title id="meta-title">Vuelina | Akıllı Seyahat Rehberi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        indigo: {
+                            50: '#f5f3ff',
+                            100: '#e0e7ff',
+                            500: '#4f46e5',
+                            600: '#4338ca',
+                            700: '#3730a3',
+                        }
+                    }
+                }
+            }
         }
     </script>
 
-    <!-- GOOGLE ADSENSE YER TUTUCU -->
-    <!-- Buraya Google AdSense kodunuzu yapıştırın -->
-    <!-- <script> ... ADSENSE KODU ... </script> -->
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Google AdSense Kodu -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838"
-     crossorigin="anonymous"></script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E483B9402G"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-     
-      gtag('config', 'G-E483B9402G');
-    </script>
-    
-    <!-- Theme Script to prevent FOUC -->
+    <!-- Theme Script - Fixed to Dark Mode -->
     <script>
         (function() {
-            try {
-                const savedTheme = localStorage.getItem('theme') || 'light-indigo';
-                document.documentElement.setAttribute('data-theme', savedTheme);
-                if (savedTheme.includes('dark')) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
-            } catch (e) {}
+            document.documentElement.setAttribute('data-theme', 'dark-indigo');
+            document.documentElement.classList.add('dark');
         })();
     </script>
 
     <style>
-        /*
-         * Temel Renk Tanımları: Işık ve Koyu Şema için ortak değişkenler.
-         * data-theme="scheme-color" formatını kullanır (örn: light-indigo, dark-ocean)
-         */
-        
-        /* --- Ortak Değişkenler (Mod bağımsız) --- */
+        /* --- Dark Mode SaaS Varsayılanları --- */
         :root {
-            --text-primary: #18181B;
-            --text-secondary: #71717A;
-            --border-color: #E4E4E7;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-        }
-
-        [data-theme*="dark"] {
+            --background: #0a0a0a;
+            --card-bg: #111111;
             --text-primary: #FAFAFA;
-            --text-secondary: #A1A1AA;
-            --border-color: #27272A;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --background-base: #121212;
-            --card-bg-base: #1E1E1E;
-        }
-        
-        [data-theme*="light"] {
-            --background-base: #F8F9FA;
-            --card-bg-base: #FFFFFF;
+            --text-secondary: #A3A3A3;
+            --border-color: #1F1F1F;
+            --shadow-color: rgba(0, 0, 0, 0.55);
+            --accent: #4F46E5; /* Indigo 600 */
+            --accent-dark: #4338CA; /* Indigo 700 */
         }
 
-        /* LIGHT SCHEMES */
-        [data-theme^="light-"] {
-            --background: var(--background-base);
-            --card-bg: var(--card-bg-base);
-        }
-
-        /* DARK SCHEMES */
-        [data-theme^="dark-"] {
-            --background: var(--background-base);
-            --card-bg: var(--card-bg-base);
-        }
-
-        /* --- RENK PALETLERİ (ACCENTS) --- */
-
-        /* 1. INDIGO (Varsayılan / Default) */
-        [data-theme*="indigo"] { --accent: #4F46E5; --accent-dark: #4338CA; } /* Light */
-        [data-theme="dark-indigo"] { --accent: #818CF8; --accent-dark: #6366F1; } /* Dark */
-
-        /* 2. OCEAN (Cyan) */
-        [data-theme*="ocean"] { --accent: #06B6D4; --accent-dark: #0891B2; } /* Light */
-        [data-theme="dark-ocean"] { --accent: #22D3EE; --accent-dark: #06B6D4; } /* Dark */
-
-        /* 3. FOREST (Emerald) */
-        [data-theme*="forest"] { --accent: #10B981; --accent-dark: #059669; } /* Light */
-        [data-theme="dark-forest"] { --accent: #34D399; --accent-dark: #10B981; } /* Dark */
-        
-        /* 4. CHERRY (Vişne / Red) */
-        [data-theme*="cherry"] { --accent: #E11D48; --accent-dark: #BE123C; } /* Light (Red 600) */
-        [data-theme="dark-cherry"] { --accent: #F87171; --accent-dark: #EF4444; } /* Dark (Red 400) */
-
-        /* 5. ORANGE (Portakal / Amber) */
-        [data-theme*="orange"] { --accent: #F59E0B; --accent-dark: #D97706; } /* Light (Amber 500) */
-        [data-theme="dark-orange"] { --accent: #FCD34D; --accent-dark: #F59E0B; } /* Dark (Amber 300) */
-        
         body {
             font-family: 'Inter', sans-serif;
             font-weight: 400;
             background-color: var(--background);
             color: var(--text-primary);
-            transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.02em;
+        }
+
+        body, main, section, header, footer {
+            background-color: var(--background);
+            background-image: none;
+        }
+
+        h1, h2, h3, h4, h5, h6, .logo-font {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .btn-primary { 
+            background-color: var(--accent); 
+            color: white; 
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+        }
+        .btn-primary:hover:not(:disabled) { 
+            background-color: var(--accent-dark); 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.23);
+        }
+
+        .ad-area {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            min-height: 110px;
+            border-radius: 18px;
+            margin: 1.75rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .ad-area.ad-leaderboard { min-height: 120px; }
+        .ad-area.ad-infeed { min-height: 140px; }
+        .ad-area.ad-square { min-height: 250px; }
+
+        /* AI Toolbox Styling */
+        .ai-tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        .ai-tool-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .ai-tool-btn {
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        .ai-tool-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Typing Effect */
+        .typing-text::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         
         h1, h2, h3, h4, h5, h6, .logo-font {
@@ -136,16 +156,9 @@
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-        }
-        [data-theme*="dark"] .glass-card {
-            background: rgba(20, 20, 20, 0.75);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -5px var(--shadow-color);
         }
 
         /* Modern Input Styling */
@@ -183,13 +196,8 @@
         
         header { 
             position: sticky; top: 0; z-index: 50; 
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background-color: var(--background);
             border-bottom: 1px solid var(--border-color);
-        }
-        [data-theme*="dark"] header {
-              background-color: rgba(18, 18, 18, 0.8);
         }
         
         .country-card { 
@@ -299,18 +307,6 @@
         .checklist-item { transition: all 0.2s ease; }
         .checklist-item.completed { opacity: 0.5; }
         .checklist-item.completed label { text-decoration: line-through; }
-        .ad-placeholder {
-            background-color: var(--background);
-            border: 1px dashed var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            min-height: 100px;
-        }
-        
         .ai-result-embed-btn {
             background-color: var(--accent);
             color: white;
@@ -325,20 +321,13 @@
         }
         /* Markdown Styling for AI Results */
         .markdown-content {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-        [data-theme*="dark"] .markdown-content {
-            background: rgba(30, 30, 30, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .markdown-content h2 { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary); }
-        .markdown-content h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .markdown-content h2 { font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .markdown-content h3 { font-family: 'Inter', sans-serif; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 1.25rem; margin-bottom: 0.75rem; color: var(--text-primary); }
         .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
         .markdown-content li { margin-bottom: 0.5rem; color: var(--text-secondary); line-height: 1.6; }
         .markdown-content p { margin-bottom: 1rem; color: var(--text-secondary); line-height: 1.7; }
@@ -393,47 +382,33 @@
     </div>
     
     <header>
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-3 py-3 sm:px-4 sm:py-4 flex justify-between items-center">
             <a href="#" id="home-link" class="flex items-center gap-3">
-                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="logo-gradient-header" gradientTransform="rotate(45)">
-                            <stop offset="0%" stop-color="var(--accent)"/>
-                            <stop offset="100%" stop-color="var(--accent-dark)"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="url(#logo-gradient-header)"/>
+                <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
                 </svg>
                 <h1 class="text-2xl font-bold tracking-tighter logo-font">vuelina</h1>
             </a>
-            <div class="flex items-center gap-4">
-                <nav class="hidden md:flex gap-4">
-                    <a href="?page=blog" id="nav-blog-link" class="text-secondary hover:text-accent font-medium transition-colors">Blog</a>
-                </nav>
-                <div class="w-px h-6 bg-border-color hidden md:block"></div>
-                <div class="flex items-center gap-2">
-                <button id="favorites-btn" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent btn-secondary text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20" title="Favorilerim">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-                </button>
-                <button id="checklist-btn" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent btn-secondary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                </button>
-                <button id="theme-menu-btn" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent btn-secondary">
-                    <!-- JS tarafından ayarlanacak -->
-                </button>
-            </div>
+            <nav class="flex items-center gap-6">
+                <a href="?page=blog" id="nav-blog-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
+                <a href="#" id="nav-about-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
+            </nav>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-10 sm:py-12 flex-grow">
+    <main class="container mx-auto px-3 sm:px-4 py-8 sm:py-12 flex-grow">
         <div id="country-list-view" class="animate-fade-in-up">
-            <div class="text-center mb-16 py-16 px-6 rounded-[3rem] bg-gradient-to-br from-indigo-50/50 to-blue-50/50 dark:from-gray-900/50 dark:to-gray-800/50 backdrop-blur-md shadow-2xl border border-white/20 dark:border-white/5">
+            <div class="text-center mb-16 py-16 px-6 rounded-[3rem] content-card">
                 <h2 class="text-6xl md:text-8xl font-extrabold tracking-tight mb-8 text-primary dark:text-indigo-400 drop-shadow-sm animate-fade-in-up stagger-1">Hayalindeki Macerayı Bul</h2>
                 <p class="text-xl md:text-2xl text-secondary mb-12 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Dünyanın en popüler destinasyonlarını keşfet ve bir sonraki maceranı planla.</p>
+
+                <div class="max-w-3xl mx-auto animate-fade-in-up stagger-2">
+                    <div class="ad-area ad-leaderboard">[AD_AREA - HEADER_LEADERBOARD]</div>
+                </div>
                 
                 <div class="max-w-3xl mx-auto relative mb-12 animate-fade-in-up stagger-3">
-                    <input type="text" id="search-input" class="w-full p-6 pl-14 rounded-3xl border border-border-color focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all text-xl shadow-xl hover:shadow-2xl" placeholder="Nereye gitmek istersin? (örn: Japonya, İtalya)...">
-                    <svg class="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <input type="text" id="search-input" class="w-full p-4 pl-12 sm:p-6 sm:pl-14 rounded-3xl border border-border-color focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all text-base sm:text-xl shadow-xl hover:shadow-2xl" placeholder="Nereye gitmek istersin? (örn: Japonya, İtalya)...">
+                    <svg class="absolute left-4 sm:left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6 sm:w-7 sm:h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
@@ -462,11 +437,11 @@
         </div>
 
         <div id="blog-list-view" class="hidden">
-            <div class="text-center mb-10 py-10 px-4 rounded-3xl bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 shadow-sm border border-border-color">
-                <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-primary dark:text-indigo-400">Seyahat Günlüğü</h2>
+            <div class="text-center mb-10 py-10 px-4 rounded-3xl content-card">
+                <h2 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-primary dark:text-indigo-400">VueBlog</h2>
                 <p class="text-lg text-secondary max-w-2xl mx-auto">Dünyayı keşfetmek için ilham verici hikayeler ve ipuçları.</p>
             </div>
-            <div id="blog-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="blog-posts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Blog yazıları buraya gelecek -->
             </div>
         </div>
@@ -476,65 +451,68 @@
         </div>
     </main>
     
-    <footer class="border-t border-border-color mt-16 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
-        <div class="container mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <!-- Brand Column -->
-                <div class="col-span-1 md:col-span-1">
-                    <a href="#" class="flex items-center gap-2 mb-4">
-                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="logo-gradient-footer" gradientTransform="rotate(45)">
-                                    <stop offset="0%" stop-color="var(--accent)"/>
-                                    <stop offset="100%" stop-color="var(--accent-dark)"/>
-                                </linearGradient>
-                            </defs>
-                            <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="url(#logo-gradient-footer)"/>
+    <footer class="border-t border-border-color mt-20 pt-16 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="ad-area ad-square mb-12">[AD_AREA - FOOTER_SQUARE]</div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
                         </svg>
-                        <span class="text-xl font-bold tracking-tighter logo-font text-primary">vuelina</span>
+                        <h2 class="text-2xl font-bold tracking-tighter logo-font text-primary">vuelina</h2>
                     </a>
-                    <p class="text-sm text-secondary leading-relaxed">
-                        Yapay zeka destekli kişiselleştirilmiş seyahat rehberiniz. Dünyayı keşfetmek hiç bu kadar kolay olmamıştı.
-                    </p>
+                    <p class="text-secondary leading-relaxed max-w-md">Vuelina, yapay zeka teknolojisini seyahat tutkusuyla birleştiren yeni nesil bir SaaS platformudur. Dünyayı daha akıllı ve verimli keşfetmeniz için buradayız.</p>
                 </div>
 
-                <!-- Quick Links -->
                 <div>
-                    <h4 class="font-bold text-primary mb-4">Keşfet</h4>
-                    <ul class="space-y-2 text-sm text-secondary">
-                        <li><a href="#" onclick="window.scrollTo(0,0); return false;" class="hover:text-accent transition-colors">Ana Sayfa</a></li>
-                        <li><a href="?page=blog" onclick="event.preventDefault(); window.history.pushState({page:'blog'},'', '?page=blog'); handleRouting();" class="hover:text-accent transition-colors">Blog & Rehberler</a></li>
+                    <h4 class="font-bold text-primary mb-6">Platform</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><a href="?page=blog" onclick="event.preventDefault(); window.history.pushState({page:'blog'},'', '?page=blog'); handleRouting();" class="text-secondary hover:text-indigo-500 transition-colors">VueBlog</a></li>
+                        <li><a href="#" id="footer-about-link" class="text-secondary hover:text-indigo-500 transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" id="footer-contact-link" class="text-secondary hover:text-indigo-500 transition-colors">İletişim</a></li>
+                        <li><a href="mailto:support@vuelina.com" class="text-secondary hover:text-indigo-500 transition-colors">Destek</a></li>
                     </ul>
                 </div>
 
-                <!-- Legal -->
-                <div></div>
+                <div>
+                    <h4 class="font-bold text-primary mb-6">Yasal</h4>
+                    <ul class="space-y-4 text-sm">
+                        <li><button id="footer-privacy-link" class="text-secondary hover:text-indigo-500 transition-colors">Gizlilik Politikası</button></li>
+                        <li><button id="footer-terms-link" class="text-secondary hover:text-indigo-500 transition-colors">Kullanım Koşulları</button></li>
+                        <li><button id="footer-cookies-link" class="text-secondary hover:text-indigo-500 transition-colors">Çerez Politikası</button></li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="border-t border-border-color mt-12 pt-6 pb-4 space-y-4">
-                <div class="flex flex-col md:flex-row items-center justify-between gap-3">
-                    <p class="text-sm text-secondary">&copy; 2026 Vuelina. Tüm hakları saklıdır.</p>
-                    <div class="flex flex-wrap items-center justify-center gap-4 text-xs text-secondary">
-                        <button id="footer-privacy-link" class="hover:text-accent transition-colors">
-                            Gizlilik Politikası
-                        </button>
-                        <span class="h-3 w-px bg-border-color hidden sm:inline-block"></span>
-                        <button id="footer-terms-link" class="hover:text-accent transition-colors">
-                            Kullanım Koşulları
-                        </button>
-                        <span class="h-3 w-px bg-border-color hidden sm:inline-block"></span>
-                        <button id="footer-cookies-link" class="hover:text-accent transition-colors">
-                            Çerez Politikası
-                        </button>
-                        <span class="h-3 w-px bg-border-color hidden sm:inline-block"></span>
-                        <a href="mailto:support@vuelina.com" class="hover:text-accent transition-colors">
-                            support@vuelina.com
-                        </a>
-                    </div>
+            <div class="pt-8 border-t border-border-color flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-secondary">&copy; 2026 Vuelina. Tüm hakları saklıdır.</p>
+                <div class="flex gap-6">
+                    <a href="https://instagram.com/vuelinacom/" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-primary transition-colors" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37a4 4 0 1 1-7.87 1.18 4 4 0 0 1 7.87-1.18z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
     </footer>
+
+    <!-- LEGAL MODAL -->
+    <div id="legal-modal" class="modal-overlay" aria-modal="true" role="dialog">
+        <div class="modal-content content-card w-full max-w-3xl p-0 overflow-hidden mx-4">
+            <div class="p-6 border-b border-border-color flex justify-between items-center bg-card-bg">
+                <h3 id="legal-modal-title" class="text-xl font-bold text-primary"></h3>
+                <button id="legal-modal-close-btn" class="text-2xl text-secondary hover:text-primary">&times;</button>
+            </div>
+            <div id="legal-modal-content" class="p-8 prose prose-sm sm:prose-base dark:prose-invert max-w-none max-h-[70vh] overflow-y-auto bg-background">
+                <!-- İçerik JS ile dolacak -->
+            </div>
+        </div>
+    </div>
 
     <!-- GENEL BİLGİ MODALI (INFO MODAL) -->
     <div id="info-modal" class="modal-overlay" aria-modal="true" role="dialog">
@@ -578,58 +556,6 @@
         </div>
     </div>
 
-    <!-- YASAL METİN MODALI (LEGAL TEXT MODAL) -->
-    <div id="legal-modal" class="modal-overlay" aria-modal="true" role="dialog">
-        <div class="modal-content content-card w-full max-w-3xl p-8">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="legal-modal-title" class="text-2xl font-bold"></h3>
-                <button id="legal-modal-close-btn" class="text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white">&times;</button>
-            </div>
-            <div id="legal-modal-content" class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none text-secondary">
-            </div>
-            <div class="mt-6 text-right">
-                 <button onclick="document.getElementById('legal-modal').classList.remove('visible')" class="btn btn-secondary py-2 px-4">Kapat</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Tema Seçim Menüsü -->
-    <div id="theme-menu-container" class="fixed top-20 right-4 z-[60] hidden">
-        <div class="content-card p-4 w-64 shadow-xl border border-gray-100 dark:border-gray-700">
-            <h4 class="font-bold text-lg mb-3 border-b pb-2 border-border-color">Tema Ayarları</h4>
-            
-            <div class="mb-4">
-                <p class="font-medium text-primary mb-2">Mod Seçimi</p>
-                <div class="flex space-x-2" id="theme-scheme-selector">
-                    <button data-scheme="light" class="theme-scheme-btn btn-secondary w-1/2 p-2 flex items-center justify-center text-sm" id="light-scheme-btn-inside">
-                        <!-- JS tarafından ayarlanacak -->
-                    </button>
-                    <button data-scheme="dark" class="theme-scheme-btn btn-secondary w-1/2 p-2 flex items-center justify-center text-sm" id="dark-scheme-btn-inside">
-                        <!-- JS tarafından ayarlanacak -->
-                    </button>
-                </div>
-            </div>
-
-            <p class="font-medium text-primary mb-2">Color Palette</p>
-            <div class="grid grid-cols-3 gap-2">
-                <button data-color="indigo" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #4F46E5;">
-                    <span class="text-white font-semibold">Indigo</span>
-                </button>
-                <button data-color="ocean" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #06B6D4;">
-                    <span class="text-white font-semibold">Ocean</span>
-                </button>
-                <button data-color="forest" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #10B981;">
-                    <span class="text-white font-semibold">Forest</span>
-                </button>
-                <button data-color="cherry" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #E11D48;">
-                    <span class="text-white font-semibold">Cherry</span>
-                </button>
-                 <button data-color="orange" class="theme-color-btn p-3 rounded-lg flex flex-col items-center justify-center text-xs border-2 border-transparent hover:border-accent" style="background-color: #F59E0B;">
-                    <span class="text-white font-semibold">Orange</span>
-                </button>
-            </div>
-        </div>
-    </div>
     
     <script>
     // --- UYGULAMA BAŞLANGICI ---
@@ -663,19 +589,11 @@
         const searchInput = document.getElementById('search-input');
         const noResults = document.getElementById('no-results');
         const preloader = document.getElementById('preloader');
-        const themeMenuBtn = document.getElementById('theme-menu-btn');
-        const themeMenuContainer = document.getElementById('theme-menu-container');
         const infoModal = document.getElementById('info-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalText = document.getElementById('modal-text');
         const modalCloseBtn = document.getElementById('modal-close-btn');
         const homeLink = document.getElementById('home-link');
-        const checklistBtn = document.getElementById('checklist-btn');
-        const checklistModal = document.getElementById('checklist-modal');
-        const checklistModalCloseBtn = document.getElementById('checklist-modal-close-btn');
-        const checklistContainer = document.getElementById('checklist-container');
-        const newChecklistItemInput = document.getElementById('new-checklist-item-input');
-        const addChecklistItemBtn = document.getElementById('add-checklist-item-btn');
         const itineraryModal = document.getElementById('itinerary-modal');
         const itineraryModalCloseBtn = document.getElementById('itinerary-modal-close-btn');
         const getItineraryBtn = document.getElementById('get-itinerary-btn');
@@ -683,9 +601,6 @@
         const legalModalTitle = document.getElementById('legal-modal-title');
         const legalModalContent = document.getElementById('legal-modal-content');
         const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
-        const privacyPolicyLink = document.getElementById('privacy-policy-link');
-        const termsOfUseLink = document.getElementById('terms-of-use-link');
-        const contactLink = document.getElementById('contact-link');
         
         // --- GEMINI AI API ENTEGRASYONU ---
         // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
@@ -741,7 +656,6 @@
 
             } catch (error) {
                 console.error("Yapay Zeka API Hatası:", error);
-                alert('Hata detayı: ' + (error?.message || error));
 
                 let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
                 if (error.message && error.message.includes("400")) userMessage = "İstek geçersiz görünüyor. Lütfen girdiğiniz metni kontrol edin.";
@@ -750,9 +664,9 @@
                 
                 if (resultContainer) {
                     resultContainer.innerHTML = `
-                        <div class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-                            <p class="font-bold">Üzgünüm, bir hata oluştu.</p>
-                            <p class="text-sm">${userMessage} (${error?.message || 'Bilinmeyen hata'})</p>
+                        <div class="content-card p-6 text-center">
+                            <p class="font-bold text-primary mb-1">Şu an yanıt üretilemiyor</p>
+                            <p class="text-sm text-secondary">${userMessage}</p>
                         </div>
                     `;
                 }
@@ -1240,66 +1154,91 @@
             }, flag: "🇾🇪", description: "Antik kerpiç gökdelenleri, ejderha kanı ağaçlarıyla ünlü Sokotra adası ve zengin tarihiyle bir ülke.", searchTerms: { flights: 'Yemen', booking: 'Yemen' }, whatToDo: ["Sana'a'nın UNESCO korumasındaki eski şehrinde dolaş", "Shibam'ın 'çölün Manhattan'ı' olarak bilinen kerpiç binalarını gör", "Sokotra adasının eşsiz bitki örtüsünü keşfet", "Tarihi kahve ticareti merkezi Al-Makha'yı (Mocha) öğren"], whatToEat: ["Geleneksel güveç Saltah", "Bal ve ekmekle yapılan Bint al-Sahn", "Fahsa (et yahnisi)", "Shafut (ekmekli yoğurtlu yemek)"], whereToStay: ["Sana'a: Eski şehirdeki geleneksel oteller", "Aden: Liman bölgesindeki oteller", "Sokotra: Eko-localar"], popularApps: [{name: "Google Maps", category: "Navigasyon"}], fastFoodChains: ["Yerel restoranlar ağırlıklıdır"], currency: "YER", language: "Arapça", emergencyNumber: "199 (Polis)", basicPhrases: [{tr:"Merhaba", local:"مرحبا (Marhaban)"}, {tr:"Teşekkürler", local:"شكرا (Shukran)"}], climate: "Kıyıda sıcak ve nemli, batıdaki dağlık bölgelerde ılıman, doğuda çöl iklimi." }
         };
 
-        const blogData = [
-            {
-                id: "vizesiz-ucuz-ulkeler-2026",
-                title: "2026'da Vizesiz Gidilebilecek En Ucuz 5 Ülke",
-                summary: "Bütçe dostu ve vizesiz bir tatil mi arıyorsunuz? İşte Türk vatandaşları için 2026'nın gözdeleri.",
-                image: "https://images.unsplash.com/photo-1518684079-3c830dcef090?q=80&w=800&auto=format&fit=crop",
-                date: "15 Ekim 2025",
-                content: `
-                    <p class="mb-4">Döviz kurları ve vize masrafları seyahat planlarını zorlaştırsa da, hala keşfedilmeyi bekleyen cennet köşeler var. İşte 2026 yılında vizesiz (veya kapıda vize/kolay e-vize ile) gidilebilecek, hem cebinizi yakmayacak hem de ruhunuzu doyuracak 5 ülke.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">1. Karadağ (Montenegro)</h3>
-                    <p class="mb-4">Adriyatik'in incisi Karadağ, hem vizesiz olması hem de Euro kullanmasına rağmen Batı Avrupa'ya göre daha uygun fiyatlı olmasıyla listemizin başında. Kotor Körfezi'nin manzarası paha biçilemez.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">2. Gürcistan</h3>
-                    <p class="mb-4">Sadece kimlikle gidilebilen Gürcistan, lezzetli mutfağı ve Tiflis'in bohem sokaklarıyla favori. Batum ise Karadeniz kıyısında modern bir tatil sunuyor.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">3. Sırbistan</h3>
-                    <p class="mb-4">Belgrad'ın canlı gece hayatı ve Novi Sad'ın sakinliği... Sırbistan, Türk gezginler için vizesiz Avrupa deneyiminin en popüler adreslerinden biri.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">4. Arnavutluk</h3>
-                    <p class="mb-4">"Avrupa'nın Maldivleri" olarak anılan Ksamil plajları ve Osmanlı izleri taşıyan Berat şehri ile Arnavutluk, bütçe dostu bir deniz tatili için ideal.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">5. Makedonya</h3>
-                    <p class="mb-4">Üsküp'ün heykelleri ve Ohri Gölü'nün huzuru. Makedonya, hem kültürel yakınlığı hem de uygun fiyatlarıyla hafta sonu kaçamakları için bile uygun.</p>
-                `
-            },
-            {
-                id: "avrupa-tren-rotasi",
-                title: "Sırt Çantalı Gezginler İçin Avrupa Tren Rotası",
-                summary: "Interrail ruhunu yaşamak isteyenler için unutulmaz bir rota önerisi.",
-                image: "https://images.unsplash.com/photo-1474487548417-781cb714c22d?q=80&w=800&auto=format&fit=crop",
-                date: "10 Ekim 2025",
-                content: `
-                    <p class="mb-4">Avrupa'yı trenle gezmek, manzaraların tadını çıkararak seyahat etmenin en romantik ve pratik yoludur. İşte sırt çantanızı alıp yola çıkabileceğiniz klasik ama büyüleyici bir rota.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">Rota: Amsterdam - Berlin - Prag - Viyana - Budapeşte</h3>
-                    <p class="mb-4">Bu rota, Orta Avrupa'nın kültür başkentlerini birbirine bağlar ve tren yolculukları genellikle 4-6 saat sürer, yani gününüzü yolda harcamazsınız.</p>
-                    <ul class="list-disc pl-5 space-y-2 mb-4">
-                        <li><strong>Amsterdam:</strong> Kanallar, bisikletler ve müzeler.</li>
-                        <li><strong>Berlin:</strong> Tarih, sanat ve tekno müzik.</li>
-                        <li><strong>Prag:</strong> Masalsı köprüler ve ucuz bira.</li>
-                        <li><strong>Viyana:</strong> Saraylar, opera ve şnitzel.</li>
-                        <li><strong>Budapeşte:</strong> Tuna nehri manzarası ve termal hamamlar.</li>
-                    </ul>
-                    <p class="mb-4"><strong>İpucu:</strong> Biletlerinizi önceden almak veya Interrail bileti kullanmak maliyetleri düşürebilir.</p>
-                `
-            },
-            {
-                id: "digital-nomad-sehirleri",
-                title: "Dijital Göçebeler (Digital Nomads) İçin En İyi Şehirler",
-                summary: "Hem çalışıp hem gezmek isteyenler için internet hızı ve yaşam kalitesi yüksek şehirler.",
-                image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop",
-                date: "05 Ekim 2025",
-                content: `
-                    <p class="mb-4">Ofise bağlı kalmadan dünyayı gezmek artık bir hayal değil. İşte dizüstü bilgisayarınızı alıp yerleşebileceğiniz, dijital göçebe dostu en iyi şehirler.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">1. Bali, Endonezya</h3>
-                    <p class="mb-4">Canggu ve Ubud, ortak çalışma alanları (co-working spaces), sağlıklı kafeleri ve sörf imkanlarıyla göçebelerin başkenti.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">2. Lizbon, Portekiz</h3>
-                    <p class="mb-4">Avrupa'da güneşli hava, güvenli sokaklar ve canlı bir girişimcilik ekosistemi arayanlar için bir numara.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">3. Chiang Mai, Tayland</h3>
-                    <p class="mb-4">Düşük yaşam maliyeti, hızlı internet ve lezzetli sokak yemekleri. Dijital göçebeliğe yeni başlayanlar için mükemmel bir giriş noktası.</p>
-                    <h3 class="text-xl font-bold text-primary mt-6 mb-2">4. İstanbul, Türkiye</h3>
-                    <p class="mb-4">Tarih, kültür ve modernitenin buluşma noktası. Kadıköy ve Beyoğlu gibi semtler, çalışmak için harika kafelere sahip.</p>
-                `
-            }
-        ];
+        const countryTravelData = {
+            "Türkiye": { visaStatus: "Yerel", dailyBudget: "$40-$90", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "İtalya": { visaStatus: "Schengen", dailyBudget: "$110-$190", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / F / L", tipping: "%5-%10" },
+            "Japonya": { visaStatus: "Vizesiz", dailyBudget: "$90-$160", bestTime: "Mart - Mayıs, Ekim - Kasım", plugType: "Tip A / B", tipping: "Yok" },
+            "Fransa": { visaStatus: "Schengen", dailyBudget: "$130-$220", bestTime: "Mayıs - Eylül", plugType: "Tip C / E", tipping: "%5-%10" },
+            "Birleşik Krallık": { visaStatus: "Vize Gerekli", dailyBudget: "$140-$240", bestTime: "Mayıs - Eylül", plugType: "Tip G", tipping: "%10-%12.5" },
+            "ABD": { visaStatus: "Vize Gerekli", dailyBudget: "$150-$250", bestTime: "Mayıs - Ekim", plugType: "Tip A / B", tipping: "%15-%20" },
+            "Brezilya": { visaStatus: "Vizesiz", dailyBudget: "$60-$130", bestTime: "Mayıs - Eylül", plugType: "Tip N", tipping: "%10" },
+            "Mısır": { visaStatus: "Kapıda Vize / e-Vize", dailyBudget: "$35-$80", bestTime: "Ekim - Nisan", plugType: "Tip C / F", tipping: "%10" },
+            "Avustralya": { visaStatus: "e-Vize", dailyBudget: "$140-$240", bestTime: "Kasım - Mart", plugType: "Tip I", tipping: "Opsiyonel" },
+            "İspanya": { visaStatus: "Schengen", dailyBudget: "$90-$160", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Yunanistan": { visaStatus: "Schengen", dailyBudget: "$80-$140", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Tayland": { visaStatus: "e-Vize", dailyBudget: "$35-$70", bestTime: "Kasım - Mart", plugType: "Tip A / B / C", tipping: "Opsiyonel" },
+            "Güney Kore": { visaStatus: "Vizesiz", dailyBudget: "$80-$140", bestTime: "Nisan - Haziran, Eylül - Kasım", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Meksika": { visaStatus: "Vize Gerekli", dailyBudget: "$50-$110", bestTime: "Kasım - Nisan", plugType: "Tip A / B", tipping: "%10-%15" },
+            "Peru": { visaStatus: "Vizesiz", dailyBudget: "$40-$90", bestTime: "Mayıs - Ekim", plugType: "Tip A / B / C", tipping: "%10" },
+            "Güney Afrika": { visaStatus: "Vize Gerekli", dailyBudget: "$60-$120", bestTime: "Mayıs - Eylül", plugType: "Tip M / N", tipping: "%10-%15" },
+            "Yeni Zelanda": { visaStatus: "e-Vize", dailyBudget: "$130-$220", bestTime: "Kasım - Mart", plugType: "Tip I", tipping: "Opsiyonel" },
+            "İrlanda": { visaStatus: "Vize Gerekli", dailyBudget: "$130-$220", bestTime: "Mayıs - Eylül", plugType: "Tip G", tipping: "%10-%12.5" },
+            "İsviçre": { visaStatus: "Schengen", dailyBudget: "$200-$320", bestTime: "Haziran - Eylül, Aralık - Mart", plugType: "Tip J", tipping: "%5-%10" },
+            "Hollanda": { visaStatus: "Schengen", dailyBudget: "$140-$230", bestTime: "Nisan - Eylül", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Portekiz": { visaStatus: "Schengen", dailyBudget: "$80-$140", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Fas": { visaStatus: "Vizesiz", dailyBudget: "$40-$80", bestTime: "Mart - Mayıs, Eylül - Kasım", plugType: "Tip C / E", tipping: "%5-%10" },
+            "Vietnam": { visaStatus: "e-Vize", dailyBudget: "$30-$60", bestTime: "Kasım - Nisan", plugType: "Tip A / C", tipping: "Opsiyonel" },
+            "Arjantin": { visaStatus: "Vizesiz", dailyBudget: "$50-$110", bestTime: "Ekim - Nisan", plugType: "Tip C / I", tipping: "%10" },
+            "Kanada": { visaStatus: "Vize Gerekli", dailyBudget: "$130-$220", bestTime: "Haziran - Eylül", plugType: "Tip A / B", tipping: "%15-%20" },
+            "Hindistan": { visaStatus: "e-Vize", dailyBudget: "$25-$55", bestTime: "Kasım - Mart", plugType: "Tip C / D / M", tipping: "%5-%10" },
+            "Çin": { visaStatus: "Vize Gerekli", dailyBudget: "$70-$150", bestTime: "Nisan - Mayıs, Eylül - Ekim", plugType: "Tip A / C / I", tipping: "Genelde Yok" },
+            "Rusya": { visaStatus: "e-Vize", dailyBudget: "$70-$140", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Norveç": { visaStatus: "Schengen", dailyBudget: "$170-$280", bestTime: "Haziran - Ağustos", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "İsveç": { visaStatus: "Schengen", dailyBudget: "$120-$210", bestTime: "Haziran - Ağustos", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Danimarka": { visaStatus: "Schengen", dailyBudget: "$140-$240", bestTime: "Mayıs - Eylül", plugType: "Tip C / K", tipping: "Opsiyonel" },
+            "Avusturya": { visaStatus: "Schengen", dailyBudget: "$120-$200", bestTime: "Mayıs - Eylül, Aralık - Mart", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Macaristan": { visaStatus: "Schengen", dailyBudget: "$55-$95", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Çek Cumhuriyeti": { visaStatus: "Schengen", dailyBudget: "$60-$110", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / E", tipping: "%5-%10" },
+            "Hırvatistan": { visaStatus: "Schengen", dailyBudget: "$70-$140", bestTime: "Haziran - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Belçika": { visaStatus: "Schengen", dailyBudget: "$130-$220", bestTime: "Mayıs - Eylül", plugType: "Tip E", tipping: "Opsiyonel" },
+            "Singapur": { visaStatus: "Vizesiz", dailyBudget: "$120-$220", bestTime: "Şubat - Nisan", plugType: "Tip G", tipping: "Genelde Yok" },
+            "Malezya": { visaStatus: "Vizesiz", dailyBudget: "$40-$80", bestTime: "Aralık - Mart", plugType: "Tip G", tipping: "Opsiyonel" },
+            "Endonezya": { visaStatus: "Kapıda Vize / e-Vize", dailyBudget: "$35-$80", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Filipinler": { visaStatus: "Vizesiz", dailyBudget: "$35-$75", bestTime: "Aralık - Mayıs", plugType: "Tip A / B / C", tipping: "Opsiyonel" },
+            "Birleşik Arap Emirlikleri": { visaStatus: "Vizesiz", dailyBudget: "$120-$220", bestTime: "Kasım - Mart", plugType: "Tip G", tipping: "%10" },
+            "Polonya": { visaStatus: "Schengen", dailyBudget: "$60-$110", bestTime: "Mayıs - Eylül", plugType: "Tip C / E", tipping: "%5-%10" },
+            "Slovakya": { visaStatus: "Schengen", dailyBudget: "$60-$110", bestTime: "Mayıs - Eylül, Aralık - Mart", plugType: "Tip C / E", tipping: "%5-%10" },
+            "Slovenya": { visaStatus: "Schengen", dailyBudget: "$80-$140", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Romanya": { visaStatus: "Vize Gerekli", dailyBudget: "$45-$85", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Bulgaristan": { visaStatus: "Vize Gerekli", dailyBudget: "$40-$75", bestTime: "Mayıs - Eylül, Aralık - Mart", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Ukrayna": { visaStatus: "Vizesiz", dailyBudget: "$35-$70", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Letonya": { visaStatus: "Schengen", dailyBudget: "$70-$120", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Litvanya": { visaStatus: "Schengen", dailyBudget: "$60-$110", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Estonya": { visaStatus: "Schengen", dailyBudget: "$80-$140", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Sırbistan": { visaStatus: "Vizesiz", dailyBudget: "$45-$80", bestTime: "Nisan - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Bosna-Hersek": { visaStatus: "Vizesiz", dailyBudget: "$35-$65", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Karadağ": { visaStatus: "Vizesiz", dailyBudget: "$50-$90", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Arnavutluk": { visaStatus: "Vizesiz", dailyBudget: "$40-$70", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Kosova": { visaStatus: "Vizesiz", dailyBudget: "$35-$65", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Lüksemburg": { visaStatus: "Schengen", dailyBudget: "$170-$260", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "Malta": { visaStatus: "Schengen", dailyBudget: "$90-$160", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip G", tipping: "%5-%10" },
+            "Monako": { visaStatus: "Schengen", dailyBudget: "$200-$350", bestTime: "Mayıs - Eylül", plugType: "Tip C / E / F", tipping: "%5-%10" },
+            "Andorra": { visaStatus: "Schengen", dailyBudget: "$90-$160", bestTime: "Haziran - Eylül, Aralık - Mart", plugType: "Tip C / F", tipping: "Opsiyonel" },
+            "San Marino": { visaStatus: "Schengen", dailyBudget: "$100-$170", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Vatikan": { visaStatus: "Schengen", dailyBudget: "$110-$190", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Bahreyn": { visaStatus: "e-Vize", dailyBudget: "$110-$200", bestTime: "Kasım - Mart", plugType: "Tip G", tipping: "%10" },
+            "Kuveyt": { visaStatus: "e-Vize", dailyBudget: "$120-$220", bestTime: "Kasım - Mart", plugType: "Tip G", tipping: "%10" },
+            "Katar": { visaStatus: "Vizesiz", dailyBudget: "$140-$240", bestTime: "Kasım - Mart", plugType: "Tip G", tipping: "%10" },
+            "Umman": { visaStatus: "e-Vize", dailyBudget: "$90-$170", bestTime: "Ekim - Nisan", plugType: "Tip G", tipping: "%10" },
+            "Ürdün": { visaStatus: "Kapıda Vize", dailyBudget: "$60-$120", bestTime: "Mart - Mayıs, Eylül - Kasım", plugType: "Tip C / D / G", tipping: "%10" },
+            "Sri Lanka": { visaStatus: "e-Vize", dailyBudget: "$30-$65", bestTime: "Aralık - Mart", plugType: "Tip D / G", tipping: "Opsiyonel" },
+            "Ermenistan": { visaStatus: "e-Vize", dailyBudget: "$25-$55", bestTime: "Mayıs - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Gürcistan": { visaStatus: "Vizesiz", dailyBudget: "$25-$55", bestTime: "Mayıs - Ekim", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Kazakistan": { visaStatus: "Vizesiz", dailyBudget: "$40-$80", bestTime: "Haziran - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Tunus": { visaStatus: "Vizesiz", dailyBudget: "$35-$70", bestTime: "Nisan - Haziran, Eylül - Ekim", plugType: "Tip C / E", tipping: "%5-%10" },
+            "Cezayir": { visaStatus: "Vize Gerekli", dailyBudget: "$45-$90", bestTime: "Mart - Mayıs, Eylül - Kasım", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Tanzanya": { visaStatus: "e-Vize", dailyBudget: "$60-$130", bestTime: "Haziran - Ekim", plugType: "Tip G", tipping: "%5-%10" },
+            "Libya": { visaStatus: "Vize Gerekli", dailyBudget: "$50-$100", bestTime: "Ekim - Nisan", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Moldova": { visaStatus: "Vizesiz", dailyBudget: "$30-$55", bestTime: "Mayıs - Eylül", plugType: "Tip C / F", tipping: "%5-%10" },
+            "Yemen": { visaStatus: "Vize Gerekli", dailyBudget: "$40-$90", bestTime: "Ekim - Mart", plugType: "Tip G", tipping: "Opsiyonel" }
+        };
+
+        Object.keys(countriesData).forEach((name) => {
+            const d = countryTravelData[name];
+            if (d) Object.assign(countriesData[name], d);
+        });
+
+        const blogData = [];
 
         // --- DATA ENRICHMENT (TAGS) ---
         const countryCategoryMap = {
@@ -1531,6 +1470,9 @@
 
                 if (matchesSearch && matchesTag && matchesFavorite) {
                     const isFav = favorites.includes(name);
+                    const visaStatus = country.visaStatus || 'Vize Bilgisi';
+                    const bestTime = country.bestTime || 'En İyi Dönem';
+                    const budget = country.dailyBudget || 'Bütçe';
                     const card = document.createElement('div');
                     // Premium SaaS card styling with animation
                     card.className = 'country-card content-card glass-card p-8 text-center relative group overflow-hidden hover:border-accent/50 animate-fade-in-up';
@@ -1546,6 +1488,20 @@
                         <div class="text-8xl mb-6 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 drop-shadow-xl">${country.flag}</div>
                         <h3 class="text-2xl font-bold mb-3 text-primary group-hover:text-accent transition-colors">${name}</h3>
                         <p class="text-base text-secondary line-clamp-3 leading-relaxed mb-4">${country.description}</p>
+                        <div class="grid grid-cols-3 gap-2 mb-4 text-left">
+                            <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Vize</div>
+                                <div class="text-sm font-bold text-primary">🛂 ${visaStatus}</div>
+                            </div>
+                            <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Dönem</div>
+                                <div class="text-sm font-bold text-primary">📅 ${bestTime}</div>
+                            </div>
+                            <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Bütçe</div>
+                                <div class="text-sm font-bold text-primary">💰 ${budget}</div>
+                            </div>
+                        </div>
                         <div class="mt-auto flex flex-wrap justify-center gap-2">
                             ${country.tags.slice(0, 3).map(tag => `<span class="text-[10px] px-3 py-1.5 rounded-full bg-accent/5 text-accent font-semibold uppercase tracking-widest border border-accent/10">${tag}</span>`).join('')}
                         </div>
@@ -1559,7 +1515,7 @@
                     const adCard = document.createElement('div');
                     adCard.id = 'smart-ad';
                     adCard.className = 'content-card p-6 text-center lg:col-span-2 md:col-span-1 sm:col-span-2 col-span-1 flex flex-col justify-center items-center relative overflow-hidden group';
-                    adCard.style.background = 'linear-gradient(135deg, var(--card-bg) 0%, color-mix(in srgb, var(--accent) 10%, var(--card-bg)) 100%)';
+                    adCard.style.backgroundColor = 'var(--card-bg)';
                     adCard.innerHTML = `
                         <div class="absolute top-0 right-0 bg-accent text-white text-xs px-2 py-1 rounded-bl-lg font-bold">ÖNERİ</div>
                         <div class="text-4xl mb-2">✈️🏨</div>
@@ -1624,7 +1580,7 @@
 
         const displayBlogList = async () => {
             blogListView.classList.remove('hidden');
-            const container = document.getElementById('blog-list-container');
+            const container = document.getElementById('blog-posts-container');
             
             // Show skeletons while loading
             container.innerHTML = Array(3).fill(0).map(() => `
@@ -1786,30 +1742,63 @@
             const packingListContent = aiGeneratedContent[countryName]?.packing ? formatGeminiResponse(aiGeneratedContent[countryName].packing) : 
                 `<p class="text-center text-secondary">Bavul hazırlama listesi oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
 
-            // Yeni AI sonuçlarını detay görünümüne yerleştirmek için konteynerleri dinamik oluştur
+            const quickLook = {
+                visa: country.visaStatus || 'Vize Bilgisi',
+                bestTime: country.bestTime || 'En İyi Dönem',
+                budget: country.dailyBudget || 'Bütçe',
+                plug: country.plugType || 'Priz Tipi',
+                tipping: country.tipping || 'Bahşiş',
+            };
+
             const aiResultsContainerHtml = `
                 <div class="mt-8 pt-8 border-t border-border-color">
-                    <h3 class="text-3xl font-bold mb-6">✨ Yapay Zeka Asistanın</h3>
-                    
-                    <!-- Dinamik olarak eklenen AI içerikleri -->
-                    <div id="ai-itinerary-embed" class="content-card glass-card p-6 rounded-2xl mb-6 markdown-content">
-                        <h4 class="text-2xl font-bold mb-4 text-primary">🗺️ Kişiselleştirilmiş Seyahat Planı</h4>
-                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${itineraryContent}</div>
-                        <button id="open-itinerary-modal-btn" class="ai-result-embed-btn mt-4 w-full">Planı Özelleştir / Oluştur</button>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-3xl font-bold text-primary">AI Asistan</h3>
+                        <span class="text-xs text-secondary uppercase tracking-wider">Ücretsiz</span>
                     </div>
 
-                    <div id="ai-tips-embed" class="content-card glass-card p-6 rounded-2xl mb-6 markdown-content">
-                        <h4 class="text-2xl font-bold mb-4 text-primary">💡 Yerel Kültürel İpuçları</h4>
-                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${culturalTipsContent}</div>
-                        <button id="get-cultural-tips-btn" class="ai-result-embed-btn mt-4 w-full">İpuçları Oluştur / Güncelle</button>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="ai-tool-card">
+                            <div class="pr-4">
+                                <div class="font-bold text-primary">Seyahat Planı</div>
+                                <div class="text-xs text-secondary mt-1">Gün gün rota ve öneriler.</div>
+                            </div>
+                            <button id="open-itinerary-modal-btn" class="ai-tool-btn">Oluştur</button>
+                        </div>
+
+                        <div class="ai-tool-card">
+                            <div class="pr-4">
+                                <div class="font-bold text-primary">Kültürel İpuçları</div>
+                                <div class="text-xs text-secondary mt-1">Yerel görgü ve pratik bilgiler.</div>
+                            </div>
+                            <button id="get-cultural-tips-btn" class="ai-tool-btn">Oluştur</button>
+                        </div>
+
+                        <div class="ai-tool-card">
+                            <div class="pr-4">
+                                <div class="font-bold text-primary">Bavul Listesi</div>
+                                <div class="text-xs text-secondary mt-1">Hızlı ve eksiksiz kontrol listesi.</div>
+                            </div>
+                            <button id="open-packing-list-btn" class="ai-tool-btn">Oluştur</button>
+                        </div>
                     </div>
 
-                    <div id="ai-packing-embed" class="content-card glass-card p-6 rounded-2xl mb-6 markdown-content">
-                        <h4 class="text-2xl font-bold mb-4 text-primary">📦 Akıllı Bavul Hazırlık Listesi</h4>
-                        <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${packingListContent}</div>
-                         <button id="open-packing-list-btn" class="ai-result-embed-btn mt-4 w-full">Listeyi Oluştur / Güncelle</button>
-                    </div>
+                    <div class="mt-6 space-y-6">
+                        <div id="ai-itinerary-embed" class="content-card p-6 rounded-2xl markdown-content ${aiGeneratedContent[countryName]?.itinerary ? '' : 'hidden'}">
+                            <h4 class="text-xl font-bold mb-4 text-primary">🗺️ Seyahat Planı</h4>
+                            <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${itineraryContent}</div>
+                        </div>
 
+                        <div id="ai-tips-embed" class="content-card p-6 rounded-2xl markdown-content ${aiGeneratedContent[countryName]?.tips ? '' : 'hidden'}">
+                            <h4 class="text-xl font-bold mb-4 text-primary">💡 Kültürel İpuçları</h4>
+                            <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${culturalTipsContent}</div>
+                        </div>
+
+                        <div id="ai-packing-embed" class="content-card p-6 rounded-2xl markdown-content ${aiGeneratedContent[countryName]?.packing ? '' : 'hidden'}">
+                            <h4 class="text-xl font-bold mb-4 text-primary">🎒 Bavul Listesi</h4>
+                            <div class="prose prose-sm sm:prose-base [data-theme*='dark']:prose-invert max-w-none">${packingListContent}</div>
+                        </div>
+                    </div>
                 </div>
             `;
             
@@ -1842,6 +1831,40 @@
                                     <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="btn btn-secondary flex-1 md:flex-none flex items-center justify-center gap-3 py-4 px-8 text-lg hover:scale-105 transition-transform">
                                         🏨 Otel Bak
                                     </a>
+                                </div>
+                            </div>
+
+                            <div class="content-card p-8">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-2xl font-bold text-primary">Hızlı Bakış</h3>
+                                    <span class="text-xs text-secondary uppercase tracking-wider">Veri Odaklı</span>
+                                </div>
+                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                    <div class="p-4 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                        <div class="text-xl mb-2">🛂</div>
+                                        <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Vize Şartları</div>
+                                        <div class="text-sm font-bold text-primary">${quickLook.visa}</div>
+                                    </div>
+                                    <div class="p-4 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                        <div class="text-xl mb-2">📅</div>
+                                        <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">En İyi Dönem</div>
+                                        <div class="text-sm font-bold text-primary">${quickLook.bestTime}</div>
+                                    </div>
+                                    <div class="p-4 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                        <div class="text-xl mb-2">💰</div>
+                                        <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Günlük Bütçe</div>
+                                        <div class="text-sm font-bold text-primary">${quickLook.budget}</div>
+                                    </div>
+                                    <div class="p-4 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                        <div class="text-xl mb-2">🔌</div>
+                                        <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Priz Tipi</div>
+                                        <div class="text-sm font-bold text-primary">${quickLook.plug}</div>
+                                    </div>
+                                    <div class="p-4 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                        <div class="text-xl mb-2">☕</div>
+                                        <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Bahşiş</div>
+                                        <div class="text-sm font-bold text-primary">${quickLook.tipping}</div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -1886,41 +1909,7 @@
                                 </div>
                             </div>
 
-                            
-                            <!-- Editor's Note Section -->
-                            <div class="content-card glass-card p-8 mt-8 border-l-4 border-accent">
-                                <h3 class="text-2xl font-bold mb-6 text-primary flex items-center gap-3">
-                                    <span class="text-3xl">📝</span> 
-                                    <span>Editörün Notu: <span class="text-accent">${countryName}</span></span>
-                                </h3>
-                                <div class="space-y-6">
-                                    <div>
-                                        <h4 class="text-lg font-bold text-primary mb-2 flex items-center gap-2">
-                                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                            Tarihsel Derinlik
-                                        </h4>
-                                        <p class="text-secondary leading-relaxed">${country.editorsNote.history}</p>
-                                    </div>
-                                    
-                                    <div>
-                                        <h4 class="text-lg font-bold text-primary mb-2 flex items-center gap-2">
-                                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                                            Vize ve Giriş
-                                        </h4>
-                                        <p class="text-secondary leading-relaxed">${country.editorsNote.visa}</p>
-                                    </div>
-                                    
-                                    <div>
-                                        <h4 class="text-lg font-bold text-primary mb-2 flex items-center gap-2">
-                                            <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                            Kültürel Doku
-                                        </h4>
-                                        <p class="text-secondary leading-relaxed">${country.editorsNote.culture}</p>
-                                    </div>
-                                </div>
-                            </div>
-    
-
+                            <div class="ad-area ad-infeed">[AD_AREA - IN_FEED]</div>
                             <!-- AI Assistant Section -->
                              ${aiResultsContainerHtml}
 
@@ -1933,6 +1922,8 @@
                             <div class="content-card glass-card p-1 overflow-hidden h-64 shadow-md">
                                 <iframe width="100%" height="100%" style="border:0; border-radius: 16px;" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${encodeURIComponent(countryName)}&t=&z=5&ie=UTF8&iwloc=&output=embed"></iframe>
                             </div>
+
+                            <div class="ad-area ad-square">[AD_AREA - SIDEBAR_SQUARE]</div>
 
                             <!-- Quick Info -->
                             <div class="content-card glass-card p-6">
@@ -2046,14 +2037,33 @@
 
         };
 
+        const typeIntoProse = (proseEl, markdownText) => {
+            if (!proseEl) return;
+            proseEl.classList.add('typing-text');
+            proseEl.textContent = '';
+            let i = 0;
+            const timer = setInterval(() => {
+                i += 2;
+                if (i >= markdownText.length) {
+                    clearInterval(timer);
+                    proseEl.classList.remove('typing-text');
+                    proseEl.innerHTML = formatGeminiResponse(markdownText);
+                    return;
+                }
+                proseEl.textContent = markdownText.slice(0, i);
+            }, 12);
+        };
+
         const generateItinerary = async (countryName, duration, interests) => {
             const resultEmbed = document.getElementById('ai-itinerary-embed');
             const triggerBtn = document.getElementById('open-itinerary-modal-btn');
+            resultEmbed.classList.remove('hidden');
             
             // Geçici olarak sonucu gösteren bir alan oluştur
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için planı hazırlıyor...</div>`;
-            resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
+            const prose = resultEmbed.querySelector('div.prose');
+            prose.innerHTML = tempResultDiv.innerHTML;
 
 
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, heyecan verici ve detaylı bir seyahat planı oluştur. İlgi alanları: ${interests}. Plan, her gün için Sabah, Öğle, Akşam aktiviteleri içermeli. Her aktivite için kısa ve ilgi çekici bir açıklama ekle. Cevabını Türkçe ve Markdown formatında, başlıklar ve listeler kullanarak ver. Ana başlıklar için '##', alt başlıklar için '###' kullan.`;
@@ -2063,26 +2073,19 @@
                 // Kalıcı içeriği sakla
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].itinerary = text;
-
-                // Sayfada göster
-                resultEmbed.querySelector('div.prose').innerHTML = `
-                    <div class="flex justify-between items-center mb-2 pt-2 border-t border-border-color">
-                        <h4 class="text-lg font-bold text-primary">Oluşturuldu!</h4>
-                        <button id="copy-itinerary-btn" class="btn btn-secondary px-3 py-1 rounded-md text-sm">Kopyala</button>
-                    </div>
-                    ${formatGeminiResponse(text)}`;
-                
-                document.getElementById('copy-itinerary-btn').addEventListener('click', () => copyToClipboard(text));
+                typeIntoProse(prose, text);
             }
         };
 
         const getCulturalTips = async (countryName) => {
             const resultEmbed = document.getElementById('ai-tips-embed');
             const tipsBtn = document.getElementById('get-cultural-tips-btn');
+            resultEmbed.classList.remove('hidden');
             
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için ipuçlarını hazırlıyor...</div>`;
-            resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
+            const prose = resultEmbed.querySelector('div.prose');
+            prose.innerHTML = tempResultDiv.innerHTML;
 
             const prompt = `Türkiye'den ${countryName}'e seyahat edecek bir turist için 5 önemli kültürel ipucu ve görgü kuralı listele. İpuçları pratik, anlaşılır ve saygılı bir tonda olmalı. Örneğin, selamlaşma, bahşiş, giyim kuralları, hediyeleşme ve kaçınılması gereken hassas konular gibi başlıkları ele al. Cevabını Türkçe ve Markdown formatında ver.`;
 
@@ -2090,19 +2093,19 @@
             if(text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].tips = text;
-                 resultEmbed.querySelector('div.prose').innerHTML = `
-                    <h4 class="text-lg font-bold text-primary pt-2 border-t border-border-color mb-2">Hazır!</h4>
-                    ${formatGeminiResponse(text)}`;
+                typeIntoProse(prose, text);
             }
         };
 
         const generatePackingList = async (countryName, duration, season) => {
             const resultEmbed = document.getElementById('ai-packing-embed');
             const packingBtn = document.getElementById('open-packing-list-btn');
+            resultEmbed.classList.remove('hidden');
             
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için listeyi hazırlıyor...</div>`;
-            resultEmbed.querySelector('div.prose').innerHTML = tempResultDiv.innerHTML;
+            const prose = resultEmbed.querySelector('div.prose');
+            prose.innerHTML = tempResultDiv.innerHTML;
 
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, ${season} bir seyahate yönelik detaylı bir bavul hazırlama listesi oluştur. Listeyi Giyim, Elektronik, Kişisel Bakım ve Belgeler gibi pratik kategorilere ayır. Cevabını Türkçe ve Markdown formatında ver.`;
             
@@ -2110,9 +2113,7 @@
             if(text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].packing = text;
-                 resultEmbed.querySelector('div.prose').innerHTML = `
-                    <h4 class="text-lg font-bold text-primary pt-2 border-t border-border-color mb-2">Hazır!</h4>
-                    ${formatGeminiResponse(text)}`;
+                typeIntoProse(prose, text);
             }
         };
         
@@ -2264,12 +2265,34 @@
             `
         };
 
+        legalTexts['about'] = `
+            <div class='about-content'>
+                <h3>Seyahat Etmek Bir Tutku, Planlamak Artık Bir Yük Değil</h3>
+                <p>Vuelina, dünyayı keşfetme arzunuzu karmaşık araştırmalarla boğmamak için doğdu. Geleneksel seyahat rehberlerinin sınırlarını aşıyor, yapay zekanın gücünü yerel bir rehberin samimiyetiyle birleştiriyoruz.</p>
+                <h4>Neden Vuelina?</h4>
+                <ul>
+                    <li><strong>Zaman Kazandırır:</strong> Bilgi kirliliği içinde kaybolmana gerek yok. En güncel vize, bütçe ve rota bilgileri anında önünde.</li>
+                    <li><strong>Sana Özel Deneyim:</strong> Her gezgin benzersizdir. Algoritmalarımız sana özel, 'terzi işi' rotalar sunar.</li>
+                    <li><strong>Sınırları Kaldırır:</strong> Uçuşlardan otellere, yerel lezzetlerden gizli kalmış noktalara kadar uçtan uca bir seyahat ekosistemi.</li>
+                </ul>
+                <p>Dünyayı keşfetmek hiç bu kadar akıllıca olmamıştı. Bavulun hazırsa, ilk rotamızı çizelim.</p>
+            </div>
+        `;
+
+        const footerAbout = document.getElementById('footer-about-link');
+        const navAbout = document.getElementById('nav-about-link');
+        if(footerAbout) footerAbout.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('about'); });
+        if(navAbout) navAbout.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('about'); });
+        const footerContact = document.getElementById('footer-contact-link');
+        if(footerContact) footerContact.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
+
         const showLegalModal = (type) => {
             const text = legalTexts[type];
             if (!text) return;
             if (type === 'privacy') legalModalTitle.textContent = 'Gizlilik Politikası';
             else if (type === 'terms') legalModalTitle.textContent = 'Kullanım Koşulları';
             else if (type === 'cookies') legalModalTitle.textContent = 'Çerez Politikası';
+            else if (type === 'about') legalModalTitle.textContent = 'About Vuelina';
             else legalModalTitle.textContent = 'İletişim';
             legalModalContent.innerHTML = text;
             legalModal.classList.add('visible');
@@ -2339,76 +2362,10 @@
         };
 
         // --- TEMA YÖNETİMİ ---
-        const themeColors = {
-            indigo: { light: '#4F46E5', dark: '#818CF8', name: 'Indigo' },
-            ocean: { light: '#06B6D4', dark: '#22D3EE', name: 'Ocean' },
-            forest: { light: '#10B981', dark: '#34D399', name: 'Forest' },
-            cherry: { light: '#E11D48', dark: '#F87171', name: 'Cherry' },
-            orange: { light: '#F59E0B', dark: '#FCD34D', name: 'Orange' },
-        };
-        
-        const updateThemeUI = (currentTheme) => {
-            const [scheme, color] = currentTheme.split('-');
-            const isDark = scheme === 'dark';
-
-            // Ana butonu güncelle
-            themeMenuBtn.innerHTML = icons.palette;
-
-            // Tema menüsündeki mod butonlarını güncelle
-            const lightBtn = document.getElementById('light-scheme-btn-inside');
-            const darkBtn = document.getElementById('dark-scheme-btn-inside');
-            
-            if (lightBtn && darkBtn) {
-                lightBtn.innerHTML = `${icons.sun} <span class="ml-2">Aydınlık</span>`;
-                darkBtn.innerHTML = `${icons.moon} <span class="ml-2">Karanlık</span>`;
-                
-                [lightBtn, darkBtn].forEach(btn => {
-                    btn.classList.toggle('border-accent', btn.dataset.scheme === scheme);
-                });
-            }
-
-
-            // Tema menüsündeki renk butonlarını güncelle
-            document.querySelectorAll('.theme-color-btn').forEach(btn => {
-                const accentColor = themeColors[btn.dataset.color][scheme] || themeColors[btn.dataset.color].light;
-                btn.style.backgroundColor = accentColor;
-                btn.classList.toggle('border-accent', btn.dataset.color === color);
-                
-                // Tema seçili değilken border'ın görünmesini engelle
-                btn.classList.toggle('border-2', btn.dataset.color === color);
-            });
-        };
-
         const applyTheme = (theme) => {
             document.documentElement.setAttribute('data-theme', theme);
-            if (theme.includes('dark')) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            document.documentElement.classList.add('dark');
             localStorage.setItem('theme', theme);
-            updateThemeUI(theme);
-        };
-
-        const handleThemeSelection = (e) => {
-            const target = e.target.closest('button');
-            if (!target) return;
-
-            let currentTheme = document.documentElement.getAttribute('data-theme');
-            let [currentScheme, currentColor] = currentTheme.split('-');
-            let newTheme = currentTheme;
-
-            if (target.classList.contains('theme-scheme-btn')) {
-                // Mod (Aydınlık/Karanlık) değişimi
-                const newScheme = target.dataset.scheme;
-                newTheme = `${newScheme}-${currentColor}`;
-            } else if (target.classList.contains('theme-color-btn')) {
-                // Renk paleti değişimi
-                const newColor = target.dataset.color;
-                newTheme = `${currentScheme}-${newColor}`;
-            }
-
-            applyTheme(newTheme);
         };
         // --- TEMA YÖNETİMİ SONU ---
 
@@ -2467,40 +2424,11 @@
                 displayCountryDetail(card.dataset.countryName);
             }
         });
-
-        // Header Favoriler Butonu
-        document.getElementById('favorites-btn').addEventListener('click', (e) => {
-            const btn = e.currentTarget;
-            showOnlyFavorites = !showOnlyFavorites;
-            
-            if (showOnlyFavorites) {
-                btn.classList.add('bg-red-50', 'text-red-600', 'ring-2', 'ring-red-200');
-                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
-            } else {
-                btn.classList.remove('bg-red-50', 'text-red-600', 'ring-2', 'ring-red-200');
-                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>`;
-            }
-            displayCountries(document.getElementById('search-input').value);
-        });
         
-        themeMenuBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            themeMenuContainer.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!themeMenuContainer.classList.contains('hidden') && !themeMenuContainer.contains(e.target) && e.target !== themeMenuBtn) {
-                themeMenuContainer.classList.add('hidden');
-            }
-        });
-
         // Tarayıcı Geri/İleri butonu ile sayfa değişimi
         window.onpopstate = function(event) {
             handleRouting();
         };
-
-        // Tema menüsü içindeki tıklamaları yönetme
-        themeMenuContainer.addEventListener('click', handleThemeSelection);
 
         homeLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -2518,35 +2446,6 @@
             });
         }
         
-        checklistBtn.addEventListener('click', () => {
-            renderChecklist();
-            checklistModal.classList.add('visible');
-        });
-        checklistModalCloseBtn.addEventListener('click', () => checklistModal.classList.remove('visible'));
-        checklistModal.addEventListener('click', (e) => {
-            if (e.target === checklistModal) checklistModal.classList.remove('visible');
-        });
-
-        checklistContainer.addEventListener('click', handleChecklistInteraction);
-        
-        addChecklistItemBtn.addEventListener('click', () => {
-            const text = newChecklistItemInput.value.trim();
-            if (text) {
-                let items;
-                try {
-                    items = JSON.parse(localStorage.getItem('travelChecklist') || '[]');
-                } catch(e) {
-                    items = [];
-                }
-                if (!Array.isArray(items)) items = [];
-
-                items.push({ text: text, completed: false, id: Date.now() });
-                saveChecklistState(items);
-                renderChecklist();
-                newChecklistItemInput.value = '';
-            }
-        });
-        
         itineraryModalCloseBtn.addEventListener('click', () => itineraryModal.classList.remove('visible'));
         itineraryModal.addEventListener('click', (e) => {
             if (e.target === itineraryModal) itineraryModal.classList.remove('visible');
@@ -2561,53 +2460,46 @@
             if (e.target === infoModal) infoModal.classList.remove('visible');
         });
 
-        // Removed old listener: privacyPolicyLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
-        // Removed old listener: termsOfUseLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
-        // Removed old listener: contactLink.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
-        legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); 
-
+        if (legalModalCloseBtn) {
+            legalModalCloseBtn.addEventListener('click', () => legalModal.classList.remove('visible')); 
+        }
+        if (legalModal) {
+            legalModal.addEventListener('click', (e) => {
+                if (e.target === legalModal) legalModal.classList.remove('visible');
+            });
+        }
 
         const initApp = async () => {
             console.log("initApp started");
             try {
-                // 1. Tema yüklenmesini en üste taşıdık.
-                const savedTheme = localStorage.getItem('theme') || 'light-indigo';
-                applyTheme(savedTheme);
-                console.log("Theme applied");
+                // 1. SaaS Görünümü için Dark Mode Sabitlendi
+                applyTheme('dark-indigo');
+                console.log("SaaS Theme applied");
 
-                // 2. Gerekli ikonları yükle
-                themeMenuBtn.innerHTML = icons.palette;
-
-                // 3. Filters
+                // 2. Filters
                 setupFilters();
                 console.log("Filters setup");
 
-                // 4. URL kontrolü: Eğer bir ülke parametresi varsa detay sayfasını yükle (Render önce çalışsın)
+                // 3. URL kontrolü: Eğer bir ülke parametresi varsa detay sayfasını yükle
                 handleRouting();
                 console.log("URL checked and content rendered");
 
-                // 5. Preloader'ı kaldır (Kullanıcı bekletilmesin)
-            setTimeout(() => {
-                preloader.style.opacity = '0';
-                preloader.addEventListener('transitionend', () => preloader.remove());
-            }, 500);
+                // 4. Preloader'ı kaldır (Kullanıcı bekletilmesin)
+                setTimeout(() => {
+                    if (preloader) {
+                        preloader.style.opacity = '0';
+                        preloader.addEventListener('transitionend', () => preloader.remove());
+                    }
+                }, 500);
 
-            // 6. Para birimi kurlarını yükle (Arka planda)
-            // await fetchCurrencyRates(); // Temporarily disabled for verification stability
-            fetchCurrencyRates(); // Run without await to not block initApp promise, though logic is async inside.
+                // 5. Para birimi kurlarını yükle (Arka planda)
+                fetchCurrencyRates(); 
 
-            // Eğer detay sayfasındaysa ve currency converter varsa güncelle
-            if (document.getElementById('currency-converter-content')) {
-                const params = new URLSearchParams(window.location.search);
-                const countryName = params.get('country');
-                if (countryName && countriesData[countryName]) {
-                    initCurrencyConverter(countriesData[countryName].currency);
-                }
+            } catch (error) {
+                console.error("Initialization Error:", error);
+                if (preloader) preloader.remove();
             }
-        } catch (error) {
-            console.error("Init Error:", error);
-        }
-    };
+        };
     
     
         // Footer Links Event Listeners
