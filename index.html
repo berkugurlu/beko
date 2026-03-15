@@ -104,6 +104,21 @@
         .ad-area.ad-square { min-height: 250px; }
         .ad-area { display: none !important; }
 
+        .nav-link {
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
         .hero-title {
             font-size: clamp(2rem, 8vw, 4rem);
             line-height: 1.15;
@@ -483,11 +498,28 @@
                 </svg>
                 <h1 class="text-2xl font-bold tracking-tighter logo-font">vuelina</h1>
             </a>
-            <nav class="flex items-center gap-6">
-                <a href="?page=blog" id="nav-blog-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
-                <a href="/nedir" id="nav-what-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Nedir?</a>
-                <a href="/hakkimizda" id="nav-about-link" class="text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
+            <nav class="flex items-center">
+                <div class="hidden sm:flex items-center gap-6">
+                    <a href="?page=blog" id="nav-blog-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
+                    <a href="/nedir" id="nav-what-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Nedir?</a>
+                    <a href="/hakkimizda" id="nav-about-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
+                </div>
+
+                <button id="mobile-menu-btn" class="sm:hidden nav-link ml-2 inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
             </nav>
+        </div>
+        <div id="mobile-menu" class="sm:hidden hidden border-t border-border-color">
+            <div class="container mx-auto px-6 py-3 flex flex-col gap-2">
+                <a href="?page=blog" id="nav-blog-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Blog</a>
+                <a href="/nedir" id="nav-what-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Nedir?</a>
+                <a href="/hakkimizda" id="nav-about-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Hakkımızda</a>
+            </div>
         </div>
     </header>
 
@@ -1670,6 +1702,13 @@
         });
 
         // Gelişmiş Yönlendirme (Routing)
+        const scrollToTop = () => {
+            const prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const isiOS = /iP(ad|hone|od)/.test(navigator.userAgent || '');
+            const behavior = (prefersReducedMotion || isiOS) ? 'auto' : 'smooth';
+            window.scrollTo({ top: 0, behavior });
+        };
+
         const handleRouting = () => {
             const params = new URLSearchParams(window.location.search);
             let countryName = params.get('country');
@@ -1724,7 +1763,7 @@
                 countryListView.classList.remove('hidden');
                 displayCountries();
             }
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            scrollToTop();
         };
 
         window.handleRouting = handleRouting;
@@ -1949,7 +1988,7 @@
                 `;
             }
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            scrollToTop();
         };
 
         const displayCountryDetail = (countryName) => {
@@ -1957,8 +1996,12 @@
             updateSchema('country', { name: countryName, description: country.description, code: country.code || 'TR' });
             
             // Yeni: URL'yi güncelle (SEO için kritik)
-            const newUrl = `${window.location.pathname}?country=${encodeURIComponent(countryName)}`;
-            window.history.pushState({ country: countryName }, countryName, newUrl);
+            const currentCountryParam = new URLSearchParams(window.location.search).get('country');
+            const shouldUpdateUrl = !currentCountryParam || currentCountryParam.toLocaleLowerCase('tr') !== countryName.toLocaleLowerCase('tr');
+            if (shouldUpdateUrl) {
+                const newUrl = `${window.location.pathname}?country=${encodeURIComponent(countryName)}`;
+                window.history.pushState({ country: countryName }, countryName, newUrl);
+            }
 
             const popularAppsHtml = country.popularApps.map(app => `
                 <li class="flex items-center">
@@ -2228,7 +2271,7 @@
                     </div>
                 </div>`;
             countryDetailView.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            scrollToTop();
             
             initCurrencyConverter(country.currency);
 
@@ -2717,10 +2760,28 @@
                 window.history.pushState({ page: 'blog' }, 'Blog', '?page=blog');
             });
         }
+        const navBlogLinkMobile = document.getElementById('nav-blog-link-mobile');
+        if (navBlogLinkMobile) {
+            navBlogLinkMobile.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.history.pushState({ page: 'blog' }, 'Blog', '?page=blog');
+            });
+        }
 
         const navWhatLink = document.getElementById('nav-what-link');
         if (navWhatLink) {
             navWhatLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.location.protocol === 'file:') {
+                    window.history.pushState({ page: 'nedir' }, 'Nedir?', '?page=nedir');
+                } else {
+                    window.history.pushState({ page: 'nedir' }, 'Nedir?', '/nedir');
+                }
+            });
+        }
+        const navWhatLinkMobile = document.getElementById('nav-what-link-mobile');
+        if (navWhatLinkMobile) {
+            navWhatLinkMobile.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (window.location.protocol === 'file:') {
                     window.history.pushState({ page: 'nedir' }, 'Nedir?', '?page=nedir');
@@ -2741,6 +2802,38 @@
                 }
             });
         }
+        const navAboutLinkMobile = document.getElementById('nav-about-link-mobile');
+        if (navAboutLinkMobile) {
+            navAboutLinkMobile.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.location.protocol === 'file:') {
+                    window.history.pushState({ page: 'hakkimizda' }, 'Hakkımızda', '?page=hakkimizda');
+                } else {
+                    window.history.pushState({ page: 'hakkimizda' }, 'Hakkımızda', '/hakkimizda');
+                }
+            });
+        }
+
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMobileMenu = () => {
+            if (!mobileMenu || !mobileMenuBtn) return;
+            mobileMenu.classList.add('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        };
+        const toggleMobileMenu = () => {
+            if (!mobileMenu || !mobileMenuBtn) return;
+            const willOpen = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        };
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMobileMenu();
+            });
+        }
+        window.addEventListener('vuelina:routechange', () => closeMobileMenu());
         
         itineraryModalCloseBtn.addEventListener('click', () => itineraryModal.classList.remove('visible'));
         itineraryModal.addEventListener('click', (e) => {
