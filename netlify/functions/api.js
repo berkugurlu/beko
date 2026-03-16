@@ -1,4 +1,7 @@
-const fetch = require('node-fetch');
+let fetchFn = global.fetch;
+if (!fetchFn) {
+  fetchFn = require('node-fetch');
+}
 
 exports.handler = async function (event, context) {
   const headers = {
@@ -34,7 +37,7 @@ exports.handler = async function (event, context) {
         // pageLanding içerik tipindeki Homepage girişini çek
         const url = `https://cdn.contentful.com/spaces/${spaceId}/environments/master/entries?access_token=${accessToken}&content_type=pageLanding&fields.internalName=Homepage&include=2`;
         
-        const response = await fetch(url);
+        const response = await fetchFn(url);
         if (!response.ok) {
           throw new Error(`Contentful API error: ${response.status}`);
         }
@@ -100,7 +103,7 @@ exports.handler = async function (event, context) {
 
         for (const contentType of contentTypeCandidates) {
           const url = buildUrl(contentType);
-          const response = await fetch(url);
+          const response = await fetchFn(url);
 
           if (!response.ok) {
             lastError = new Error(`Contentful API error: ${response.status}`);
@@ -267,171 +270,56 @@ exports.handler = async function (event, context) {
     return { statusCode: 405, headers, body: 'Sadece POST istekleri kabul edilir.' };
   }
 
-  const serializeError = (error) => {
-    try {
-      if (!error) return null;
-      const base = {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      };
-      const extra = {};
-      for (const k of Object.keys(error)) {
-        extra[k] = error[k];
-      }
-      return { ...base, ...extra };
-    } catch (e) {
-      return { name: 'Error', message: 'Failed to serialize error.' };
-    }
-  };
-
   try {
     const body = JSON.parse(event.body || '{}');
     const message = body.message;
 
     if (!message || typeof message !== 'string') {
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers,
-        body: JSON.stringify({
-          success: false,
-          rawError: "Invalid request: missing 'message' field",
-          stack: null,
-          details: { receivedType: typeof message }
-        })
+        body: JSON.stringify({ success: false, message: "Geçerli bir istek alınamadı. Lütfen tekrar deneyin." })
       };
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
 
     if (!apiKey) {
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers,
-        body: JSON.stringify({
-          success: false,
-          rawError: 'Missing GEMINI_API_KEY in environment variables.',
-          stack: null,
-          details: null
-        })
+        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
       };
     }
 
-    const systemText = `Sen, Vuelina için yazan, dünyayı gezmiş, yerel kültürlere aşık, her ülkenin kendine has ruhunu anlayan tecrübeli ve karizmatik bir seyahat editörüsün.
+    const groqResponse = await fetchFn('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama3-8b-8192',
+        messages: [{ role: 'user', content: message }]
+      })
+    });
 
-Asla standart bir template (Konaklama > Ulaşım > Gezi) kullanma.
-
-Kullanıcının sorduğu ülke veya rotanın kültürel, sanatsal, tarihi ve gastronomik özelliklerine odaklanarak cevap ver. Japonya'yı anlatırken 'saygı', 'zen' ve 'disiplin' duygusunu; İtalya'yı anlatırken 'sanat', 'lezzet' ve 'hayatın tadı (dolce vita)' duygusunu yansıt.
-
-Sadece bilgi verme, o ülkenin atmosferini hissettirecek descriptive (betimleyici) sıfatlar ve hikaye anlatımı kullan. Okuyucuyu oradaymış gibi hissettir.
-
-Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen bir sokak festivalinden, bazen de tarihi bir tapınaktan. Rutine binme.`;
-
-    const modelCandidates = [
-      process.env.GEMINI_MODEL,
-      'gemini-1.5-flash-latest',
-      'gemini-1.5-flash',
-      'gemini-2.0-flash'
-    ].filter(Boolean);
-
-    const endpointCandidates = [
-      'https://generativelanguage.googleapis.com/v1/models',
-      'https://generativelanguage.googleapis.com/v1beta/models'
-    ];
-
-    const requestBody = {
-      system_instruction: { parts: [{ text: systemText }] },
-      contents: [{ parts: [{ text: message }] }]
-    };
-
-    const doFetchWithTimeout = async (url, options, timeoutMs = 25000) => {
-      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-      const timeout = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-      try {
-        const res = await fetch(url, { ...options, signal: controller ? controller.signal : undefined });
-        return res;
-      } finally {
-        if (timeout) clearTimeout(timeout);
-      }
-    };
-
-    let response = null;
-    let lastErrorText = '';
-    let lastStatus = 0;
-
-    for (const endpointBase of endpointCandidates) {
-      for (const model of modelCandidates) {
-        const url = `${endpointBase}/${encodeURIComponent(model)}:generateContent`;
-        const res = await doFetchWithTimeout(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
-          body: JSON.stringify(requestBody)
-        });
-
-        if (res.ok) {
-          response = res;
-          break;
-        }
-
-        lastStatus = res.status;
-        lastErrorText = await res.text().catch(() => '');
-
-        if (![404, 400].includes(res.status)) {
-          response = res;
-          break;
-        }
-      }
-      if (response && response.ok) break;
-      if (response && !response.ok && ![404, 400].includes(response.status)) break;
-    }
-
-    if (!response) {
+    if (!groqResponse.ok) {
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers,
-        body: JSON.stringify({
-          success: false,
-          rawError: 'No response received from Gemini API.',
-          stack: null,
-          details: { lastStatus, lastErrorText }
-        })
+        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
       };
     }
 
-    if (!response.ok) {
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          rawError: `Gemini HTTP ${lastStatus}: ${lastErrorText || 'No response body'}`,
-          stack: null,
-          details: { status: lastStatus, body: lastErrorText }
-        })
-      };
-    }
-
-    const data = await response.json();
-
-    const reply =
-      data &&
-      data.candidates &&
-      data.candidates[0] &&
-      data.candidates[0].content &&
-      data.candidates[0].content.parts &&
-      data.candidates[0].content.parts[0] &&
-      data.candidates[0].content.parts[0].text;
+    const data = await groqResponse.json();
+    const reply = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
 
     if (!reply) {
       return {
-        statusCode: 500,
+        statusCode: 200,
         headers,
-        body: JSON.stringify({
-          success: false,
-          rawError: 'Gemini response did not include candidates[0].content.parts[0].text',
-          stack: null,
-          details: data
-        })
+        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
       };
     }
 
@@ -442,14 +330,9 @@ Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen b
     };
   } catch (error) {
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
-      body: JSON.stringify({
-        success: false,
-        rawError: error && error.message ? error.message : String(error),
-        stack: error && error.stack ? error.stack : null,
-        details: serializeError(error)
-      })
+      body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
     };
   }
 };
