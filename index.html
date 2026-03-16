@@ -752,23 +752,21 @@
         const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
         
         // --- GEMINI AI API ENTEGRASYONU ---
-        // Hata yönetimi için üstel geri çekilme (exponential backoff) fonksiyonu
-        async function fetchWithRetry(url, options, retries = 5, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
+        async function fetchJsonWithTimeout(url, options, timeoutMs = 10000) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), timeoutMs);
+            try {
+                const response = await fetch(url, { ...options, signal: controller.signal });
+                const text = await response.text().catch(() => '');
+                let json = null;
                 try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                         if (response.status === 429) {
-                             // Rate limit durumunda bekle ve tekrar dene
-                             throw new Error(`Rate limit exceeded (429)`);
-                         }
-                        throw new Error(`HTTP Error: ${response.status}`);
-                    }
-                    return await response.json();
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                    json = text ? JSON.parse(text) : null;
+                } catch (e) {
+                    json = null;
                 }
+                return { ok: response.ok, status: response.status, json, text };
+            } finally {
+                clearTimeout(timeout);
             }
         }
 
@@ -787,7 +785,7 @@
                     message: prompt
                 };
 
-                const data = await fetchWithRetry(url, {
+                const result = await fetchJsonWithTimeout(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -795,8 +793,20 @@
                     body: JSON.stringify(payload)
                 });
 
+                const data = result?.json;
+
+                if (!result?.ok) {
+                    if (data && typeof data === 'object') {
+                        console.error("🔥 ASIL HATA BURADA:", data.rawError, data.details);
+                    } else {
+                        console.error("🔥 ASIL HATA BURADA:", `HTTP ${result?.status}`, result?.text);
+                    }
+                    throw new Error((data && data.message) || (data && data.rawError) || `HTTP Error: ${result?.status || 0}`);
+                }
+
                 if (data && data.success === false) {
-                    throw new Error(data.message || "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.");
+                    console.error("🔥 ASIL HATA BURADA:", data.rawError, data.details);
+                    throw new Error(data.message || data.rawError || "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.");
                 }
 
                 const generatedText = data?.reply;
@@ -808,6 +818,7 @@
                 return generatedText;
 
             } catch (error) {
+                console.error("⏳ TIMEOUT VEYA NETWORK HATASI:", error);
                 console.error("Yapay Zeka API Hatası:", error);
 
                 let userMessage = error?.message || "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";

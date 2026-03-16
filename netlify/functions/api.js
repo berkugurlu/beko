@@ -267,15 +267,38 @@ exports.handler = async function (event, context) {
     return { statusCode: 405, headers, body: 'Sadece POST istekleri kabul edilir.' };
   }
 
+  const serializeError = (error) => {
+    try {
+      if (!error) return null;
+      const base = {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+      };
+      const extra = {};
+      for (const k of Object.keys(error)) {
+        extra[k] = error[k];
+      }
+      return { ...base, ...extra };
+    } catch (e) {
+      return { name: 'Error', message: 'Failed to serialize error.' };
+    }
+  };
+
   try {
     const body = JSON.parse(event.body || '{}');
     const message = body.message;
 
     if (!message || typeof message !== 'string') {
       return {
-        statusCode: 200,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ success: false, message: "Geçerli bir istek alınamadı. Lütfen tekrar deneyin." })
+        body: JSON.stringify({
+          success: false,
+          rawError: "Invalid request: missing 'message' field",
+          stack: null,
+          details: { receivedType: typeof message }
+        })
       };
     }
 
@@ -283,9 +306,14 @@ exports.handler = async function (event, context) {
 
     if (!apiKey) {
       return {
-        statusCode: 200,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ success: false, message: "Yapay zeka servisi şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin." })
+        body: JSON.stringify({
+          success: false,
+          rawError: 'Missing GEMINI_API_KEY in environment variables.',
+          stack: null,
+          details: null
+        })
       };
     }
 
@@ -359,24 +387,27 @@ Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen b
 
     if (!response) {
       return {
-        statusCode: 200,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
+        body: JSON.stringify({
+          success: false,
+          rawError: 'No response received from Gemini API.',
+          stack: null,
+          details: { lastStatus, lastErrorText }
+        })
       };
     }
 
     if (!response.ok) {
-      let userMessage = "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.";
-      if (lastStatus === 429) userMessage = "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.";
-      if (lastStatus === 408) userMessage = "Yapay zeka yanıtı zaman aşımına uğradı, lütfen tekrar deneyin.";
-      if (lastStatus === 401 || lastStatus === 403) userMessage = "Yapay zeka servisine erişilemiyor. Lütfen daha sonra tekrar deneyin.";
-      if (lastStatus === 400) userMessage = "İstek geçersiz görünüyor. Lütfen tekrar deneyin.";
-      if (lastStatus === 404) userMessage = "Yapay zeka modeli şu an kullanılamıyor. Lütfen birazdan tekrar deneyin.";
-
       return {
-        statusCode: 200,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ success: false, message: userMessage })
+        body: JSON.stringify({
+          success: false,
+          rawError: `Gemini HTTP ${lastStatus}: ${lastErrorText || 'No response body'}`,
+          stack: null,
+          details: { status: lastStatus, body: lastErrorText }
+        })
       };
     }
 
@@ -393,9 +424,14 @@ Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen b
 
     if (!reply) {
       return {
-        statusCode: 200,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yanıt üretemedi. Lütfen birazdan tekrar deneyin." })
+        body: JSON.stringify({
+          success: false,
+          rawError: 'Gemini response did not include candidates[0].content.parts[0].text',
+          stack: null,
+          details: data
+        })
       };
     }
 
@@ -406,9 +442,14 @@ Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen b
     };
   } catch (error) {
     return {
-      statusCode: 200,
+      statusCode: 500,
       headers,
-      body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
+      body: JSON.stringify({
+        success: false,
+        rawError: error && error.message ? error.message : String(error),
+        stack: error && error.stack ? error.stack : null,
+        details: serializeError(error)
+      })
     };
   }
 };
