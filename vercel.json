@@ -6,24 +6,7 @@
     },
     {
       "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ],
-  "redirects": [
-    {
-      "source": "https://www.vuelina.com/:path*",
-      "destination": "https://vuelina.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "http://www.vuelina.com/:path*",
-      "destination": "https://vuelina.com/:path*",
-      "permanent": true
-    },
-    {
-      "source": "http://vuelina.com/:path*",
-      "destination": "https://vuelina.com/:path*",
-      "permanent": true
+      "destination": "/api/index.js"
     }
   ]
 }
