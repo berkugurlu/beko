@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" id="meta-description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
     <title id="meta-title">Vuelina | Akıllı Seyahat Rehberi</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -1775,11 +1776,15 @@
                     return;
                 }
 
-                const response = await fetch('/.netlify/functions/api?type=contentful-blog-posts');
+                const response = await fetch('/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'contentful-blog-posts' })
+                });
                 if (!response.ok) throw new Error('Failed to fetch blog posts from Contentful');
 
                 const payload = await response.json();
-                const posts = Array.isArray(payload.items) ? payload.items : [];
+                const posts = Array.isArray(payload.data?.items) ? payload.data.items : [];
                 if (!posts.length) {
                     container.innerHTML = `
                         <div class="content-card p-8 col-span-1 md:col-span-2 lg:col-span-3 text-center">
@@ -1897,10 +1902,14 @@
                     throw new Error('Blog içeriği için sunucu gerekli.');
                 }
 
-                const response = await fetch(`/.netlify/functions/api?type=contentful-blog-posts&slug=${encodeURIComponent(slug)}`);
+                const response = await fetch('/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'contentful-blog-posts', slug })
+                });
                 if (!response.ok) throw new Error('Failed to fetch blog post');
                 const payload = await response.json();
-                const item = Array.isArray(payload.items) ? payload.items[0] : null;
+                const item = Array.isArray(payload.data?.items) ? payload.data.items[0] : null;
                 if (!item) throw new Error('Post not found');
 
                 const title = item.title || slug;

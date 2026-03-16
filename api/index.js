@@ -2,7 +2,45 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Sadece POST' });
   
   try {
-    const { prompt } = req.body;
+    const { prompt, type, slug } = req.body;
+
+    // Contentful blog posts isteği
+    if (type === 'contentful-blog-posts') {
+      const spaceId = process.env.CONTENTFUL_SPACE_ID;
+      const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;
+      const environment = process.env.CONTENTFUL_ENVIRONMENT || 'master';
+
+      if (!spaceId || !accessToken) {
+        return res.status(200).json({ 
+          success: false, 
+          error: 'Contentful credentials missing' 
+        });
+      }
+
+      let contentfulUrl = `https://cdn.contentful.com/spaces/${spaceId}/environments/${environment}/entries?content_type=blogPost&include=2`;
+      
+      if (slug) {
+        contentfulUrl += `&fields.slug=${slug}`;
+      }
+
+      const contentfulResponse = await fetch(contentfulUrl, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+
+      if (!contentfulResponse.ok) {
+        throw new Error('Contentful API error');
+      }
+
+      const contentfulData = await contentfulResponse.json();
+      return res.status(200).json({ 
+        success: true, 
+        data: contentfulData 
+      });
+    }
+
+    // Groq AI isteği
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
