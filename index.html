@@ -770,76 +770,26 @@
             }
         }
 
-        // Ana Yapay Zeka API Çağırma Fonksiyonu (Backend üzerinden)
-        const callGeminiAPI = async (prompt, triggerBtn, resultContainer) => {
-            const originalBtnText = triggerBtn.innerText;
-            triggerBtn.disabled = true;
-            triggerBtn.innerText = "Düşünüyor...";
-            triggerBtn.classList.add('opacity-75', 'cursor-wait');
-
+        // Groq tabanlı Yapay Zeka API çağrısı
+        const callGroqAPI = async (prompt) => {
             try {
-                // Backend (Netlify Function) endpoint'i
-                const url = '/.netlify/functions/api';
-                
-                const payload = {
-                    message: prompt
-                };
-
-                const result = await fetchJsonWithTimeout(url, {
+                const response = await fetch('/.netlify/functions/api', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({ prompt })
                 });
 
-                const data = result?.json;
+                const data = await response.json().catch(() => null);
 
-                if (!result?.ok) {
-                    if (data && typeof data === 'object') {
-                        console.error("🔥 ASIL HATA BURADA:", data.rawError, data.details);
-                    } else {
-                        console.error("🔥 ASIL HATA BURADA:", `HTTP ${result?.status}`, result?.text);
-                    }
-                    throw new Error((data && data.message) || (data && data.rawError) || `HTTP Error: ${result?.status || 0}`);
+                if (!response.ok || !data || data.success === false || !data.data) {
+                    return { success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." };
                 }
 
-                if (data && data.success === false) {
-                    console.error("🔥 ASIL HATA BURADA:", data.rawError, data.details);
-                    throw new Error(data.message || data.rawError || "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.");
-                }
-
-                const generatedText = data?.reply;
-                
-                if (!generatedText) {
-                    throw new Error("Sunucudan geçerli bir metin yanıtı alınamadı.");
-                }
-
-                return generatedText;
-
+                return { success: true, data: data.data };
             } catch (error) {
-                console.error("⏳ TIMEOUT VEYA NETWORK HATASI:", error);
-                console.error("Yapay Zeka API Hatası:", error);
-
-                let userMessage = error?.message || "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
-                if (error.message && error.message.includes("400")) userMessage = "İstek geçersiz görünüyor. Lütfen girdiğiniz metni kontrol edin.";
-                if (error.message && error.message.includes("403")) userMessage = "Bu işlem için yetkiniz olmayabilir.";
-                if (error.message && error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen kısa bir süre bekleyip tekrar deneyin.";
-                
-                if (resultContainer) {
-                    resultContainer.innerHTML = `
-                        <div class="content-card p-6 text-center">
-                            <p class="font-bold text-primary mb-1">Şu an yanıt üretilemiyor</p>
-                            <p class="text-sm text-secondary">${userMessage}</p>
-                        </div>
-                    `;
-                }
-                showInfoModal("Hata", `Yapay zeka şu an yanıt veremiyor. ${userMessage}`);
-                return null;
-            } finally {
-                triggerBtn.disabled = false;
-                triggerBtn.innerText = originalBtnText;
-                triggerBtn.classList.remove('opacity-75', 'cursor-wait');
+                return { success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." };
             }
         };
 
@@ -2359,7 +2309,6 @@
             const triggerBtn = document.getElementById('open-itinerary-modal-btn');
             resultEmbed.classList.remove('hidden');
             
-            // Geçici olarak sonucu gösteren bir alan oluştur
             const tempResultDiv = document.createElement('div');
             tempResultDiv.innerHTML = `<div class="content-card p-6 rounded-2xl text-center text-secondary">Akıllı asistanımız senin için planı hazırlıyor...</div>`;
             const prose = resultEmbed.querySelector('div.prose');
@@ -2368,9 +2317,24 @@
 
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, heyecan verici ve detaylı bir seyahat planı oluştur. İlgi alanları: ${interests}. Plan, her gün için Sabah, Öğle, Akşam aktiviteleri içermeli. Her aktivite için kısa ve ilgi çekici bir açıklama ekle. Cevabını Türkçe ve Markdown formatında, başlıklar ve listeler kullanarak ver. Ana başlıklar için '##', alt başlıklar için '###' kullan.`;
             
-            const text = await callGeminiAPI(prompt, triggerBtn, tempResultDiv);
-            if(text) {
-                // Kalıcı içeriği sakla
+            const originalBtnText = triggerBtn.innerText;
+            triggerBtn.disabled = true;
+            triggerBtn.innerText = "Düşünüyor...";
+            triggerBtn.classList.add('opacity-75', 'cursor-wait');
+
+            const result = await callGroqAPI(prompt);
+
+            triggerBtn.disabled = false;
+            triggerBtn.innerText = originalBtnText;
+            triggerBtn.classList.remove('opacity-75', 'cursor-wait');
+
+            if (!result.success) {
+                showInfoModal("Bilgi", result.message);
+                return;
+            }
+
+            const text = result.data;
+            if (text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].itinerary = text;
                 typeIntoProse(prose, text);
@@ -2389,8 +2353,24 @@
 
             const prompt = `Türkiye'den ${countryName}'e seyahat edecek bir turist için 5 önemli kültürel ipucu ve görgü kuralı listele. İpuçları pratik, anlaşılır ve saygılı bir tonda olmalı. Örneğin, selamlaşma, bahşiş, giyim kuralları, hediyeleşme ve kaçınılması gereken hassas konular gibi başlıkları ele al. Cevabını Türkçe ve Markdown formatında ver.`;
 
-            const text = await callGeminiAPI(prompt, tipsBtn, tempResultDiv);
-            if(text) {
+            const originalBtnText = tipsBtn.innerText;
+            tipsBtn.disabled = true;
+            tipsBtn.innerText = "Düşünüyor...";
+            tipsBtn.classList.add('opacity-75', 'cursor-wait');
+
+            const result = await callGroqAPI(prompt);
+
+            tipsBtn.disabled = false;
+            tipsBtn.innerText = originalBtnText;
+            tipsBtn.classList.remove('opacity-75', 'cursor-wait');
+
+            if (!result.success) {
+                showInfoModal("Bilgi", result.message);
+                return;
+            }
+
+            const text = result.data;
+            if (text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].tips = text;
                 typeIntoProse(prose, text);
@@ -2409,8 +2389,24 @@
 
             const prompt = `Lütfen "${countryName}" için ${duration} günlük, ${season} bir seyahate yönelik detaylı bir bavul hazırlama listesi oluştur. Listeyi Giyim, Elektronik, Kişisel Bakım ve Belgeler gibi pratik kategorilere ayır. Cevabını Türkçe ve Markdown formatında ver.`;
             
-            const text = await callGeminiAPI(prompt, packingBtn, tempResultDiv);
-            if(text) {
+            const originalBtnText = packingBtn.innerText;
+            packingBtn.disabled = true;
+            packingBtn.innerText = "Düşünüyor...";
+            packingBtn.classList.add('opacity-75', 'cursor-wait');
+
+            const result = await callGroqAPI(prompt);
+
+            packingBtn.disabled = false;
+            packingBtn.innerText = originalBtnText;
+            packingBtn.classList.remove('opacity-75', 'cursor-wait');
+
+            if (!result.success) {
+                showInfoModal("Bilgi", result.message);
+                return;
+            }
+
+            const text = result.data;
+            if (text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].packing = text;
                 typeIntoProse(prose, text);
