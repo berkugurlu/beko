@@ -773,7 +773,7 @@
         // Groq tabanlı Yapay Zeka API çağrısı
         const callGroqAPI = async (prompt) => {
             try {
-                const response = await fetch('/.netlify/functions/api', {
+                const response = await fetch('/api', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
