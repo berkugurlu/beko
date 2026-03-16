@@ -770,28 +770,22 @@
             }
         }
 
-        // Groq tabanlı Yapay Zeka API çağrısı
-        const callGroqAPI = async (prompt) => {
-            try {
-                const response = await fetch('/api', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ prompt })
-                });
-
-                const data = await response.json().catch(() => null);
-
-                if (!response.ok || !data || data.success === false || !data.data) {
-                    return { success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." };
-                }
-
-                return { success: true, data: data.data };
-            } catch (error) {
-                return { success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." };
-            }
-        };
+        async function callGroqAPI(prompt) {
+          try {
+            const response = await fetch('/api', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ prompt })
+            });
+            const result = await response.json();
+            if (!result.success) throw new Error(result.error);
+            return result.data;
+          } catch (error) {
+            console.error('AI Hatası:', error);
+            alert('Hata oluştu: ' + error.message);
+            return null;
+          }
+        }
 
         let currencyRates = null;
         let aiGeneratedContent = {}; 
@@ -2328,12 +2322,11 @@
             triggerBtn.innerText = originalBtnText;
             triggerBtn.classList.remove('opacity-75', 'cursor-wait');
 
-            if (!result.success) {
-                showInfoModal("Bilgi", result.message);
+            if (!result) {
+                showInfoModal("Bilgi", 'Yapay zeka şu an yanıt veremiyor.');
                 return;
             }
-
-            const text = result.data;
+            const text = result;
             if (text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].itinerary = text;
@@ -2364,12 +2357,11 @@
             tipsBtn.innerText = originalBtnText;
             tipsBtn.classList.remove('opacity-75', 'cursor-wait');
 
-            if (!result.success) {
-                showInfoModal("Bilgi", result.message);
+            if (!result) {
+                showInfoModal("Bilgi", 'Yapay zeka şu an yanıt veremiyor.');
                 return;
             }
-
-            const text = result.data;
+            const text = result;
             if (text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].tips = text;
@@ -2400,12 +2392,11 @@
             packingBtn.innerText = originalBtnText;
             packingBtn.classList.remove('opacity-75', 'cursor-wait');
 
-            if (!result.success) {
-                showInfoModal("Bilgi", result.message);
+            if (!result) {
+                showInfoModal("Bilgi", 'Yapay zeka şu an yanıt veremiyor.');
                 return;
             }
-
-            const text = result.data;
+            const text = result;
             if (text) {
                 if (!aiGeneratedContent[countryName]) aiGeneratedContent[countryName] = {};
                 aiGeneratedContent[countryName].packing = text;
