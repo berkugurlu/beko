@@ -2,6 +2,8 @@
 <html lang="tr" data-theme="dark-indigo" class="dark">
     <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838" crossorigin="anonymous"></script>
+    <link rel="canonical" href="https://vuelina.com/" />
+    <meta property="og:url" content="https://vuelina.com/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" id="meta-description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
@@ -793,6 +795,10 @@
                     body: JSON.stringify(payload)
                 });
 
+                if (data && data.success === false) {
+                    throw new Error(data.message || "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.");
+                }
+
                 const generatedText = data?.reply;
                 
                 if (!generatedText) {
@@ -804,7 +810,7 @@
             } catch (error) {
                 console.error("Yapay Zeka API Hatası:", error);
 
-                let userMessage = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
+                let userMessage = error?.message || "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
                 if (error.message && error.message.includes("400")) userMessage = "İstek geçersiz görünüyor. Lütfen girdiğiniz metni kontrol edin.";
                 if (error.message && error.message.includes("403")) userMessage = "Bu işlem için yetkiniz olmayabilir.";
                 if (error.message && error.message.includes("429")) userMessage = "Çok fazla istek gönderildi, lütfen kısa bir süre bekleyip tekrar deneyin.";

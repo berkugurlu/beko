@@ -275,7 +275,7 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ reply: "Geçerli bir 'message' alanı gönderilmedi." })
+        body: JSON.stringify({ success: false, message: "Geçerli bir istek alınamadı. Lütfen tekrar deneyin." })
       };
     }
 
@@ -285,39 +285,98 @@ exports.handler = async function (event, context) {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ reply: "Sunucu yapılandırma hatası: GEMINI_API_KEY tanımlı değil." })
+        body: JSON.stringify({ success: false, message: "Yapay zeka servisi şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin." })
       };
     }
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system_instruction: {
-          parts: [{
-            text: `Sen, Vuelina için yazan, dünyayı gezmiş, yerel kültürlere aşık, her ülkenin kendine has ruhunu anlayan tecrübeli ve karizmatik bir seyahat editörüsün. 
-            
-Asla standart bir template (Konaklama > Ulaşım > Gezi) kullanma. 
+    const systemText = `Sen, Vuelina için yazan, dünyayı gezmiş, yerel kültürlere aşık, her ülkenin kendine has ruhunu anlayan tecrübeli ve karizmatik bir seyahat editörüsün.
 
-Kullanıcının sorduğu ülke veya rotanın kültürel, sanatsal, tarihi ve gastronomik özelliklerine odaklanarak cevap ver. Japonya'yı anlatırken 'saygı', 'zen' ve 'disiplin' duygusunu; İtalya'yı anlatırken 'sanat', 'lezzet' ve 'hayatın tadı (dolce vita)' duygusunu yansıt. 
+Asla standart bir template (Konaklama > Ulaşım > Gezi) kullanma.
 
-Sadece bilgi verme, o ülkenin atmosferini hissettirecek descriptive (betimleyici) sıfatlar ve hikaye anlatımı kullan. Okuyucuyu oradaymış gibi hissettir. 
+Kullanıcının sorduğu ülke veya rotanın kültürel, sanatsal, tarihi ve gastronomik özelliklerine odaklanarak cevap ver. Japonya'yı anlatırken 'saygı', 'zen' ve 'disiplin' duygusunu; İtalya'yı anlatırken 'sanat', 'lezzet' ve 'hayatın tadı (dolce vita)' duygusunu yansıt.
 
-Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen bir sokak festivalinden, bazen de tarihi bir tapınaktan. Rutine binme.`
-          }]
-        },
-        contents: [{ parts: [{ text: message }] }]
-      })
-    });
+Sadece bilgi verme, o ülkenin atmosferini hissettirecek descriptive (betimleyici) sıfatlar ve hikaye anlatımı kullan. Okuyucuyu oradaymış gibi hissettir.
 
-    if (!response.ok) {
-      const errorBody = await response.text().catch(() => '');
+Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen bir sokak festivalinden, bazen de tarihi bir tapınaktan. Rutine binme.`;
+
+    const modelCandidates = [
+      process.env.GEMINI_MODEL,
+      'gemini-1.5-flash-latest',
+      'gemini-1.5-flash',
+      'gemini-2.0-flash'
+    ].filter(Boolean);
+
+    const endpointCandidates = [
+      'https://generativelanguage.googleapis.com/v1/models',
+      'https://generativelanguage.googleapis.com/v1beta/models'
+    ];
+
+    const requestBody = {
+      system_instruction: { parts: [{ text: systemText }] },
+      contents: [{ parts: [{ text: message }] }]
+    };
+
+    const doFetchWithTimeout = async (url, options, timeoutMs = 25000) => {
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timeout = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+      try {
+        const res = await fetch(url, { ...options, signal: controller ? controller.signal : undefined });
+        return res;
+      } finally {
+        if (timeout) clearTimeout(timeout);
+      }
+    };
+
+    let response = null;
+    let lastErrorText = '';
+    let lastStatus = 0;
+
+    for (const endpointBase of endpointCandidates) {
+      for (const model of modelCandidates) {
+        const url = `${endpointBase}/${encodeURIComponent(model)}:generateContent`;
+        const res = await doFetchWithTimeout(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (res.ok) {
+          response = res;
+          break;
+        }
+
+        lastStatus = res.status;
+        lastErrorText = await res.text().catch(() => '');
+
+        if (![404, 400].includes(res.status)) {
+          response = res;
+          break;
+        }
+      }
+      if (response && response.ok) break;
+      if (response && !response.ok && ![404, 400].includes(response.status)) break;
+    }
+
+    if (!response) {
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({
-          reply: `Gemini API hatası (${response.status}): ${errorBody || 'Bilinmeyen hata'}`
-        })
+        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
+      };
+    }
+
+    if (!response.ok) {
+      let userMessage = "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.";
+      if (lastStatus === 429) userMessage = "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin.";
+      if (lastStatus === 408) userMessage = "Yapay zeka yanıtı zaman aşımına uğradı, lütfen tekrar deneyin.";
+      if (lastStatus === 401 || lastStatus === 403) userMessage = "Yapay zeka servisine erişilemiyor. Lütfen daha sonra tekrar deneyin.";
+      if (lastStatus === 400) userMessage = "İstek geçersiz görünüyor. Lütfen tekrar deneyin.";
+      if (lastStatus === 404) userMessage = "Yapay zeka modeli şu an kullanılamıyor. Lütfen birazdan tekrar deneyin.";
+
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ success: false, message: userMessage })
       };
     }
 
@@ -336,20 +395,20 @@ Cevaplarının yapısı her zaman değişsin. Bazen bir yemekten başla, bazen b
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ reply: "Gemini API'den geçerli bir yanıt alınamadı." })
+        body: JSON.stringify({ success: false, message: "Yapay zeka şu an yanıt üretemedi. Lütfen birazdan tekrar deneyin." })
       };
     }
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ reply })
+      body: JSON.stringify({ success: true, reply })
     };
   } catch (error) {
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ reply: "Sunucu hatası: " + error.message })
+      body: JSON.stringify({ success: false, message: "Yapay zeka şu an yoğun, lütfen birazdan tekrar deneyin." })
     };
   }
 };

@@ -3,6 +3,29 @@
   functions = "netlify/functions"
 
 [[redirects]]
+  from = "https://www.vuelina.com/*"
+  to = "https://vuelina.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.vuelina.com/*"
+  to = "https://vuelina.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://vuelina.com/*"
+  to = "https://vuelina.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
