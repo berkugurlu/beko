@@ -642,8 +642,8 @@
                 <div>
                     <h4 class="font-bold text-primary mb-6">Yasal</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><button id="footer-privacy-link" class="text-secondary hover:text-indigo-500 transition-colors">Gizlilik Politikası</button></li>
-                        <li><button id="footer-terms-link" class="text-secondary hover:text-indigo-500 transition-colors">Kullanım Koşulları</button></li>
+                        <li><a href="/gizlilik" class="text-secondary hover:text-indigo-500 transition-colors">Gizlilik Politikası</a></li>
+                        <li><a href="/kullanim-kosullari" class="text-secondary hover:text-indigo-500 transition-colors">Kullanım Koşulları</a></li>
                         <li><button id="footer-cookies-link" class="text-secondary hover:text-indigo-500 transition-colors">Çerez Politikası</button></li>
                     </ul>
                 </div>
@@ -1801,7 +1801,9 @@
                 if (!response.ok) throw new Error('Failed to fetch blog posts from Contentful');
 
                 const payload = await response.json();
+                console.log('Contentful Response:', payload);
                 const posts = Array.isArray(payload.data?.items) ? payload.data.items : [];
+                console.log('Posts from Contentful:', posts);
                 if (!posts.length) {
                     container.innerHTML = `
                         <div class="content-card p-8 col-span-1 md:col-span-2 lg:col-span-3 text-center">
@@ -1812,13 +1814,17 @@
                     return;
                 }
 
-                const allPosts = posts.map((p) => ({
-                    id: p.slug,
-                    title: p.title,
-                    summary: p.summary || "Bu yazıyı okumak için tıklayın.",
-                    image: p.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=800&auto=format&fit=crop",
-                    date: p.publishedAt ? new Date(p.publishedAt).toLocaleDateString('tr-TR') : "",
-                }));
+                const allPosts = posts.map((p) => {
+                    console.log('Processing post:', p);
+                    console.log('Post fields:', p.fields);
+                    return {
+                        id: p.fields?.slug || '',
+                        title: p.fields?.title || 'Başlık Yok',
+                        summary: p.fields?.summary || "Bu yazıyı okumak için tıklayın.",
+                        image: p.fields?.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=800&auto=format&fit=crop",
+                        date: p.fields?.publishedAt ? new Date(p.fields.publishedAt).toLocaleDateString('tr-TR') : "",
+                    };
+                });
 
                 container.innerHTML = allPosts.map(post => `
                     <div class="content-card glass-card overflow-hidden hover:shadow-xl transition-shadow cursor-pointer flex flex-col h-full" onclick="window.history.pushState({post: '${post.id}'}, '', '?post=${post.id}');">
@@ -1926,14 +1932,18 @@
                 });
                 if (!response.ok) throw new Error('Failed to fetch blog post');
                 const payload = await response.json();
+                console.log('Blog post response:', payload);
                 const item = Array.isArray(payload.data?.items) ? payload.data.items[0] : null;
                 if (!item) throw new Error('Post not found');
 
-                const title = item.title || slug;
-                const image = item.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=1200&auto=format&fit=crop";
-                const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('tr-TR') : '';
-                const summary = item.summary || '';
-                const contentHtml = item.contentHtml || '';
+                console.log('Blog post item:', item);
+                console.log('Blog post fields:', item.fields);
+
+                const title = item.fields?.title || slug;
+                const image = item.fields?.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=1200&auto=format&fit=crop";
+                const date = item.fields?.publishedAt ? new Date(item.fields.publishedAt).toLocaleDateString('tr-TR') : '';
+                const summary = item.fields?.summary || '';
+                const contentHtml = item.fields?.contentHtml || item.fields?.content || '';
 
                 updateSchema('blog', { id: slug, title, summary, image, date, content: summary });
 
@@ -2481,11 +2491,31 @@
         const fetchCurrencyRates = async () => {
             if (currencyRates) return;
             try {
-                // Not using apiKey for this external public API
+                // Frankfurter API - supports all major currencies
                 const response = await fetch('https://api.frankfurter.app/latest?from=TRY');
                 const data = await response.json();
                 currencyRates = data.rates;
                 currencyRates['TRY'] = 1; // Base currency
+                
+                // Add additional common currencies that might not be in the base response
+                const additionalCurrencies = ['ALL', 'JPY', 'EUR', 'SEK', 'HUF', 'MKD', 'CHF', 'GBP', 'USD', 'AUD', 'CAD', 'NOK', 'DKK', 'PLN', 'CZK', 'RON', 'BGN', 'HRK', 'RSD', 'BAM', 'ISK'];
+                
+                // Try to get rates for additional currencies
+                for (const currency of additionalCurrencies) {
+                    if (!currencyRates[currency]) {
+                        try {
+                            const extraResponse = await fetch(`https://api.frankfurter.app/latest?from=TRY&to=${currency}`);
+                            const extraData = await extraResponse.json();
+                            if (extraData.rates[currency]) {
+                                currencyRates[currency] = extraData.rates[currency];
+                            }
+                        } catch (error) {
+                            console.log(`Could not fetch rate for ${currency}`);
+                        }
+                    }
+                }
+                
+                console.log('Available currencies:', Object.keys(currencyRates).sort());
             } catch (error) {
                 console.error("Döviz kurları alınamadı:", error);
                 const converterContent = document.getElementById('currency-converter-content');
@@ -2500,19 +2530,29 @@
                 return;
             }
 
-            const currencies = Object.keys(currencyRates).sort();
-            const optionsHtml = currencies.map(c => `<option value="${c}" ${c === 'TRY' ? 'selected' : ''}>${c}</option>`).join('');
-            const localOptionsHtml = currencies.map(c => `<option value="${c}" ${c === localCurrency ? 'selected' : ''}>${c}</option>`).join('');
+            // Get all country currencies from the data
+            const allCountryCurrencies = Object.values(countriesData).map(country => country.currency).filter(Boolean);
+            const allCurrencies = [...new Set([...Object.keys(currencyRates), ...allCountryCurrencies])].sort();
+            
+            // Create searchable select options
+            const createSearchableSelect = (id, selectedCurrency) => {
+                const options = allCurrencies.map(c => {
+                    const countryName = Object.keys(countriesData).find(key => countriesData[key].currency === c);
+                    const displayName = countryName ? `${c} - ${countryName}` : c;
+                    return `<option value="${c}" ${c === selectedCurrency ? 'selected' : ''}>${displayName}</option>`;
+                }).join('');
+                return `<select id="${id}" class="p-2 rounded-lg bg-background border border-border-color">${options}</select>`;
+            };
 
             container.innerHTML = `
                 <div class="flex items-center gap-2">
                     <input type="number" id="from-amount" value="100" class="w-full p-2 rounded-lg bg-background border border-border-color">
-                    <select id="from-currency" class="p-2 rounded-lg bg-background border border-border-color">${optionsHtml}</select>
+                    ${createSearchableSelect('from-currency', 'TRY')}
                 </div>
                 <div class="text-center my-2 font-bold text-2xl text-accent">&darr; &uarr;</div>
                  <div class="flex items-center gap-2">
                     <input type="text" id="to-amount" readonly class="w-full p-2 rounded-lg bg-background border border-border-color">
-                    <select id="to-currency" class="p-2 rounded-lg bg-background border border-border-color">${localOptionsHtml}</select>
+                    ${createSearchableSelect('to-currency', localCurrency)}
                 </div>`;
             
             const fromAmount = document.getElementById('from-amount');
@@ -2967,14 +3007,7 @@
         };
     
     
-        // Footer Links Event Listeners
-        const footerPrivacy = document.getElementById('footer-privacy-link');
-        const footerTerms = document.getElementById('footer-terms-link');
-        const footerCookies = document.getElementById('footer-cookies-link');
-        
-        if(footerPrivacy) footerPrivacy.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('privacy'); });
-        if(footerTerms) footerTerms.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('terms'); });
-        if(footerCookies) footerCookies.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('cookies'); });
+        // Footer Links Event Listeners - Modal links removed, now using direct page navigation
         
     initApp();
 
