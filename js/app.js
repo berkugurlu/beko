@@ -1095,7 +1095,7 @@
                                     <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="bg-white/10 backdrop-blur-xl text-white border border-white/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-white/20 hover:-translate-y-1 transition-all">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-6.57"/><path d="M14 22v-6.57"/><path d="M19 3v11.83"/><path d="M22 6.57v3.26"/><path d="M3 22v-6.57"/><path d="M5 3v11.83"/><path d="M8 6.57v3.26"/><path d="M8.57 2H10v4.57H8.57z"/><path d="M14 2h1.43v4.57H14z"/><path d="M5.43 2.57h13.14V7.5H5.43z"/><path d="M3 13.5v8.5h18v-8.5"/><path d="m3 13.5 1.43-1.43c.1-.1.25-.1.35 0L6.5 13.8l1.7-1.74a.26.26 0 0 1 .36 0L10.3 13.8l1.7-1.74a.26.26 0 0 1 .36 0l1.73 1.74 1.71-1.74a.26.26 0 0 1 .37 0l1.43 1.44v8.5"/></svg> Otel Bak
                                     </a>
-                                    <button onclick="navigator.clipboard.writeText(window.location.href); showToast('Bağlantı Panoya Kopyalandı!', 'success');" class="bg-emerald-500/20 backdrop-blur-xl text-emerald-100 border border-emerald-400/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-emerald-500/40 hover:-translate-y-1 transition-all group" title="Bu Ülkenin Profilini Paylaş">
+                                    <button id="share-country-btn" class="bg-emerald-500/20 backdrop-blur-xl text-emerald-100 border border-emerald-400/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-emerald-500/40 hover:-translate-y-1 transition-all group" title="Bu Ülkenin Profilini Paylaş">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-12 transition-transform"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                                         Paylaş
                                     </button>
@@ -1282,6 +1282,32 @@
                 document.getElementById('itinerary-modal-subtitle').textContent = `${countryName} için plan oluştur.`;
                 itineraryModal.classList.add('visible');
             };
+
+            const shareBtn = document.getElementById('share-country-btn');
+            if(shareBtn) {
+                shareBtn.onclick = () => {
+                    const url = window.location.href;
+                    const fallbackCopy = () => {
+                        const el = document.createElement('textarea');
+                        el.value = url;
+                        document.body.appendChild(el);
+                        el.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(el);
+                        if(typeof showToast === 'function') showToast('Bağlantı Panoya Kopyalandı!', 'success');
+                        else alert('Bağlantı Panoya Kopyalandı!');
+                    };
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(url).then(() => {
+                            if(typeof showToast === 'function') showToast('Bağlantı Panoya Kopyalandı!', 'success');
+                            else alert('Bağlantı Panoya Kopyalandı!');
+                        }).catch(() => fallbackCopy());
+                    } else {
+                        fallbackCopy();
+                    }
+                };
+            }
+
             
             // Itinerary modal içindeki butona yeni işlev atama (önceki atanmış işlevi ezer)
             const itineraryDurationInput = document.getElementById('itinerary-duration');
