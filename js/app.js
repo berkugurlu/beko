@@ -46,6 +46,30 @@
         const legalModalContent = document.getElementById('legal-modal-content');
         const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
 
+        // --- ANA LOGO TIKLANMA DURUMU (YENİLEMESİZ ANA SAYFAYA DÖNÜŞ) ---
+        if (homeLink) {
+            homeLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                countryDetailView.classList.add('hidden');
+                blogListView.classList.add('hidden');
+                blogDetailView.classList.add('hidden');
+                aboutPageView.classList.add('hidden');
+                whatPageView.classList.add('hidden');
+                countryListView.classList.remove('hidden');
+                window.history.pushState({}, document.title, window.location.pathname);
+                scrollToTop();
+            });
+        }
+
+        // --- FOOTER LOGO TIKLANMA DURUMU ---
+        const footerLogo = document.getElementById('main-logo');
+        if (footerLogo) {
+            footerLogo.addEventListener('click', (e) => {
+                e.preventDefault();
+                if(homeLink) homeLink.click();
+            });
+        }
+
         // --- GDPR COOKIE CONSENT MANTIĞI ---
         const cookieConsentBanner = document.getElementById('cookie-consent-banner');
         const cookieAcceptBtn = document.getElementById('cookie-accept-btn');
@@ -1056,7 +1080,7 @@
                         <div class="lg:col-span-8 space-y-10">
                             
                             <!-- Hero Section -->
-                            <div class="content-card p-8 md:p-12 relative overflow-hidden stagger-2 flex flex-col justify-end min-h-[400px]" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.2) 100%), url('https://source.unsplash.com/1600x900/?${encodeURIComponent(countryName)},landmark,city') center/cover no-repeat; border-radius: 2rem; box-shadow: inset 0 0 100px rgba(0,0,0,0.5);">
+                            <div class="content-card p-8 md:p-12 relative overflow-hidden stagger-2 flex flex-col justify-end min-h-[400px]" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.4) 100%), url('https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20landmark%20beautiful%20photography%20scenic?width=1600&height=500&nologo=true') center/cover no-repeat; border-radius: 2rem; box-shadow: inset 0 0 100px rgba(0,0,0,0.5);">
                                 <div class="relative z-10 flex flex-col md:flex-row items-start md:items-end gap-6 md:gap-10 h-full w-full mt-auto">
                                     <div class="text-8xl md:text-9xl filter drop-shadow-2xl transform hover:scale-110 transition-transform duration-500 cursor-default p-2 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">${country.flag}</div>
                                     <div class="flex-1 pb-2">
@@ -1500,18 +1524,20 @@
                     const displayName = countryName ? `${c} - ${countryName}` : c;
                     return `<option value="${c}" ${c === selectedCurrency ? 'selected' : ''}>${displayName}</option>`;
                 }).join('');
-                return `<select id="${id}" class="p-2 rounded-lg bg-background border border-border-color">${options}</select>`;
+                return `<select id="${id}" class="w-24 sm:w-32 flex-shrink-0 p-3 rounded-xl bg-card-bg border border-border-color shadow-sm focus:ring-2 focus:ring-accent outline-none text-xs sm:text-sm md:text-base font-medium touch-manipulation cursor-pointer truncate">${options}</select>`;
             };
 
             container.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <input type="number" id="from-amount" value="100" class="w-full p-2 rounded-lg bg-background border border-border-color">
-                    ${createSearchableSelect('from-currency', 'TRY')}
-                </div>
-                <div class="text-center my-2 font-bold text-2xl text-accent">&darr; &uarr;</div>
-                 <div class="flex items-center gap-2">
-                    <input type="text" id="to-amount" readonly class="w-full p-2 rounded-lg bg-background border border-border-color">
-                    ${createSearchableSelect('to-currency', localCurrency)}
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <input type="number" id="from-amount" value="100" class="w-full p-4 rounded-xl bg-background border border-border-color text-xl font-bold shadow-inner focus:ring-2 focus:ring-accent outline-none transition-all touch-manipulation">
+                        ${createSearchableSelect('from-currency', 'TRY')}
+                    </div>
+                    <div class="flex justify-center -my-3 relative z-10"><div class="bg-card-bg border border-border-color text-accent rounded-full p-2 shadow-md"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="14" x2="21" y2="3"></line><polyline points="8 21 3 21 3 16"></polyline><line x1="20" y1="10" x2="3" y2="21"></line></svg></div></div>
+                     <div class="flex items-center gap-3">
+                        <input type="text" id="to-amount" readonly class="w-full p-4 rounded-xl bg-background border border-border-color text-xl font-bold shadow-inner text-indigo-400 dark:text-indigo-300 focus:outline-none touch-manipulation">
+                        ${createSearchableSelect('to-currency', localCurrency)}
+                    </div>
                 </div>`;
             
             const fromAmount = document.getElementById('from-amount');
