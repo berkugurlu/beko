@@ -1943,7 +1943,61 @@
                 const image = item.fields?.imageUrl || "https://images.unsplash.com/photo-1527631746610-bca00a040d60?q=80&w=1200&auto=format&fit=crop";
                 const date = item.fields?.publishedAt ? new Date(item.fields.publishedAt).toLocaleDateString('tr-TR') : '';
                 const summary = item.fields?.summary || '';
-                const contentHtml = item.fields?.contentHtml || item.fields?.content || '';
+                let contentHtml = item.fields?.contentHtml || '';
+
+                if (!contentHtml && item.fields?.content) {
+                    if (typeof item.fields.content === 'object') {
+                        const parseRichText = (node) => {
+                            if (!node) return '';
+                            if (typeof node === 'string') return escapeHtml(node);
+                            
+                            if (node.nodeType === 'text') {
+                                let text = escapeHtml(node.value || '');
+                                if (node.marks && node.marks.length > 0) {
+                                    node.marks.forEach(mark => {
+                                        if (mark.type === 'bold') text = `<strong>${text}</strong>`;
+                                        if (mark.type === 'italic') text = `<em>${text}</em>`;
+                                        if (mark.type === 'underline') text = `<u>${text}</u>`;
+                                        if (mark.type === 'code') text = `<code>${text}</code>`;
+                                    });
+                                }
+                                return text;
+                            }
+                            
+                            if (node.content && Array.isArray(node.content)) {
+                                const children = node.content.map(child => parseRichText(child)).join('');
+                                switch (node.nodeType) {
+                                    case 'paragraph': return `<p class="mb-4">${children}</p>`;
+                                    case 'heading-1': return `<h1 class="text-3xl font-bold mt-8 mb-4">${children}</h1>`;
+                                    case 'heading-2': return `<h2 class="text-2xl font-bold mt-6 mb-3">${children}</h2>`;
+                                    case 'heading-3': return `<h3 class="text-xl font-bold mt-5 mb-2">${children}</h3>`;
+                                    case 'heading-4': return `<h4 class="text-lg font-bold mt-4 mb-2">${children}</h4>`;
+                                    case 'heading-5': return `<h5 class="text-base font-bold mt-3 mb-1">${children}</h5>`;
+                                    case 'heading-6': return `<h6 class="text-sm font-bold mt-3 mb-1">${children}</h6>`;
+                                    case 'unordered-list': return `<ul class="list-disc pl-6 mb-4 space-y-2">${children}</ul>`;
+                                    case 'ordered-list': return `<ol class="list-decimal pl-6 mb-4 space-y-2">${children}</ol>`;
+                                    case 'list-item': return `<li>${children}</li>`;
+                                    case 'blockquote': return `<blockquote class="border-l-4 border-accent pl-4 italic my-4">${children}</blockquote>`;
+                                    case 'hr': return `<hr class="my-6 border-border-color"/>`;
+                                    case 'hyperlink': 
+                                        return `<a href="${node.data?.uri}" target="_blank" rel="noopener noreferrer" class="text-accent underline hover:text-primary">${children}</a>`;
+                                    case 'embedded-asset-block':
+                                        const url = node.data?.target?.fields?.file?.url;
+                                        if (url) return `<img src="${url}" alt="${node.data?.target?.fields?.title || ''}" class="w-full rounded-lg my-6"/>`;
+                                        return '';
+                                    case 'document': return children;
+                                    default: return children;
+                                }
+                            }
+                            
+                            return `<pre class="overflow-x-auto text-xs bg-gray-100 p-4 rounded text-black">${escapeHtml(JSON.stringify(node, null, 2))}</pre>`;
+                        };
+                        
+                        contentHtml = parseRichText(item.fields.content);
+                    } else if (typeof item.fields.content === 'string') {
+                        contentHtml = escapeHtml(item.fields.content).replace(/\n/g, '<br/>');
+                    }
+                }
 
                 updateSchema('blog', { id: slug, title, summary, image, date, content: summary });
 
