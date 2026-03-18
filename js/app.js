@@ -1056,22 +1056,25 @@
                         <div class="lg:col-span-8 space-y-10">
                             
                             <!-- Hero Section -->
-                            <div class="content-card glass-card p-10 relative overflow-hidden stagger-2">
-                                <div class="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-bl-full -mr-16 -mt-16 z-0"></div>
-                                <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-10">
-                                    <div class="text-9xl filter drop-shadow-2xl transform hover:scale-105 transition-transform duration-500 cursor-default">${country.flag}</div>
-                                    <div class="flex-1">
-                                        <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-5 text-primary">${countryName} <span class="text-2xl md:text-3xl text-accent/60 font-light ml-2">(${country.code})</span></h2>
-                                        <p class="text-xl text-secondary leading-relaxed font-light">${country.description}</p>
+                            <div class="content-card p-8 md:p-12 relative overflow-hidden stagger-2 flex flex-col justify-end min-h-[400px]" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.2) 100%), url('https://source.unsplash.com/1600x900/?${encodeURIComponent(countryName)},landmark,city') center/cover no-repeat; border-radius: 2rem; box-shadow: inset 0 0 100px rgba(0,0,0,0.5);">
+                                <div class="relative z-10 flex flex-col md:flex-row items-start md:items-end gap-6 md:gap-10 h-full w-full mt-auto">
+                                    <div class="text-8xl md:text-9xl filter drop-shadow-2xl transform hover:scale-110 transition-transform duration-500 cursor-default p-2 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20">${country.flag}</div>
+                                    <div class="flex-1 pb-2">
+                                        <h2 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-3 text-white drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)]">${countryName} <span class="text-2xl md:text-3xl text-white/70 font-light ml-2">(${country.code || ''})</span></h2>
+                                        <p class="text-lg md:text-xl text-white/90 leading-relaxed font-light drop-shadow-md max-w-2xl">${country.description}</p>
                                     </div>
                                 </div>
-                                <div class="mt-10 flex flex-wrap gap-5">
-                                    <a href="https://www.skyscanner.com.tr/transport/flights/tr/${(country.code || 'tr').toLowerCase()}/?adults=1&cabinclass=economy." target="_blank" class="btn btn-primary flex-1 md:flex-none flex items-center justify-center gap-3 py-4 px-8 text-lg shadow-2xl shadow-accent/25 hover:scale-105 transition-transform">
-                                        ✈️ Uçuş Bul
+                                <div class="mt-8 flex flex-wrap gap-4 relative z-10 border-t border-white/20 pt-6">
+                                    <a href="https://www.skyscanner.com.tr/transport/flights/tr/${(country.code || 'tr').toLowerCase()}/?adults=1&cabinclass=economy." target="_blank" class="bg-indigo-600/90 backdrop-blur-md text-white border border-indigo-400/50 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-2xl shadow-indigo-500/20 hover:bg-indigo-500 hover:-translate-y-1 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6 3L5 15l-3 1 1 3 3-1 4-4 9 6c.4.3.9.1 1-.4l-.2-1.4z"/></svg> Uçuş Bul
                                     </a>
-                                    <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="btn btn-secondary flex-1 md:flex-none flex items-center justify-center gap-3 py-4 px-8 text-lg hover:scale-105 transition-transform">
-                                        🏨 Otel Bak
+                                    <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="bg-white/10 backdrop-blur-xl text-white border border-white/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-white/20 hover:-translate-y-1 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-6.57"/><path d="M14 22v-6.57"/><path d="M19 3v11.83"/><path d="M22 6.57v3.26"/><path d="M3 22v-6.57"/><path d="M5 3v11.83"/><path d="M8 6.57v3.26"/><path d="M8.57 2H10v4.57H8.57z"/><path d="M14 2h1.43v4.57H14z"/><path d="M5.43 2.57h13.14V7.5H5.43z"/><path d="M3 13.5v8.5h18v-8.5"/><path d="m3 13.5 1.43-1.43c.1-.1.25-.1.35 0L6.5 13.8l1.7-1.74a.26.26 0 0 1 .36 0L10.3 13.8l1.7-1.74a.26.26 0 0 1 .36 0l1.73 1.74 1.71-1.74a.26.26 0 0 1 .37 0l1.43 1.44v8.5"/></svg> Otel Bak
                                     </a>
+                                    <button onclick="navigator.clipboard.writeText(window.location.href); showToast('Bağlantı Panoya Kopyalandı!', 'success');" class="bg-emerald-500/20 backdrop-blur-xl text-emerald-100 border border-emerald-400/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-emerald-500/40 hover:-translate-y-1 transition-all group" title="Bu Ülkenin Profilini Paylaş">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:rotate-12 transition-transform"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                                        Paylaş
+                                    </button>
                                 </div>
                             </div>
 
@@ -1116,7 +1119,7 @@
                                         <button data-tab="todo" class="tab-button active font-bold text-xl flex items-center gap-3 pb-5 transition-all">${icons.map} Gezilecek Yerler</button>
                                         <button data-tab="toeat" class="tab-button font-bold text-xl flex items-center gap-3 pb-5 transition-all">${icons.utensils} Mutfak Kültürü</button>
                                         <button data-tab="tostay" class="tab-button font-bold text-xl flex items-center gap-3 pb-5 transition-all">${icons.bed} Nerede Kalınır?</button>
-                                        <button data-tab="fastfood" class="tab-button font-bold text-xl flex items-center gap-3 pb-5 transition-all">${icons.fastfood} Tanıdık Lezzetler</button>
+                                        <button data-tab="fastfood" class="tab-button font-bold text-xl flex items-center gap-3 pb-5 transition-all">${icons.fastfood} Fast Food</button>
                                     </nav>
                                 </div>
                                 
