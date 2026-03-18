@@ -2814,6 +2814,8 @@
         if(footerAbout) footerAbout.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('about'); });
         const footerContact = document.getElementById('footer-contact-link');
         if(footerContact) footerContact.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('contact'); });
+        const footerCookies = document.getElementById('footer-cookies-link');
+        if(footerCookies) footerCookies.addEventListener('click', (e) => { e.preventDefault(); showLegalModal('cookies'); });
 
         const showLegalModal = (type) => {
             const text = legalTexts[type];

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="dark">
+<html lang="tr" data-theme="dark-indigo" class="dark">
 <head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9708298035800838" crossorigin="anonymous"></script>
+    <link rel="canonical" href="https://vuelina.com/" />
+    <meta property="og:url" content="https://vuelina.com/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" id="meta-description" content="Vuelina: Yapay zeka destekli akıllı seyahat rehberi. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.">
     <title id="meta-title">Kullanım Koşulları | Vuelina</title>
-    <meta name="description" id="meta-description" content="Vuelina'nın kullanım koşulları. Hizmetlerimizden faydalanma kuralları, sorumluluk reddi ve kullanıcı yükümlülükleri hakkında bilgi edinin.">
-    <meta name="keywords" content="kullanım koşulları, şartlar, hizmet sözleşmesi, sorumluluk reddi, Vuelina">
-    <meta name="robots" content="index, follow">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,177 +16,225 @@
             theme: {
                 extend: {
                     colors: {
-                        'primary': '#6366f1',
-                        'accent': '#8b5cf6',
-                        'secondary': '#94a3b8',
-                        'background': '#0f172a',
-                        'card-bg': '#1e293b',
-                        'border-color': '#334155',
-                        'success': '#10b981',
-                        'warning': '#f59e0b',
-                        'error': '#ef4444'
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-in-out',
-                        'slide-up': 'slideUp 0.3s ease-out',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { transform: 'translateY(20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                    },
-                },
-            },
+                        indigo: {
+                            50: '#f5f3ff',
+                            100: '#e0e7ff',
+                            500: '#4f46e5',
+                            600: '#4338ca',
+                            700: '#3730a3',
+                        }
+                    }
+                }
+            }
         }
     </script>
-    
-    <!-- Google Fonts -->
+
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
+    <!-- Theme Script - Fixed to Dark Mode -->
+    <script>
+        (function() {
+            document.documentElement.setAttribute('data-theme', 'dark-indigo');
+            document.documentElement.classList.add('dark');
+        })();
+    </script>
+
     <style>
+        /* --- Dark Mode SaaS Varsayılanları --- */
         :root {
-            --primary: #6366f1;
-            --accent: #8b5cf6;
-            --secondary: #94a3b8;
-            --background: #0f172a;
-            --card-bg: #1e293b;
-            --border-color: #334155;
-        }
-
-        [data-theme="light"] {
-            --primary: #4f46e5;
-            --accent: #7c3aed;
-            --secondary: #64748b;
-            --background: #ffffff;
-            --card-bg: #f8fafc;
-            --border-color: #e2e8f0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --background: #0a0a0a;
+            --card-bg: #111111;
+            --text-primary: #FAFAFA;
+            --text-secondary: #A3A3A3;
+            --border-color: #1F1F1F;
+            --shadow-color: rgba(0, 0, 0, 0.55);
+            --accent: #4F46E5; /* Indigo 600 */
+            --accent-dark: #4338CA; /* Indigo 700 */
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--background);
-            color: var(--secondary);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            background-color: var(--background);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.02em;
+        }
+
+        body, main, section, header, footer {
+            background-color: var(--background);
+            background-image: none;
+        }
+
+        h1, h2, h3, h4, h5, h6, .logo-font {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .btn-primary { 
+            background-color: var(--accent); 
+            color: white; 
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+        }
+        .btn-primary:hover:not(:disabled) { 
+            background-color: var(--accent-dark); 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.23);
+        }
+
+        .ad-area {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            min-height: 110px;
+            border-radius: 18px;
+            margin: 1.75rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .ad-area.ad-leaderboard { min-height: 120px; }
+        .ad-area.ad-infeed { min-height: 140px; }
+        .ad-area.ad-square { min-height: 250px; }
+        .ad-area { display: none !important; }
+
+        .nav-link {
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 8vw, 4rem);
+            line-height: 1.15;
+            text-wrap: balance;
+        }
+
+        @media (max-width: 640px) {
+            .hero-title {
+                line-height: 1.22;
+            }
+            .ad-area {
+                min-height: 80px;
+                margin: 1.25rem 0;
+            }
+            .ad-area.ad-leaderboard { min-height: 90px; }
+            .ad-area.ad-infeed { min-height: 110px; }
+            .ad-area.ad-square { min-height: 170px; }
+        }
+
+        /* AI Toolbox Styling */
+        .ai-tool-card {
+            background: linear-gradient(135deg, var(--card-bg) 0%, rgba(79, 70, 229, 0.05) 100%);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .ai-tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .ai-tool-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.15);
+        }
+        .ai-tool-card:hover::before {
+            opacity: 1;
+        }
+        .ai-tool-btn {
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        .ai-tool-btn:hover {
+            background: var(--accent);
+            color: white;
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Typing Effect */
+        .typing-text::after {
+            content: '|';
+            animation: blink 1s infinite;
         }
-
-        [data-theme="light"] .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        h1, h2, h3, h4, h5, h6, .logo-font {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
         }
 
         .content-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -5px var(--shadow-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 24px;
+        }
+
+        .glass-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px -5px var(--shadow-color);
+        }
+
+        /* Modern Input Styling */
+        #search-input {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 1rem;
             transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
         }
-
-        .content-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            border: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-secondary {
-            background: var(--card-bg);
-            color: var(--secondary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
+        #search-input:focus {
+            box-shadow: 0 0 0 4px var(--accent-dark)1a, 0 10px 25px -5px var(--shadow-color);
+            border-color: var(--accent);
             transform: translateY(-2px);
         }
 
-        .skeleton {
-            background: linear-gradient(90deg, var(--card-bg) 25%, var(--border-color) 50%, var(--card-bg) 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .text-primary { color: var(--primary); }
-        .text-accent { color: var(--accent); }
-        .text-secondary { color: var(--secondary); }
-        .bg-background { background: var(--background); }
-        .bg-card-bg { background: var(--card-bg); }
-        .border-border-color { border-color: var(--border-color); }
-
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .line-clamp-3 {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
+        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
             }
             to {
                 opacity: 1;
@@ -195,113 +242,301 @@
             }
         }
 
-        .prose {
-            max-width: none;
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
-        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
-            color: var(--primary);
-            margin-top: 2rem;
-            margin-bottom: 1rem;
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        
+        header { 
+            position: sticky; top: 0; z-index: 50; 
+            background-color: var(--background);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .country-card { 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .country-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 10px 25px var(--shadow-color);
         }
 
-        .prose h1 { font-size: 2.5rem; font-weight: 800; }
-        .prose h2 { font-size: 2rem; font-weight: 700; }
-        .prose h3 { font-size: 1.5rem; font-weight: 600; }
-
-        .prose p {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
+        .tab-button { 
+            transition: all 0.2s ease; 
+            border-bottom: 2px solid transparent;
+            padding: 1rem 0.25rem;
+        }
+        .tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeInAnimation 0.4s ease forwards; }
+        
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: rgba(0, 0, 0, 0.72); 
+            backdrop-filter: blur(6px); 
+            z-index: 100; display: flex; align-items: center; justify-content: center; 
+            opacity: 0; transition: opacity 0.3s ease; pointer-events: none; 
+        }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-content { 
+            transform: scale(0.95) translateY(10px); 
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 20px;
+        }
+        .modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
+        
+        #preloader { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: var(--background); 
+            z-index: 9999; display: flex; align-items: center; justify-content: center; 
+            transition: opacity 0.5s ease; 
+        }
+        
+        @keyframes fadeInAnimation { from { opacity: 0; } to { opacity: 1; } }
+        
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 1px var(--accent)) drop-shadow(0 0 3px var(--accent-dark)); }
+            50% { filter: drop-shadow(0 0 6px var(--accent)) drop-shadow(0 0 12px var(--accent-dark)); }
         }
 
-        .prose ul, .prose ol {
-            margin-bottom: 1.5rem;
-            padding-left: 2rem;
+        #home-link:hover svg {
+            animation: glow 1.5s ease-in-out infinite;
         }
 
-        .prose li {
-            margin-bottom: 0.5rem;
+        .btn { 
+            transition: all 0.2s ease; 
+            border-radius: 12px;
+            font-weight: 600;
         }
 
-        .prose a {
+        #legal-modal-close-btn {
+            border-radius: 12px;
+            padding: 0.25rem 0.75rem;
+            line-height: 1;
+            transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+        }
+        #legal-modal-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .about-premium {
+            line-height: 1.75;
+        }
+        .about-premium h2 {
             color: var(--accent);
-            text-decoration: none;
-            font-weight: 500;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            font-size: clamp(1.4rem, 3.2vw, 2.1rem);
+            margin-bottom: 0.75rem;
+        }
+        .about-premium h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        .about-premium .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 0.75rem;
+        }
+        .about-premium .compare-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 16px;
+        }
+        .about-premium .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .about-premium .pill.accent {
+            border-color: rgba(79, 70, 229, 0.35);
+            background-color: rgba(79, 70, 229, 0.12);
+            color: #c7d2fe;
+        }
+        .about-premium .quote {
+            margin-top: 1.25rem;
+            padding: 16px;
+            border-radius: 16px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            .about-premium .compare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none;}
+        .btn-primary { 
+            background-color: var(--accent); 
+            color: white; 
         }
 
-        .prose a:hover {
-            text-decoration: underline;
+        /* Skeleton Loader */
+        .skeleton {
+            background: linear-gradient(90deg, var(--card-bg) 25%, var(--border-color) 50%, var(--card-bg) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        .btn-primary:hover:not(:disabled) { 
+            background-color: var(--accent-dark); 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 15px var(--shadow-color);
+        }
+        .btn-secondary { 
+            background-color: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover { 
+            border-color: var(--accent);
+            color: var(--accent);
         }
 
-        [data-theme*='dark'] .prose-invert {
-            color: var(--secondary);
+        [data-theme*="dark"] input,
+        [data-theme*="dark"] textarea,
+        [data-theme*="dark"] select {
+            color: var(--text-primary);
+            background-color: var(--background);
+            border-color: var(--border-color);
         }
-
-        .ad-area {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-            color: var(--secondary);
+        [data-theme*="dark"] input::placeholder,
+        [data-theme*="dark"] textarea::placeholder {
+            color: var(--text-secondary);
+        }
+        #search-input:focus {
+            background-color: var(--card-bg);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+            border-color: var(--accent);
+        }
+        .checklist-item { transition: all 0.2s ease; }
+        .checklist-item.completed { opacity: 0.5; }
+        .checklist-item.completed label { text-decoration: line-through; }
+        .ai-result-embed-btn {
+            background-color: var(--accent);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
             font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
         }
+        .ai-result-embed-btn:hover {
+            background-color: var(--accent-dark);
+        }
+        /* Markdown Styling for AI Results */
+        .markdown-content {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+        .markdown-content h2 { font-family: 'Inter', sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 1.5rem; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .markdown-content h3 { font-family: 'Inter', sans-serif; font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 1.25rem; margin-bottom: 0.75rem; color: var(--text-primary); }
+        .markdown-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+        .markdown-content li { margin-bottom: 0.5rem; color: var(--text-secondary); line-height: 1.6; }
+        .markdown-content p { margin-bottom: 1rem; color: var(--text-secondary); line-height: 1.7; }
+        .markdown-content strong { color: var(--text-primary); font-weight: 600; }
 
-        .ad-square {
-            min-height: 250px;
+        .modal-content input, .modal-content textarea {
+            background: var(--background);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
         }
-
-        .ad-banner {
-            min-height: 90px;
+        .modal-content input:focus, .modal-content textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-dark)1a;
+            outline: none;
         }
+        
+        .tab-button {
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+        }
+        .tab-button.active {
+            border-bottom-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        /* Glassmorphism for Modals */
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
     </style>
 </head>
-<body class="bg-background text-secondary">
-    <!-- Navigation -->
-    <nav class="sticky top-0 z-50 glass-card">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="/" class="flex items-center space-x-3">
-                        <span class="text-3xl">✈️</span>
-                        <span class="text-xl font-bold text-primary">Vuelina</span>
-                    </a>
+<body class="min-h-screen flex flex-col">
+    <header>
+        <div class="container mx-auto px-6 py-3 sm:px-6 sm:py-4 flex justify-between items-center">
+            <a href="/" id="home-link" class="flex items-center gap-3">
+                <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
+                </svg>
+                <h1 class="text-2xl font-bold tracking-tighter logo-font">vuelina</h1>
+            </a>
+            <nav class="flex items-center">
+                <div class="hidden sm:flex items-center gap-6">
+                    <a href="?page=blog" id="nav-blog-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
+                    <a href="/nedir" id="nav-what-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Nedir?</a>
+                    <a href="/hakkimizda" id="nav-about-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
                 </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/" class="text-secondary hover:text-primary transition-colors">Ana Sayfa</a>
-                    <a href="/?page=blog" class="text-secondary hover:text-primary transition-colors">VueBlog</a>
-                    <a href="/?page=about" class="text-secondary hover:text-primary transition-colors">Nedir?</a>
-                    <a href="/?page=about" class="text-secondary hover:text-primary transition-colors">Hakkımızda</a>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button id="theme-toggle" class="p-2 rounded-lg bg-card-bg border border-border-color hover:bg-primary hover:text-white transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                    </button>
-                </div>
+
+                <button id="mobile-menu-btn" class="sm:hidden nav-link ml-2 inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </nav>
+        </div>
+        <div id="mobile-menu" class="sm:hidden hidden border-t border-border-color">
+            <div class="container mx-auto px-6 py-3 flex flex-col gap-2">
+                <a href="?page=blog" id="nav-blog-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Blog</a>
+                <a href="/nedir" id="nav-what-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Nedir?</a>
+                <a href="/hakkimizda" id="nav-about-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Hakkımızda</a>
             </div>
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 py-12">
-        <div class="animate-fade-in-up">
-            <!-- Breadcrumb -->
-            <nav class="mb-8">
-                <ol class="flex items-center space-x-2 text-sm">
-                    <li><a href="/" class="text-secondary hover:text-primary transition-colors">Ana Sayfa</a></li>
-                    <li class="text-secondary">/</li>
-                    <li class="text-primary font-semibold">Kullanım Koşulları</li>
-                </ol>
-            </nav>
-
+    </header>
+    <main class="container mx-auto px-6 sm:px-6 py-8 sm:py-12 flex-grow">
+        <div class="fade-in max-w-4xl mx-auto">
             <!-- Content Card -->
-            <div class="content-card p-8 md:p-12">
+            <div class="content-card p-8 sm:p-10 mb-20">
                 <h1 class="text-3xl md:text-4xl font-bold text-primary mb-6">Kullanım Koşulları</h1>
                 <p class="text-lg text-secondary mb-8"><strong>Son Güncelleme: Mart 2026</strong></p>
                 
-                <div class="prose prose-lg [data-theme*='dark']:prose-invert max-w-none">
+                <div class="prose prose-lg dark:prose-invert max-w-none">
                     <p>Bu Kullanım Koşulları ("Koşullar"), Vuelina tarafından sunulan web sitesi ve yapay zeka destekli seyahat asistanı hizmetinin kullanımına ilişkin kuralları düzenler. Site'ye erişerek veya Hizmet'i kullanarak bu Koşulları kabul etmiş sayılırsınız.</p>
 
                     <h3>1. Hizmetin Kapsamı</h3>
@@ -355,97 +590,76 @@
                 </div>
             </div>
         </div>
+    
+        <script>
+            // Mobil menü işlevselliği
+            document.addEventListener('DOMContentLoaded', () => {
+                const mobileMenu = document.getElementById('mobile-menu');
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                const toggleMobileMenu = () => {
+                    if (!mobileMenu || !mobileMenuBtn) return;
+                    const willOpen = mobileMenu.classList.contains('hidden');
+                    mobileMenu.classList.toggle('hidden');
+                    mobileMenuBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+                };
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        toggleMobileMenu();
+                    });
+                }
+            });
+        </script>
+        </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-card-bg border-t border-border-color mt-20">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="md:col-span-2">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <span class="text-3xl">✈️</span>
-                        <span class="text-xl font-bold text-primary">Vuelina</span>
-                    </div>
-                    <p class="text-secondary mb-4">Yapay zeka destekli akıllı seyahat rehberiniz. Dünyanın en popüler destinasyonlarını keşfedin, kişiselleştirilmiş rotalar oluşturun ve seyahat ipuçları alın.</p>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                        </a>
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
-                        </a>
-                        <a href="#" class="text-secondary hover:text-primary transition-colors">
-                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/></svg>
-                        </a>
-                    </div>
+    <footer class="border-t border-border-color mt-20 pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="ad-area ad-square mb-12">[AD_AREA - FOOTER_SQUARE]</div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                <div class="col-span-1 md:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-6">
+                        <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
+                        </svg>
+                        <h2 class="text-2xl font-bold tracking-tighter logo-font text-primary">vuelina</h2>
+                    </a>
+                    <p class="text-secondary leading-relaxed max-w-md">Vuelina, yapay zeka teknolojisini seyahat tutkusuyla birleştiren yeni nesil bir SaaS platformudur. Dünyayı daha akıllı ve verimli keşfetmeniz için buradayız.</p>
                 </div>
-                
+
                 <div>
                     <h4 class="font-bold text-primary mb-6">Platform</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="/?page=blog" class="text-secondary hover:text-indigo-500 transition-colors">VueBlog</a></li>
-                        <li><a href="/?page=about" class="text-secondary hover:text-indigo-500 transition-colors">Hakkımızda</a></li>
-                        <li><a href="/gizlilik" class="text-secondary hover:text-indigo-500 transition-colors">Gizlilik Politikası</a></li>
-                        <li><a href="/kullanim-kosullari" class="text-secondary hover:text-indigo-500 transition-colors">Kullanım Koşulları</a></li>
+                        <li><a href="?page=blog" onclick="event.preventDefault(); window.history.pushState({page:'blog'},'', '?page=blog');" class="text-secondary hover:text-indigo-500 transition-colors">VueBlog</a></li>
+                        <li><a href="#" id="footer-about-link" class="text-secondary hover:text-indigo-500 transition-colors">Hakkımızda</a></li>
+                        <li><a href="#" id="footer-contact-link" class="text-secondary hover:text-indigo-500 transition-colors">İletişim</a></li>
                         <li><a href="mailto:support@vuelina.com" class="text-secondary hover:text-indigo-500 transition-colors">Destek</a></li>
                     </ul>
                 </div>
-                
+
                 <div>
                     <h4 class="font-bold text-primary mb-6">Yasal</h4>
                     <ul class="space-y-4 text-sm">
-                        <li><a href="/gizlilik" class="text-secondary hover:text-indigo-500 transition-colors">Kişisel Verilerin Korunması</a></li>
-                        <li><a href="/kullanim-kosullari" class="text-secondary hover:text-indigo-500 transition-colors">Kullanım Şartları</a></li>
-                        <li><a href="#" class="text-secondary hover:text-indigo-500 transition-colors">Çerez Politikası</a></li>
-                        <li><a href="#" class="text-secondary hover:text-indigo-500 transition-colors">İletişim</a></li>
+                        <li><a href="/gizlilik" class="text-secondary hover:text-indigo-500 transition-colors">Gizlilik Politikası</a></li>
+                        <li><a href="/kullanim-kosullari" class="text-secondary hover:text-indigo-500 transition-colors">Kullanım Koşulları</a></li>
+                        <li><button id="footer-cookies-link" class="text-secondary hover:text-indigo-500 transition-colors">Çerez Politikası</button></li>
                     </ul>
                 </div>
             </div>
             
-            <div class="border-t border-border-color mt-8 pt-8 text-center text-sm text-secondary">
-                <p>&copy; 2026 Vuelina. Tüm hakları saklıdır. | Yapay zeka destekli seyahat rehberi</p>
+            <div class="pt-8 border-t border-border-color flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-secondary">&copy; 2026 Vuelina. Tüm hakları saklıdır.</p>
+                <div class="flex gap-6">
+                    <a href="https://instagram.com/vuelinacom/" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-primary transition-colors" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37a4 4 0 1 1-7.87 1.18 4 4 0 0 1 7.87-1.18z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                </div>
             </div>
         </div>
     </footer>
-
-    <!-- JavaScript -->
-    <script>
-        // Theme Toggle
-        const themeToggle = document.getElementById('theme-toggle');
-        const html = document.documentElement;
-        
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-theme', savedTheme);
-        
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
-        
-        // Update theme icon
-        function updateThemeIcon() {
-            const theme = html.getAttribute('data-theme');
-            if (theme === 'dark') {
-                themeToggle.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                    </svg>
-                `;
-            } else {
-                themeToggle.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
-                `;
-            }
-        }
-        
-        updateThemeIcon();
-        themeToggle.addEventListener('click', updateThemeIcon);
-    </script>
 </body>
 </html>
