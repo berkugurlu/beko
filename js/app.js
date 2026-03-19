@@ -534,24 +534,6 @@
                     visibleCount++;
                 }
 
-                // "Smart Travel Card" (Native Ad / Affiliate)
-                if (index === 7 && visibleCount > 4 && !document.getElementById('smart-ad')) {
-                    const adCard = document.createElement('div');
-                    adCard.id = 'smart-ad';
-                    adCard.className = 'content-card p-6 text-center lg:col-span-2 md:col-span-1 sm:col-span-2 col-span-1 flex flex-col justify-center items-center relative overflow-hidden group';
-                    adCard.style.backgroundColor = 'var(--card-bg)';
-                    adCard.innerHTML = `
-                        <div class="absolute top-0 right-0 bg-accent text-white text-xs px-2 py-1 rounded-bl-lg font-bold">ÖNERİ</div>
-                        <div class="text-4xl mb-2">✈️🏨</div>
-                        <h3 class="text-xl font-bold mb-2 text-primary">Seyahatini Ucuza Getir</h3>
-                        <p class="text-secondary mb-4 text-sm max-w-md">En iyi uçuş fırsatlarını ve konforlu otelleri keşfetmek için partnerlerimize göz at.</p>
-                        <div class="flex gap-3 justify-center">
-                            <a href="https://www.skyscanner.com.tr" target="_blank" rel="nofollow" class="btn btn-primary py-2 px-4 text-sm">Ucuz Uçak Bileti</a>
-                            <a href="https://www.booking.com" target="_blank" rel="nofollow" class="btn btn-secondary py-2 px-4 text-sm">Otel Fırsatları</a>
-                        </div>
-                    `;
-                    countryListContainer.appendChild(adCard);
-                }
             });
 
             const hasResults = countryListContainer.querySelectorAll('.country-card').length > 0;
@@ -1177,7 +1159,7 @@
                                 </div>
                             </div>
 
-                            <div class="ad-area ad-infeed">
+                            <div class="ad-area mt-6 mb-6">
                                 <ins class="adsbygoogle"
                                      style="display:block"
                                      data-ad-format="fluid"
@@ -1201,9 +1183,9 @@
                                 <iframe width="100%" height="100%" style="border:0; border-radius: 16px;" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${encodeURIComponent(countryName)}&t=&z=5&ie=UTF8&iwloc=&output=embed"></iframe>
                             </div>
 
-                            <div class="ad-area ad-square">
+                            <div class="ad-area mt-6 mb-6">
                                 <ins class="adsbygoogle"
-                                     style="display:block; width: 100%; height: 250px;"
+                                     style="display:block;"
                                      data-ad-client="ca-pub-9708298035800838"
                                      data-ad-slot="2222222222"
                                      data-ad-format="auto"

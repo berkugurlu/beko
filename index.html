@@ -108,16 +108,11 @@
 
         .ad-area {
             display: flex;
-            align-items: center;
             justify-content: center;
-            text-align: center;
-            min-height: 110px;
-            margin: 1.75rem 0;
+            align-items: center;
+            width: 100%;
             overflow: hidden;
         }
-        .ad-area.ad-leaderboard { min-height: 120px; }
-        .ad-area.ad-infeed { min-height: 140px; }
-        .ad-area.ad-square { min-height: 250px; }
 
         .nav-link {
             min-height: 44px;
@@ -524,7 +519,7 @@
     
     <header>
         <div class="container mx-auto px-6 py-3 sm:px-6 sm:py-4 flex justify-between items-center">
-            <a href="/" id="home-link" class="flex items-center gap-3">
+            <a href="/" id="home-link" onclick="event.preventDefault(); window.history.pushState({}, '', window.location.pathname);" class="flex items-center gap-3">
                 <svg class="h-8 w-8 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 2L3 22L12 17L21 22L12 2Z" fill="currentColor"/>
                 </svg>
@@ -562,9 +557,9 @@
                 <p class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Sekmelerde Kaybolma, Sokaklarda Kaybol.</p>
 
                 <div class="max-w-3xl mx-auto animate-fade-in-up stagger-2">
-                    <div class="ad-area ad-leaderboard">
+                    <div class="ad-area mt-4">
                         <ins class="adsbygoogle"
-                             style="display:block; min-width: 300px; width: 100%; height: 90px;"
+                             style="display:block;"
                              data-ad-client="ca-pub-9708298035800838"
                              data-ad-slot="1234567890"
                              data-ad-format="auto"
@@ -638,9 +633,9 @@
     
     <footer class="border-t border-border-color mt-20 pt-16 pb-8">
         <div class="container mx-auto px-6">
-            <div class="ad-area ad-square mb-12">
+            <div class="ad-area mb-8">
                 <ins class="adsbygoogle"
-                     style="display:block; width: 100%; height: 250px;"
+                     style="display:block;"
                      data-ad-client="ca-pub-9708298035800838"
                      data-ad-slot="0987654321"
                      data-ad-format="auto"
