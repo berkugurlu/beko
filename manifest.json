@@ -1,0 +1,17 @@
+{
+  "name": "Vuelina Akıllı Seyahat Rehberi",
+  "short_name": "Vuelina",
+  "description": "Yapay zeka destekli akıllı, hızlı ve sade seyahat planlama deneyimi.",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

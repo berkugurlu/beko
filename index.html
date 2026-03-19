@@ -21,8 +21,19 @@
     <meta name="twitter:description" content="Vuelina ile dünyanın en popüler destinasyonlarını keşfedin." />
     <meta name="twitter:image" content="https://vuelina.com/favicon.svg" />
 
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <title id="meta-title">Vuelina | Akıllı Seyahat Rehberi</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -501,6 +512,21 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         
+        /* Premium Map Popup (Leaflet) */
+        .premium-popup .leaflet-popup-content-wrapper {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px -5px var(--shadow-color);
+            padding: 4px;
+        }
+        .premium-popup .leaflet-popup-tip {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+        }
+        
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -527,9 +553,14 @@
             </a>
             <nav class="flex items-center">
                 <div class="hidden sm:flex items-center gap-6">
-                    <a href="?page=blog" id="nav-blog-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Blog</a>
-                    <a href="/nedir" id="nav-what-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Nedir?</a>
-                    <a href="/hakkimizda" id="nav-about-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Hakkımızda</a>
+                    <a href="?page=blog" id="nav-blog-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.blog">Blog</a>
+                    <a href="/nedir" id="nav-what-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.what">Nedir?</a>
+                    <a href="/hakkimizda" id="nav-about-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.about">Hakkımızda</a>
+                    <button id="lang-toggle-btn" class="ml-4 px-3 py-1.5 font-bold text-sm bg-card-bg border border-border-color rounded-lg text-primary hover:text-accent transition-colors shadow-sm w-12 text-center">TR</button>
+                    <button id="auth-modal-btn" class="ml-2 btn-primary px-4 py-1.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span data-i18n="nav.login">Giriş Yap</span>
+                    </button>
                 </div>
 
                 <button id="mobile-menu-btn" class="sm:hidden nav-link ml-2 inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
@@ -543,9 +574,9 @@
         </div>
         <div id="mobile-menu" class="sm:hidden hidden border-t border-border-color">
             <div class="container mx-auto px-6 py-3 flex flex-col gap-2">
-                <a href="?page=blog" id="nav-blog-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Blog</a>
-                <a href="/nedir" id="nav-what-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Nedir?</a>
-                <a href="/hakkimizda" id="nav-about-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center">Hakkımızda</a>
+                <a href="?page=blog" id="nav-blog-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center" data-i18n="nav.blog">Blog</a>
+                <a href="/nedir" id="nav-what-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center" data-i18n="nav.what">Nedir?</a>
+                <a href="/hakkimizda" id="nav-about-link-mobile" class="nav-link w-full rounded-xl border border-border-color bg-card-bg px-4 text-secondary hover:text-indigo-500 transition-colors flex items-center" data-i18n="nav.about">Hakkımızda</a>
             </div>
         </div>
     </header>
@@ -553,8 +584,8 @@
     <main class="container mx-auto px-6 sm:px-6 py-8 sm:py-12 flex-grow">
         <div id="country-list-view" class="animate-fade-in-up">
             <div class="text-center mb-16 py-16 px-6 rounded-[3rem] content-card">
-                <h2 class="hero-title font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm animate-fade-in-up stagger-1">Hayalindeki Macerayı Bul</h2>
-                <p class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2">Sekmelerde Kaybolma, Sokaklarda Kaybol.</p>
+                <h2 class="hero-title font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm animate-fade-in-up stagger-1" data-i18n="hero.title">Hayalindeki Macerayı Bul</h2>
+                <p class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up stagger-2" data-i18n="hero.subtitle">Sekmelerde Kaybolma, Sokaklarda Kaybol.</p>
 
                 <div class="max-w-3xl mx-auto animate-fade-in-up stagger-2">
                     <div class="ad-area mt-4">
@@ -571,7 +602,7 @@
                 </div>
                 
                 <div class="max-w-3xl mx-auto relative mb-12 animate-fade-in-up stagger-3">
-                    <input type="text" id="search-input" class="w-full p-4 pl-12 sm:p-6 sm:pl-14 rounded-3xl border border-border-color focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all text-base sm:text-xl shadow-xl hover:shadow-2xl" placeholder="Nereye gitmek istersin? (örn: Japonya, İtalya)...">
+                    <input type="text" id="search-input" class="w-full p-4 pl-12 sm:p-6 sm:pl-14 rounded-3xl border border-border-color focus:outline-none focus:ring-4 focus:ring-accent/15 transition-all text-base sm:text-xl shadow-xl hover:shadow-2xl" placeholder="Nereye gitmek istersin? (örn: Japonya, İtalya)..." data-i18n="search.placeholder">
                     <svg class="absolute left-4 sm:left-5 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6 sm:w-7 sm:h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -580,6 +611,15 @@
                 <div class="flex flex-wrap justify-center gap-4 animate-fade-in-up stagger-3" id="filter-container">
                     <!-- Filters will be injected here -->
                 </div>
+
+                <div class="flex justify-center mt-10 gap-2 p-1 bg-background border border-border-color rounded-2xl w-max mx-auto shadow-sm">
+                    <button id="view-list-btn" class="px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold transition-all" data-i18n="btn.list">Liste Görünümü</button>
+                    <button id="view-map-btn" class="px-6 py-2.5 rounded-xl text-secondary hover:text-primary text-sm font-semibold transition-all" data-i18n="btn.map">Harita Görünümü</button>
+                </div>
+            </div>
+
+            <div id="map-container-wrapper" class="hidden mb-12 animate-fade-in-up">
+                <div id="world-map" class="w-full h-[550px] rounded-3xl border border-border-color shadow-xl overflow-hidden z-10"></div>
             </div>
 
             <div id="country-list-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -588,9 +628,9 @@
                 <div class="bg-gray-100 dark:bg-zinc-800 p-6 rounded-full mb-6 animate-bounce">
                     <span class="text-6xl">🤔</span>
                 </div>
-                <h3 class="text-2xl font-bold mb-2">Aradığınız yeri bulamadık</h3>
-                <p class="text-secondary mb-6 max-w-md mx-auto">Yazım hatası yapmış olabilir misiniz? Veya listemizde henüz bu ülke olmayabilir.</p>
-                <button onclick="document.getElementById('search-input').value = ''; document.getElementById('search-input').dispatchEvent(new Event('input'));" class="btn btn-primary px-6 py-3 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 class="text-2xl font-bold mb-2" data-i18n="no_results.title">Aradığınız yeri bulamadık</h3>
+                <p class="text-secondary mb-6 max-w-md mx-auto" data-i18n="no_results.desc">Yazım hatası yapmış olabilir misiniz? Veya listemizde henüz bu ülke olmayabilir.</p>
+                <button onclick="document.getElementById('search-input').value = ''; document.getElementById('search-input').dispatchEvent(new Event('input'));" class="btn btn-primary px-6 py-3 shadow-lg hover:shadow-xl transition-shadow" data-i18n="no_results.btn">
                     Listeyi Sıfırla
                 </button>
             </div>
@@ -728,20 +768,62 @@
         </div>
     </div>
 
+    <!-- AUTH MODAL -->
+    <div id="auth-modal" class="modal-overlay hidden" aria-modal="true" role="dialog">
+        <div class="modal-content content-card w-full max-w-md p-8 relative">
+            <button id="auth-modal-close-btn" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white transition-colors">&times;</button>
+            <div class="text-center mb-6">
+                <div class="inline-block p-4 rounded-full bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 mb-4 animate-bounce">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <h3 class="text-2xl font-bold" data-i18n="auth.title">Vuelina'ya Hoş Geldin</h3>
+                <p class="text-secondary text-sm mt-2" data-i18n="auth.subtitle">Favorilerini kaydet, planlarını yönet.</p>
+            </div>
+            
+            <form id="auth-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-secondary" data-i18n="auth.email">E-posta</label>
+                    <input type="email" id="auth-email" required class="w-full text-primary" placeholder="ornek@mail.com">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-secondary" data-i18n="auth.pass">Şifre</label>
+                    <input type="password" id="auth-password" required class="w-full text-primary" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary w-full py-3 mt-2 shadow-lg hover:shadow-xl transition-shadow shadow-indigo-500/30" data-i18n="auth.submit">Giriş Yap / Üye Ol</button>
+            </form>
+            
+            <div class="mt-6 flex items-center justify-between">
+                <hr class="w-full border-border-color">
+                <span class="p-2 text-xs text-secondary whitespace-nowrap" data-i18n="auth.or">veya</span>
+                <hr class="w-full border-border-color">
+            </div>
+            
+            <button id="auth-google-btn" type="button" class="w-full border border-border-color bg-card-bg hover:bg-gray-50 dark:hover:bg-zinc-800 py-3 mt-4 rounded-xl flex items-center justify-center gap-3 transition-colors shadow-sm font-medium text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+                <span data-i18n="auth.google">Google ile Devam Et</span>
+            </button>
+            
+            <p class="text-center text-xs text-secondary mt-6">
+                <span data-i18n="auth.terms_hint">Giriş yaparak</span> 
+                <a href="/kullanim-kosullari.html" class="underline hover:text-primary">Kullanım Koşulları</a>'nı onaylamış olursunuz.
+            </p>
+        </div>
+    </div>
+
     <!-- SEYAHAT PLANI MODALI (ITINERARY MODAL) -->
     <div id="itinerary-modal" class="modal-overlay" aria-modal="true" role="dialog">
         <div class="modal-content content-card w-full max-w-2xl p-8">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-2xl font-bold">🗺️ Seyahat Planı Oluştur</h3>
+                <h3 class="text-2xl font-bold" data-i18n="modal.itinerary">🗺️ Seyahat Planı Oluştur</h3>
                 <button id="itinerary-modal-close-btn" class="text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white">&times;</button>
             </div>
             <div id="itinerary-form">
                 <p class="text-secondary mb-4" id="itinerary-modal-subtitle"></p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <input type="number" id="itinerary-duration" value="3" min="1" class="w-full p-3 rounded-lg bg-background border border-border-color" placeholder="Seyahat süresi (gün)">
-                    <input type="text" id="itinerary-interests" class="w-full p-3 rounded-lg bg-background border border-border-color" placeholder="İlgi alanların (örn: tarih, yemek)">
+                    <input type="number" id="itinerary-duration" value="3" min="1" class="w-full p-3 rounded-lg bg-background border border-border-color" placeholder="Seyahat süresi (gün)" data-i18n="modal.duration">
+                    <input type="text" id="itinerary-interests" class="w-full p-3 rounded-lg bg-background border border-border-color" placeholder="İlgi alanların (örn: tarih, yemek)" data-i18n="modal.interests">
                 </div>
-                <button id="get-itinerary-btn" class="btn btn-primary w-full py-3 text-lg">Planı Oluştur</button>
+                <button id="get-itinerary-btn" class="btn btn-primary w-full py-3 text-lg" data-i18n="modal.generate">Planı Oluştur</button>
             </div>
         </div>
     </div>
@@ -750,17 +832,33 @@
     <div id="cookie-consent-banner" class="fixed bottom-0 left-0 right-0 bg-card-bg border-t border-border-color p-4 md:p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-[100] transform translate-y-full transition-transform duration-500 hidden" aria-live="polite">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="text-sm md:text-base text-secondary flex-1">
-                <strong class="text-primary block mb-1">🍪 Gizliliğinize Önem Veriyoruz</strong>
-                Sizlere daha iyi bir hizmet sunabilmek ve platformumuzu geliştirebilmek amacıyla sitemizde çerez (cookie) konumlandırıyoruz. Çerezler hakkında detaylı bilgi için <button onclick="document.getElementById('footer-cookies-link').click()" class="text-indigo-500 hover:text-indigo-400 underline cursor-pointer">Çerez Politikamızı</button> inceleyebilirsiniz.
+                <strong class="text-primary block mb-1" data-i18n="cookie.title">🍪 Gizliliğinize Önem Veriyoruz</strong>
+                <span data-i18n="cookie.desc">Sizlere daha iyi bir hizmet sunabilmek ve platformumuzu geliştirebilmek amacıyla sitemizde çerez (cookie) konumlandırıyoruz. Çerezler hakkında detaylı bilgi için </span><button onclick="document.getElementById('footer-cookies-link').click()" class="text-indigo-500 hover:text-indigo-400 underline cursor-pointer">Çerez Politikamızı</button> inceleyebilirsiniz.
             </div>
             <div class="flex gap-4 w-full md:w-auto mt-2 md:mt-0 font-medium">
-                <button id="cookie-reject-btn" class="flex-1 md:flex-none border border-border-color text-secondary hover:text-primary px-6 py-2.5 rounded-lg transition-colors">Reddet</button>
-                <button id="cookie-accept-btn" class="flex-1 md:flex-none bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2.5 rounded-lg transition-colors shadow-lg shadow-indigo-500/30">Kabul Et</button>
+                <button id="cookie-reject-btn" class="flex-1 md:flex-none border border-border-color text-secondary hover:text-primary px-6 py-2.5 rounded-lg transition-colors" data-i18n="cookie.reject">Reddet</button>
+                <button id="cookie-accept-btn" class="flex-1 md:flex-none bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-2.5 rounded-lg transition-colors shadow-lg shadow-indigo-500/30" data-i18n="cookie.accept">Kabul Et</button>
             </div>
         </div>
     </div>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <script src="js/i18n.js"></script>
     <script src="js/data.js"></script>
     <script src="js/app.js"></script>
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('SW registered successfully');
+                }).catch(err => {
+                    console.log('SW registration failed: ', err);
+                });
+            });
+        }
+    </script>
 </body>
 </html>

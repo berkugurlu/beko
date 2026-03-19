@@ -46,6 +46,95 @@
         const legalModalContent = document.getElementById('legal-modal-content');
         const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
 
+        // --- AUTH LOGIC (MOCK) ---
+        const authModalBtn = document.getElementById('auth-modal-btn');
+        const authModal = document.getElementById('auth-modal');
+        const authModalCloseBtn = document.getElementById('auth-modal-close-btn');
+        const authForm = document.getElementById('auth-form');
+        const authGoogleBtn = document.getElementById('auth-google-btn');
+
+        let currentUser = JSON.parse(localStorage.getItem('vuelina_user') || 'null');
+
+        const updateAuthUI = () => {
+            if (!authModalBtn) return;
+            if (currentUser) {
+                // Profile View
+                authModalBtn.innerHTML = `
+                    <img src="${currentUser.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + currentUser.email}" class="w-5 h-5 rounded-full border border-border-color" alt="Profile">
+                    <span data-i18n="nav.profile">${typeof translations !== 'undefined' && translations[currentLang] ? translations[currentLang]['nav.profile'] : 'Profilim'}</span>
+                `;
+            } else {
+                // Login View
+                authModalBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <span data-i18n="nav.login">${typeof translations !== 'undefined' && translations[currentLang] ? translations[currentLang]['nav.login'] : 'Giriş Yap'}</span>
+                `;
+            }
+        };
+
+        if (authModalBtn) {
+            authModalBtn.addEventListener('click', () => {
+                if (currentUser) {
+                    if (confirm(typeof currentLang !== 'undefined' && currentLang === 'en' ? "Are you sure you want to log out?" : "Çıkış yapmak istediğinize emin misiniz?")) {
+                        currentUser = null;
+                        localStorage.removeItem('vuelina_user');
+                        updateAuthUI();
+                    }
+                } else {
+                    authModal.classList.remove('hidden');
+                    authModal.style.display = 'flex'; // Override to show modal
+                }
+            });
+        }
+        
+        if (authModalCloseBtn) {
+            authModalCloseBtn.addEventListener('click', () => {
+                authModal.classList.add('hidden');
+                authModal.style.display = '';
+            });
+        }
+        
+        if (authForm) {
+            authForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = document.getElementById('auth-email').value;
+                currentUser = {
+                    uid: 'mock-' + Date.now(),
+                    email: email,
+                    photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + email
+                };
+                localStorage.setItem('vuelina_user', JSON.stringify(currentUser));
+                updateAuthUI();
+                authModal.classList.add('hidden');
+                authModal.style.display = '';
+                showInfoModal(
+                    typeof currentLang !== 'undefined' && currentLang === 'en' ? "Welcome!" : "Hoş Geldin!", 
+                    typeof currentLang !== 'undefined' && currentLang === 'en' ? "Successfully logged in." : "Vuelina hesabınıza başarıyla giriş yaptınız."
+                );
+            });
+        }
+
+        if (authGoogleBtn) {
+            authGoogleBtn.addEventListener('click', () => {
+                currentUser = {
+                    uid: 'mock-g-' + Date.now(),
+                    email: 'google.user@example.com',
+                    photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=google'
+                };
+                localStorage.setItem('vuelina_user', JSON.stringify(currentUser));
+                updateAuthUI();
+                authModal.classList.add('hidden');
+                authModal.style.display = '';
+                showInfoModal(
+                    typeof currentLang !== 'undefined' && currentLang === 'en' ? "Welcome!" : "Hoş Geldin!", 
+                    typeof currentLang !== 'undefined' && currentLang === 'en' ? "Google Login Successful." : "Google ile başarıyla giriş yaptınız."
+                );
+            });
+        }
+        
+        window.addEventListener('languageChanged', updateAuthUI);
+        updateAuthUI();
+
         // --- ANA LOGO TIKLANMA DURUMU (YENİLEMESİZ ANA SAYFAYA DÖNÜŞ) ---
         if (homeLink) {
             homeLink.addEventListener('click', (e) => {
@@ -321,7 +410,101 @@
             if (countriesData[country].description.toLowerCase().includes("asya")) countriesData[country].tags.push("asya");
             if (countriesData[country].description.toLowerCase().includes("afrika")) countriesData[country].tags.push("afrika");
             if (countriesData[country].description.toLowerCase().includes("amerika")) countriesData[country].tags.push("amerika");
+            
+            // Geographic Coordinates for Interactive Map
+            const geoData = {
+                "Türkiye": { lat: 38.9637, lng: 35.2433 },
+                "İtalya": { lat: 41.8719, lng: 12.5674 },
+                "Japonya": { lat: 36.2048, lng: 138.2529 },
+                "Fransa": { lat: 46.2276, lng: 2.2137 },
+                "Birleşik Krallık": { lat: 55.3781, lng: -3.4360 },
+                "ABD": { lat: 37.0902, lng: -95.7129 },
+                "Yunanistan": { lat: 39.0742, lng: 21.8243 },
+                "İspanya": { lat: 40.4637, lng: -3.7492 },
+                "Güney Kore": { lat: 35.9078, lng: 127.7669 },
+                "Tayland": { lat: 15.8700, lng: 100.9925 },
+                "Mısır": { lat: 26.8206, lng: 30.8025 },
+                "Hollanda": { lat: 52.1326, lng: 5.2913 },
+                "Meksika": { lat: 23.6345, lng: -102.5528 },
+                "Endonezya": { lat: -0.7893, lng: 113.9213 },
+                "Brezilya": { lat: -14.2350, lng: -51.9253 },
+                "Güney Afrika": { lat: -30.5595, lng: 22.9375 },
+                "Arjantin": { lat: -38.4161, lng: -63.6167 },
+                "İsviçre": { lat: 46.8182, lng: 8.2275 },
+                "Norveç": { lat: 60.4720, lng: 8.4689 },
+                "Kanada": { lat: 56.1304, lng: -106.3468 },
+                "Çin": { lat: 35.8617, lng: 104.1954 },
+                "Hindistan": { lat: 20.5937, lng: 78.9629 },
+                "Avustralya": { lat: -25.2744, lng: 133.7751 }
+            };
+            countriesData[country].coords = geoData[country] || { lat: 0, lng: 0 };
         });
+
+        // --- MAP LOGIC ---
+        const viewListBtn = document.getElementById('view-list-btn');
+        const viewMapBtn = document.getElementById('view-map-btn');
+        const mapWrapper = document.getElementById('map-container-wrapper');
+        let leafletMap = null;
+        let markersGroup = null;
+
+        const initMap = () => {
+            if (leafletMap) return;
+            leafletMap = L.map('world-map', { zoomControl: false }).setView([30, 0], 2);
+            L.control.zoom({ position: 'topright' }).addTo(leafletMap);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(leafletMap);
+
+            markersGroup = L.layerGroup().addTo(leafletMap);
+
+            Object.keys(countriesData).forEach(name => {
+                const country = countriesData[name];
+                if (country.coords && country.coords.lat !== 0) {
+                    const marker = L.circleMarker([country.coords.lat, country.coords.lng], {
+                        color: '#4f46e5',
+                        fillColor: '#4f46e5',
+                        fillOpacity: 0.8,
+                        radius: 8,
+                        weight: 2
+                    }).addTo(markersGroup);
+
+                    marker.bindPopup(`
+                        <div class="text-center p-1">
+                            <div class="text-4xl mb-2 drop-shadow-md">${country.flag}</div>
+                            <strong class="text-lg block mb-3 font-bold text-gray-800 dark:text-gray-100">${name}</strong>
+                            <button onclick="document.querySelector('.country-card[data-country-name=\\'${name}\\']')?.click()" class="btn-primary px-4 py-2 rounded-lg text-sm w-full font-semibold shadow-md">Detayları Keşfet</button>
+                        </div>
+                    `, { className: 'premium-popup', closeButton: false });
+                }
+            });
+        };
+
+        if (viewListBtn && viewMapBtn) {
+            viewListBtn.addEventListener('click', () => {
+                viewListBtn.classList.add('bg-accent', 'text-white');
+                viewListBtn.classList.remove('text-secondary', 'hover:text-primary');
+                viewMapBtn.classList.remove('bg-accent', 'text-white');
+                viewMapBtn.classList.add('text-secondary', 'hover:text-primary');
+                
+                mapWrapper.classList.add('hidden');
+                countryListContainer.classList.remove('hidden');
+            });
+
+            viewMapBtn.addEventListener('click', () => {
+                viewMapBtn.classList.add('bg-accent', 'text-white');
+                viewMapBtn.classList.remove('text-secondary', 'hover:text-primary');
+                viewListBtn.classList.remove('bg-accent', 'text-white');
+                viewListBtn.classList.add('text-secondary', 'hover:text-primary');
+                
+                countryListContainer.classList.add('hidden');
+                mapWrapper.classList.remove('hidden');
+                initMap();
+                setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 200);
+            });
+        }
 
         let activeTagFilter = 'all';
 
