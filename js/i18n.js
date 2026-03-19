@@ -28,7 +28,20 @@ const translations = {
         "auth.terms_hint": "Giriş yaparak",
         "nav.login": "Giriş Yap",
         "nav.profile": "Profilim",
-        "nav.logout": "Çıkış Yap"
+        "nav.logout": "Çıkış Yap",
+        "filter.all": "Tümü",
+        "filter.avrupa": "Avrupa",
+        "filter.asya": "Asya",
+        "filter.deniz": "Deniz",
+        "filter.vizesiz": "Vizesiz",
+        "filter.tarih": "Tarih",
+        "filter.safari": "Safari",
+        "filter.kayak": "Kayak",
+        "filter.tropik": "Tropikal",
+        "filter.luks": "Lüks",
+        "filter.amerika": "Amerika",
+        "card.explore": "Keşfet",
+        "card.days": "gün"
     },
     en: {
         "nav.blog": "Blog",
@@ -59,7 +72,20 @@ const translations = {
         "auth.terms_hint": "By logging in, you agree to",
         "nav.login": "Login",
         "nav.profile": "My Profile",
-        "nav.logout": "Logout"
+        "nav.logout": "Logout",
+        "filter.all": "All",
+        "filter.avrupa": "Europe",
+        "filter.asya": "Asia",
+        "filter.deniz": "Beach",
+        "filter.vizesiz": "Visa-Free",
+        "filter.tarih": "History",
+        "filter.safari": "Safari",
+        "filter.kayak": "Ski",
+        "filter.tropik": "Tropical",
+        "filter.luks": "Luxury",
+        "filter.Amerika": "Americas",
+        "card.explore": "Explore",
+        "card.days": "days"
     }
 };
 

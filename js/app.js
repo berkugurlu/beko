@@ -60,7 +60,7 @@
             if (currentUser) {
                 // Profile View
                 authModalBtn.innerHTML = `
-                    <img src="${currentUser.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + currentUser.email}" class="w-5 h-5 rounded-full border border-border-color" alt="Profile">
+                    <img src="${currentUser.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + currentUser.email}" class="w-6 h-6 rounded-full border-2 border-indigo-400 shadow-md" alt="Profile">
                     <span data-i18n="nav.profile">${typeof translations !== 'undefined' && translations[currentLang] ? translations[currentLang]['nav.profile'] : 'Profilim'}</span>
                 `;
             } else {
@@ -72,6 +72,15 @@
             }
         };
 
+        const openAuthModal = () => {
+            if (!authModal) return;
+            authModal.classList.add('visible');
+        };
+        const closeAuthModal = () => {
+            if (!authModal) return;
+            authModal.classList.remove('visible');
+        };
+
         if (authModalBtn) {
             authModalBtn.addEventListener('click', () => {
                 if (currentUser) {
@@ -81,16 +90,19 @@
                         updateAuthUI();
                     }
                 } else {
-                    authModal.classList.remove('hidden');
-                    authModal.style.display = 'flex'; // Override to show modal
+                    openAuthModal();
                 }
             });
         }
         
         if (authModalCloseBtn) {
-            authModalCloseBtn.addEventListener('click', () => {
-                authModal.classList.add('hidden');
-                authModal.style.display = '';
+            authModalCloseBtn.addEventListener('click', closeAuthModal);
+        }
+        
+        // Close on overlay click
+        if (authModal) {
+            authModal.addEventListener('click', (e) => {
+                if (e.target === authModal) closeAuthModal();
             });
         }
         
@@ -105,8 +117,7 @@
                 };
                 localStorage.setItem('vuelina_user', JSON.stringify(currentUser));
                 updateAuthUI();
-                authModal.classList.add('hidden');
-                authModal.style.display = '';
+                closeAuthModal();
                 showInfoModal(
                     typeof currentLang !== 'undefined' && currentLang === 'en' ? "Welcome!" : "Hoş Geldin!", 
                     typeof currentLang !== 'undefined' && currentLang === 'en' ? "Successfully logged in." : "Vuelina hesabınıza başarıyla giriş yaptınız."
@@ -123,8 +134,7 @@
                 };
                 localStorage.setItem('vuelina_user', JSON.stringify(currentUser));
                 updateAuthUI();
-                authModal.classList.add('hidden');
-                authModal.style.display = '';
+                closeAuthModal();
                 showInfoModal(
                     typeof currentLang !== 'undefined' && currentLang === 'en' ? "Welcome!" : "Hoş Geldin!", 
                     typeof currentLang !== 'undefined' && currentLang === 'en' ? "Google Login Successful." : "Google ile başarıyla giriş yaptınız."
@@ -446,40 +456,154 @@
         const mapWrapper = document.getElementById('map-container-wrapper');
         let leafletMap = null;
         let markersGroup = null;
+        let allMarkers = [];
+
+        const getVisaColor = (visa) => {
+            if (!visa) return { color: '#6366f1', label: 'Bilinmiyor' };
+            const v = visa.toLowerCase();
+            if (v.includes('vizesiz')) return { color: '#22c55e', label: 'Vizesiz' };
+            if (v.includes('kapida') || v.includes('e-vize')) return { color: '#f59e0b', label: 'Kapıda/e-Vize' };
+            if (v.includes('schengen')) return { color: '#818cf8', label: 'Schengen' };
+            return { color: '#ef4444', label: 'Vize Gerekli' };
+        };
+
+        const createPulseIcon = (color) => L.divIcon({
+            className: '',
+            html: `<div style="position:relative;width:24px;height:24px">
+                <div style="position:absolute;inset:0;border-radius:50%;background:${color};opacity:0.25;animation:map-pulse 2s ease-out infinite;"></div>
+                <div style="position:absolute;inset:4px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>
+            </div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+            popupAnchor: [0, -14]
+        });
 
         const initMap = () => {
             if (leafletMap) return;
-            leafletMap = L.map('world-map', { zoomControl: false }).setView([30, 0], 2);
+            leafletMap = L.map('world-map', { zoomControl: false, attributionControl: false }).setView([25, 15], 2);
             L.control.zoom({ position: 'topright' }).addTo(leafletMap);
-            
+            L.control.attribution({ prefix: false, position: 'bottomright' }).addAttribution('<a href="https://carto.com">CARTO</a> | <a href="https://openstreetmap.org">OpenStreetMap</a>').addTo(leafletMap);
+
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO',
-                subdomains: 'abcd',
-                maxZoom: 19
+                subdomains: 'abcd', maxZoom: 19
             }).addTo(leafletMap);
 
             markersGroup = L.layerGroup().addTo(leafletMap);
 
             Object.keys(countriesData).forEach(name => {
                 const country = countriesData[name];
-                if (country.coords && country.coords.lat !== 0) {
-                    const marker = L.circleMarker([country.coords.lat, country.coords.lng], {
-                        color: '#4f46e5',
-                        fillColor: '#4f46e5',
-                        fillOpacity: 0.8,
-                        radius: 8,
-                        weight: 2
-                    }).addTo(markersGroup);
+                if (!country.coords || country.coords.lat === 0) return;
 
-                    marker.bindPopup(`
-                        <div class="text-center p-1">
-                            <div class="text-4xl mb-2 drop-shadow-md">${country.flag}</div>
-                            <strong class="text-lg block mb-3 font-bold text-gray-800 dark:text-gray-100">${name}</strong>
-                            <button onclick="document.querySelector('.country-card[data-country-name=\\'${name}\\']')?.click()" class="btn-primary px-4 py-2 rounded-lg text-sm w-full font-semibold shadow-md">Detayları Keşfet</button>
+                const visa = country.visaStatus || '';
+                const { color } = getVisaColor(visa);
+                const icon = createPulseIcon(color);
+
+                const marker = L.marker([country.coords.lat, country.coords.lng], { icon })
+                    .addTo(markersGroup);
+
+                marker.bindPopup(() => {
+                    const popupDiv = document.createElement('div');
+                    popupDiv.style.cssText = 'min-width:200px;max-width:240px;padding:4px';
+                    const lang = (typeof currentLang !== 'undefined') ? currentLang : 'tr';
+                    popupDiv.innerHTML = `
+                        <div style="text-align:center;margin-bottom:10px">
+                            <div style="font-size:2.5rem;margin-bottom:4px">${country.flag || ''}</div>
+                            <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary)">${name}</div>
+                            <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:2px">${country.description ? country.description.substring(0, 70) + '...' : ''}</div>
                         </div>
-                    `, { className: 'premium-popup', closeButton: false });
-                }
+                        <table style="width:100%;border-collapse:collapse;font-size:0.78rem;margin-bottom:10px">
+                            <tr><td style="color:var(--text-secondary);padding:3px 0">${lang === 'en' ? '🛂 Visa' : '🛂 Vize'}</td>
+                                <td style="font-weight:600;color:${color};text-align:right">${country.visaStatus || '-'}</td></tr>
+                            <tr><td style="color:var(--text-secondary);padding:3px 0">${lang === 'en' ? '💰 Budget/day' : '💰 Günlük Bütçe'}</td>
+                                <td style="font-weight:600;color:var(--text-primary);text-align:right">${country.dailyBudget || '-'}</td></tr>
+                            <tr><td style="color:var(--text-secondary);padding:3px 0">${lang === 'en' ? '📅 Best Time' : '📅 En İyi Dönem'}</td>
+                                <td style="font-weight:600;color:var(--text-primary);text-align:right;max-width:110px">${country.bestTime || '-'}</td></tr>
+                        </table>
+                        <button onclick="window.vuelinaGoToCountry('${name}')" style="width:100%;padding:8px 12px;background:#4f46e5;color:white;border:none;border-radius:10px;font-weight:600;font-size:0.85rem;cursor:pointer">${lang === 'en' ? 'Explore' : 'Detayları Keşfet'} →</button>
+                    `;
+                    return popupDiv;
+                }, { className: 'premium-popup', closeButton: false, maxWidth: 260 });
+
+                // Tooltip on hover
+                marker.bindTooltip(`<strong>${country.flag || ''} ${name}</strong>`, {
+                    permanent: false, direction: 'top', offset: [0, -12],
+                    className: 'premium-tooltip'
+                });
+                allMarkers.push({ name, marker, lat: country.coords.lat, lng: country.coords.lng });
             });
+
+            // --- Legend Control ---
+            const legend = L.control({ position: 'bottomleft' });
+            legend.onAdd = () => {
+                const div = L.DomUtil.create('div', '');
+                const lang = (typeof currentLang !== 'undefined') ? currentLang : 'tr';
+                div.style.cssText = 'background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:12px 16px;font-size:0.78rem;box-shadow:0 4px 20px rgba(0,0,0,0.3);min-width:150px';
+                div.innerHTML = `
+                    <div style="font-weight:700;margin-bottom:8px;color:var(--text-primary)">${lang === 'en' ? '🗺️ Visa Legend' : '🗺️ Vize Durumu'}</div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block"></span><span style="color:var(--text-secondary)">${lang === 'en' ? 'Visa-free' : 'Vizesiz'}</span></div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;display:inline-block"></span><span style="color:var(--text-secondary)">${lang === 'en' ? 'On-arrival / e-Visa' : 'Kapıda / e-Vize'}</span></div>
+                    <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px"><span style="width:12px;height:12px;border-radius:50%;background:#818cf8;display:inline-block"></span><span style="color:var(--text-secondary)">Schengen</span></div>
+                    <div style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;background:#ef4444;display:inline-block"></span><span style="color:var(--text-secondary)">${lang === 'en' ? 'Visa required' : 'Vize Gerekli'}</span></div>
+                `;
+                return div;
+            };
+            legend.addTo(leafletMap);
+
+            // --- Map Search Box ---
+            const searchControl = L.control({ position: 'topleft' });
+            searchControl.onAdd = () => {
+                const div = L.DomUtil.create('div', '');
+                div.innerHTML = `<div style="position:relative">
+                    <input id="map-search-input" type="text" placeholder="🔍 ${(typeof currentLang !== 'undefined' && currentLang === 'en') ? 'Search countries on map...' : 'Haritada ülke ara...'}" 
+                        style="padding:10px 14px;border-radius:12px;border:1px solid var(--border-color);background:var(--card-bg);color:var(--text-primary);font-size:0.85rem;width:220px;outline:none;box-shadow:0 4px 16px rgba(0,0,0,0.3)">
+                    <div id="map-search-results" style="position:absolute;top:calc(100%+4px);left:0;right:0;background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.4);display:none;max-height:200px;overflow-y:auto;z-index:9999"></div>
+                </div>`;
+                L.DomEvent.disableClickPropagation(div);
+                return div;
+            };
+            searchControl.addTo(leafletMap);
+
+            // Wire up search functionality after adding to map
+            setTimeout(() => {
+                const mapSearchInput = document.getElementById('map-search-input');
+                const mapSearchResults = document.getElementById('map-search-results');
+                if (!mapSearchInput || !mapSearchResults) return;
+
+                mapSearchInput.addEventListener('input', () => {
+                    const q = mapSearchInput.value.trim().toLowerCase();
+                    if (q.length < 1) { mapSearchResults.style.display = 'none'; return; }
+                    const matches = allMarkers.filter(m => m.name.toLowerCase().includes(q));
+                    if (matches.length === 0) { mapSearchResults.style.display = 'none'; return; }
+                    mapSearchResults.innerHTML = matches.slice(0, 8).map(m => {
+                        const flag = countriesData[m.name]?.flag || '';
+                        return `<div onclick="window.vuelinaFlyToMarker('${m.name}')" style="padding:8px 12px;cursor:pointer;font-size:0.85rem;color:var(--text-primary);border-bottom:1px solid var(--border-color)" onmouseover="this.style.background='var(--background)'" onmouseout="this.style.background='transparent'">${flag} ${m.name}</div>`;
+                    }).join('');
+                    mapSearchResults.style.display = 'block';
+                });
+            }, 100);
+        };
+
+        window.vuelinaGoToCountry = (name) => {
+            const card = document.querySelector(`.country-card[data-country-name="${name}"]`);
+            if (card) { card.click(); return; }
+            // If on map view, switch to list and navigate
+            if (viewListBtn) viewListBtn.click();
+            setTimeout(() => {
+                const c = document.querySelector(`.country-card[data-country-name="${name}"]`);
+                if (c) c.click();
+            }, 300);
+        };
+
+        window.vuelinaFlyToMarker = (name) => {
+            const markerObj = allMarkers.find(m => m.name === name);
+            if (markerObj && leafletMap) {
+                leafletMap.flyTo([markerObj.lat, markerObj.lng], 5, { duration: 1.2 });
+                setTimeout(() => markerObj.marker.openPopup(), 1300);
+                const res = document.getElementById('map-search-results');
+                if (res) res.style.display = 'none';
+                const inp = document.getElementById('map-search-input');
+                if (inp) inp.value = name;
+            }
         };
 
         if (viewListBtn && viewMapBtn) {
