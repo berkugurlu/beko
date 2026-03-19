@@ -1177,7 +1177,17 @@
                                 </div>
                             </div>
 
-                            <div class="ad-area ad-infeed">[AD_AREA - IN_FEED]</div>
+                            <div class="ad-area ad-infeed">
+                                <ins class="adsbygoogle"
+                                     style="display:block"
+                                     data-ad-format="fluid"
+                                     data-ad-layout-key="-fb+5w+4e-db+86"
+                                     data-ad-client="ca-pub-9708298035800838"
+                                     data-ad-slot="1111111111"></ins>
+                                <script>
+                                     (adsbygoogle = window.adsbygoogle || []).push({});
+                                </script>
+                            </div>
                             <!-- AI Assistant Section -->
                              ${aiResultsContainerHtml}
 
@@ -1191,7 +1201,17 @@
                                 <iframe width="100%" height="100%" style="border:0; border-radius: 16px;" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${encodeURIComponent(countryName)}&t=&z=5&ie=UTF8&iwloc=&output=embed"></iframe>
                             </div>
 
-                            <div class="ad-area ad-square">[AD_AREA - SIDEBAR_SQUARE]</div>
+                            <div class="ad-area ad-square">
+                                <ins class="adsbygoogle"
+                                     style="display:block; width: 100%; height: 250px;"
+                                     data-ad-client="ca-pub-9708298035800838"
+                                     data-ad-slot="2222222222"
+                                     data-ad-format="auto"
+                                     data-full-width-responsive="true"></ins>
+                                <script>
+                                     (adsbygoogle = window.adsbygoogle || []).push({});
+                                </script>
+                            </div>
 
                             <!-- Quick Info -->
                             <div class="content-card glass-card p-6">
