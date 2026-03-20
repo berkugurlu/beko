@@ -48,6 +48,7 @@
 
         // --- AUTH LOGIC (MOCK) ---
         const authModalBtn = document.getElementById('auth-modal-btn');
+        const authModalBtnMobile = document.getElementById('auth-modal-btn-mobile');
         const authModal = document.getElementById('auth-modal');
         const authModalCloseBtn = document.getElementById('auth-modal-close-btn');
         const authForm = document.getElementById('auth-form');
@@ -56,19 +57,42 @@
         let currentUser = JSON.parse(localStorage.getItem('vuelina_user') || 'null');
 
         const updateAuthUI = () => {
-            if (!authModalBtn) return;
+            const langObj = typeof translations !== 'undefined' ? translations[currentLang] : null;
+            const profileText = langObj ? langObj['nav.profile'] : 'Profilim';
+            const loginText = langObj ? langObj['nav.login'] : 'Giriş Yap';
+            
             if (currentUser) {
                 // Profile View
-                authModalBtn.innerHTML = `
-                    <img src="${currentUser.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + currentUser.email}" class="w-6 h-6 rounded-full border-2 border-indigo-400 shadow-md" alt="Profile">
-                    <span data-i18n="nav.profile">${typeof translations !== 'undefined' && translations[currentLang] ? translations[currentLang]['nav.profile'] : 'Profilim'}</span>
-                `;
+                if (authModalBtn) {
+                    authModalBtn.innerHTML = `
+                        <img src="${currentUser.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + currentUser.email}" class="w-6 h-6 rounded-full border-2 border-indigo-400 shadow-md" alt="Profile">
+                        <span data-i18n="nav.profile">${profileText}</span>
+                    `;
+                }
+                if (authModalBtnMobile) {
+                    authModalBtnMobile.innerHTML = `
+                        <img src="${currentUser.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + currentUser.email}" class="w-5 h-5 rounded-full border border-indigo-200 mr-2" alt="Profile">
+                        <span data-i18n="nav.profile">${profileText}</span>
+                    `;
+                    authModalBtnMobile.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    authModalBtnMobile.classList.add('bg-card-bg', 'text-primary', 'border-border-color');
+                }
             } else {
                 // Login View
-                authModalBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <span data-i18n="nav.login">${typeof translations !== 'undefined' && translations[currentLang] ? translations[currentLang]['nav.login'] : 'Giriş Yap'}</span>
-                `;
+                if (authModalBtn) {
+                    authModalBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span data-i18n="nav.login">${loginText}</span>
+                    `;
+                }
+                if (authModalBtnMobile) {
+                    authModalBtnMobile.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span data-i18n="nav.login">${loginText}</span>
+                    `;
+                    authModalBtnMobile.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    authModalBtnMobile.classList.remove('bg-card-bg', 'text-primary', 'border-border-color');
+                }
             }
         };
 
@@ -81,19 +105,21 @@
             authModal.classList.remove('visible');
         };
 
-        if (authModalBtn) {
-            authModalBtn.addEventListener('click', () => {
-                if (currentUser) {
-                    if (confirm(typeof currentLang !== 'undefined' && currentLang === 'en' ? "Are you sure you want to log out?" : "Çıkış yapmak istediğinize emin misiniz?")) {
-                        currentUser = null;
-                        localStorage.removeItem('vuelina_user');
-                        updateAuthUI();
-                    }
-                } else {
-                    openAuthModal();
+        const handleAuthClick = (e) => {
+            if (e) e.preventDefault();
+            if (currentUser) {
+                if (confirm(typeof currentLang !== 'undefined' && currentLang === 'en' ? "Are you sure you want to log out?" : "Çıkış yapmak istediğinize emin misiniz?")) {
+                    currentUser = null;
+                    localStorage.removeItem('vuelina_user');
+                    updateAuthUI();
                 }
-            });
-        }
+            } else {
+                openAuthModal();
+            }
+        };
+
+        if (authModalBtn) authModalBtn.addEventListener('click', handleAuthClick);
+        if (authModalBtnMobile) authModalBtnMobile.addEventListener('click', handleAuthClick);
         
         if (authModalCloseBtn) {
             authModalCloseBtn.addEventListener('click', closeAuthModal);
@@ -774,6 +800,12 @@
             const favorites = getFavorites();
             let visibleCount = 0;
 
+            const getT = (key, defaultStr) => {
+                const lang = typeof currentLang !== 'undefined' ? currentLang : 'tr';
+                const dict = typeof translations !== 'undefined' ? translations[lang] : null;
+                return (dict && dict[key]) ? dict[key] : defaultStr;
+            };
+
             countryNames.forEach((name, index) => {
                 const country = countriesData[name];
                 const searchScope = [
@@ -801,6 +833,7 @@
 
                 if (matchesSearch && matchesTag && matchesFavorite) {
                     const isFav = favorites.includes(name);
+                    const visaLabel = getT('filter.' + (country.visaStatus || '').toLowerCase(), country.visaStatus) || 'Vize Bilgisi';
                     const visaStatus = country.visaStatus || 'Vize Bilgisi';
                     const bestTime = country.bestTime || 'En İyi Dönem';
                     const budget = country.dailyBudget || 'Bütçe';
@@ -821,20 +854,23 @@
                         <p class="text-base text-secondary line-clamp-3 leading-relaxed mb-4">${country.description}</p>
                         <div class="grid grid-cols-3 gap-2 mb-4 text-left">
                             <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
-                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Vize</div>
+                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Visa' : 'Vize'}</div>
                                 <div class="text-sm font-bold text-primary">🛂 ${visaStatus}</div>
                             </div>
                             <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
-                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Dönem</div>
+                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Period' : 'Dönem'}</div>
                                 <div class="text-sm font-bold text-primary">📅 ${bestTime}</div>
                             </div>
                             <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
-                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">Bütçe</div>
+                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Budget' : 'Bütçe'}</div>
                                 <div class="text-sm font-bold text-primary">💰 ${budget}</div>
                             </div>
                         </div>
                         <div class="mt-auto flex flex-wrap justify-center gap-2">
-                            ${country.tags.slice(0, 3).map(tag => `<span class="text-[10px] px-3 py-1.5 rounded-full bg-accent/5 text-accent font-semibold uppercase tracking-widest border border-accent/10">${tag}</span>`).join('')}
+                            ${country.tags.slice(0, 3).map(tag => {
+                                const tagT = getT('filter.' + tag, tag);
+                                return `<span class="text-[10px] px-3 py-1.5 rounded-full bg-accent/5 text-accent font-semibold uppercase tracking-widest border border-accent/10">${tagT}</span>`;
+                            }).join('')}
                         </div>
                     `;
                     countryListContainer.appendChild(card);
@@ -2127,40 +2163,53 @@
 
         // --- FILTERS ---
         const setupFilters = () => {
+            const lang = typeof currentLang !== 'undefined' ? currentLang : 'tr';
+            const dict = typeof translations !== 'undefined' ? translations[lang] : null;
+            const getT = (key, defaultStr) => (dict && dict[key]) ? dict[key] : defaultStr;
+
             const filters = [
-                { id: 'all', label: 'Tümü', icon: '🌍' },
-                { id: 'avrupa', label: 'Avrupa', icon: '🇪🇺' },
-                { id: 'asya', label: 'Asya', icon: '⛩️' },
-                { id: 'vizesiz', label: 'Vizesiz', icon: '🛂' },
-                { id: 'deniz', label: 'Deniz & Güneş', icon: '🌊' },
-                { id: 'tarih', label: 'Tarih & Kültür', icon: '🏛️' },
+                { id: 'all', label: getT('filter.all', 'Tümü'), icon: '🌍' },
+                { id: 'avrupa', label: getT('filter.avrupa', 'Avrupa'), icon: '🇪🇺' },
+                { id: 'asya', label: getT('filter.asya', 'Asya'), icon: '⛩️' },
+                { id: 'vizesiz', label: getT('filter.vizesiz', 'Vizesiz'), icon: '🛂' },
+                { id: 'deniz', label: getT('filter.deniz', 'Deniz & Güneş'), icon: '🌊' },
+                { id: 'tarih', label: getT('filter.tarih', 'Tarih & Kültür'), icon: '🏛️' },
                 { id: 'ekonomik', label: 'Ekonomik', icon: '💰' } // Placeholder for future logic
             ];
 
             const container = document.getElementById('filter-container');
             container.innerHTML = filters.map(f => `
-                <button data-filter="${f.id}" class="filter-chip px-4 py-2 rounded-full border border-border-color bg-card-bg text-secondary hover:border-accent hover:text-accent transition-all flex items-center gap-2 text-sm font-medium ${f.id === 'all' ? 'border-accent text-accent bg-accent/5' : ''}">
+                <button data-filter="${f.id}" class="filter-chip px-4 py-2 rounded-full border border-border-color bg-card-bg text-secondary hover:border-accent hover:text-accent transition-all flex items-center gap-2 text-sm font-medium ${f.id === activeTagFilter ? 'border-accent text-accent bg-accent/5' : ''}">
                     <span>${f.icon}</span> ${f.label}
                 </button>
             `).join('');
 
-            container.addEventListener('click', (e) => {
-                const btn = e.target.closest('.filter-chip');
-                if (!btn) return;
+            // Only attach event listener once if not attached
+            if (!container.dataset.listenerAttached) {
+                container.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.filter-chip');
+                    if (!btn) return;
 
-                // UI Update
-                container.querySelectorAll('.filter-chip').forEach(b => {
-                    b.classList.remove('border-accent', 'text-accent', 'bg-accent/5');
-                    b.classList.add('border-border-color', 'text-secondary');
+                    // UI Update
+                    container.querySelectorAll('.filter-chip').forEach(b => {
+                        b.classList.remove('border-accent', 'text-accent', 'bg-accent/5');
+                        b.classList.add('border-border-color', 'text-secondary');
+                    });
+                    btn.classList.remove('border-border-color', 'text-secondary');
+                    btn.classList.add('border-accent', 'text-accent', 'bg-accent/5');
+
+                    // Logic
+                    activeTagFilter = btn.dataset.filter;
+                    displayCountries(document.getElementById('search-input').value);
                 });
-                btn.classList.remove('border-border-color', 'text-secondary');
-                btn.classList.add('border-accent', 'text-accent', 'bg-accent/5');
-
-                // Logic
-                activeTagFilter = btn.dataset.filter;
-                displayCountries(document.getElementById('search-input').value);
-            });
+                container.dataset.listenerAttached = 'true';
+            }
         };
+
+        window.addEventListener('languageChanged', () => {
+            setupFilters();
+            displayCountries(document.getElementById('search-input') ? document.getElementById('search-input').value : '');
+        });
 
         // --- Olay Dinleyicileri ---
         // Ülke kartı ve Favori butonu tıklaması
