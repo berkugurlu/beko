@@ -576,20 +576,22 @@
                     <a href="?page=blog" id="nav-blog-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.blog">Blog</a>
                     <a href="/nedir" id="nav-what-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.what">Nedir?</a>
                     <a href="/hakkimizda" id="nav-about-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.about">Hakkımızda</a>
-                    <button id="lang-toggle-btn" class="ml-4 px-3 py-1.5 font-bold text-sm bg-card-bg border border-border-color rounded-lg text-primary hover:text-accent transition-colors shadow-sm w-12 text-center">TR</button>
                     <button id="auth-modal-btn" class="ml-2 btn-primary px-4 py-1.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-md">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         <span data-i18n="nav.login">Giriş Yap</span>
                     </button>
                 </div>
 
-                <button id="mobile-menu-btn" class="sm:hidden nav-link ml-2 inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="6" x2="21" y2="6"></line>
-                        <line x1="3" y1="12" x2="21" y2="12"></line>
-                        <line x1="3" y1="18" x2="21" y2="18"></line>
-                    </svg>
-                </button>
+                <div class="flex items-center gap-2 sm:gap-4 ml-4">
+                    <button id="lang-toggle-btn" class="px-2.5 sm:px-3 py-1.5 font-bold text-xs sm:text-sm bg-card-bg border border-border-color rounded-lg text-primary hover:text-accent transition-colors shadow-sm w-10 sm:w-12 text-center">TR</button>
+                    <button id="mobile-menu-btn" class="sm:hidden nav-link inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
             </nav>
         </div>
         <div id="mobile-menu" class="sm:hidden hidden border-t border-border-color shadow-lg">
@@ -636,9 +638,9 @@
                     <!-- Filters will be injected here -->
                 </div>
 
-                <div class="flex justify-center mt-10 gap-2 p-1 bg-background border border-border-color rounded-2xl w-max mx-auto shadow-sm">
-                    <button id="view-list-btn" class="px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold transition-all" data-i18n="btn.list">Liste Görünümü</button>
-                    <button id="view-map-btn" class="px-6 py-2.5 rounded-xl text-secondary hover:text-primary text-sm font-semibold transition-all" data-i18n="btn.map">Harita Görünümü</button>
+                <div class="flex flex-col sm:flex-row justify-center mt-10 gap-2 p-1.5 sm:p-1 bg-background border border-border-color rounded-2xl w-full max-w-[200px] sm:max-w-none sm:w-max mx-auto shadow-sm">
+                    <button id="view-list-btn" class="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-2.5 rounded-xl bg-accent text-white text-xs sm:text-sm font-semibold transition-all text-center whitespace-nowrap" data-i18n="btn.list">Liste Görünümü</button>
+                    <button id="view-map-btn" class="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-2.5 rounded-xl text-secondary hover:text-primary text-xs sm:text-sm font-semibold transition-all text-center whitespace-nowrap" data-i18n="btn.map">Harita Görünümü</button>
                 </div>
             </div>
 
