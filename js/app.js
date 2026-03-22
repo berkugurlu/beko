@@ -924,37 +924,15 @@
                 if (matchesSearch && matchesTag && matchesFavorite) {
                     const isFav = favorites.includes(name);
                     
-                    // -- DYNAMIC PASSPORT LOGIC --
-                    let visaStatus = country.visaStatus || 'Vize Bilgisi';
-                    let visaColorClass = 'text-primary';
-                    const schengenCountries = ["İtalya", "Fransa", "İspanya", "Yunanistan", "Almanya", "Avusturya", "Belçika", "Çek Cumhuriyeti", "Danimarka", "Estonya", "Finlandiya", "Hollanda", "İsveç", "İsviçre", "Letonya", "Litvanya", "Lüksemburg", "Macaristan", "Malta", "Polonya", "Portekiz", "Slovakya", "Slovenya"];
+                    // -- DYNAMIC VISA LOOKUP VIA visaData.js --
+                    const visaInfo = (typeof getVisaForPassport === 'function')
+                        ? getVisaForPassport(userPassport, name, country.visaStatus)
+                        : { status: country.visaStatus || 'Vize Bilgisi', note: '', colorClass: 'text-primary' };
                     
-                    if (userPassport !== 'Türkiye') {
-                        if (userPassport === 'Almanya' || userPassport === 'Fransa') {
-                            if (schengenCountries.includes(name) || name === 'Japonya' || name === 'ABD' || name === 'Birleşik Krallık' || name === 'Avustralya' || name === 'Kanada') {
-                                visaStatus = 'Vize Muaf';
-                                visaColorClass = 'text-green-400';
-                            } else {
-                                visaStatus = 'Konsolosluğa Danışın';
-                                visaColorClass = 'text-yellow-400';
-                            }
-                        } else if (userPassport === 'Japonya') {
-                            visaStatus = 'Vize Muaf'; // Most powerful mock
-                            visaColorClass = 'text-green-400';
-                        } else {
-                            // Placeholder default
-                            visaStatus = 'Konsolosluğa Danışın';
-                            visaColorClass = 'text-yellow-400';
-                        }
-                    } else {
-                        // For Turkey, use default mapped string colors visually if needed
-                        if (visaStatus.includes('Vizesiz')) visaColorClass = 'text-green-400';
-                        else if (visaStatus.includes('Schengen')) visaColorClass = 'text-indigo-400';
-                        else if (visaStatus.includes('Kapıda')) visaColorClass = 'text-orange-400';
-                        else visaColorClass = 'text-red-400';
-                    }
+                    const visaStatus = visaInfo.status;
+                    const visaNote = visaInfo.note;
+                    const visaColorClass = visaInfo.colorClass || 'text-primary';
 
-                    const visaLabel = getT('filter.' + (visaStatus || '').toLowerCase(), visaStatus) || 'Vize Bilgisi';
                     const bestTime = country.bestTime || 'En İyi Dönem';
                     const budget = country.dailyBudget || 'Bütçe';
                     const card = document.createElement('div');
@@ -972,18 +950,23 @@
                         <div class="text-8xl mb-6 transform group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500 drop-shadow-xl">${country.flag}</div>
                         <h3 class="text-2xl font-bold mb-3 text-primary group-hover:text-accent transition-colors">${name}</h3>
                         <p class="text-base text-secondary line-clamp-3 leading-relaxed mb-4">${country.description}</p>
-                        <div class="grid grid-cols-3 gap-2 mb-4 text-left">
-                            <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
-                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Visa' : 'Vize'}</div>
-                                <div class="text-[11px] sm:text-sm font-bold ${visaColorClass} truncate" title="${visaStatus}">🛂 ${visaStatus}</div>
+                        <div class="space-y-2 mb-4 text-left">
+                            <div class="p-3 rounded-2xl border border-border-color flex items-center justify-between" style="background-color: rgba(255,255,255,0.03);">
+                                <span class="text-xs uppercase tracking-wider text-secondary">${currentLang === 'en' ? '🛂 Visa' : '🛂 Vize'}</span>
+                                <div class="text-right">
+                                    <span class="text-sm font-bold ${visaColorClass}">${visaStatus}</span>
+                                    ${visaNote ? `<span class="block text-[10px] text-secondary mt-0.5">${visaNote}</span>` : ''}
+                                </div>
                             </div>
-                            <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
-                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Period' : 'Dönem'}</div>
-                                <div class="text-sm font-bold text-primary">📅 ${bestTime}</div>
-                            </div>
-                            <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
-                                <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Budget' : 'Bütçe'}</div>
-                                <div class="text-sm font-bold text-primary">💰 ${budget}</div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                    <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Period' : 'Dönem'}</div>
+                                    <div class="text-xs font-bold text-primary">📅 ${bestTime}</div>
+                                </div>
+                                <div class="p-3 rounded-2xl border border-border-color" style="background-color: rgba(255,255,255,0.03);">
+                                    <div class="text-[10px] uppercase tracking-wider text-secondary mb-1">${currentLang === 'en' ? 'Budget' : 'Bütçe'}</div>
+                                    <div class="text-xs font-bold text-primary">💰 ${budget}</div>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-auto flex flex-wrap justify-center gap-2">
@@ -1432,8 +1415,13 @@
             const packingListContent = aiGeneratedContent[countryName]?.packing ? formatGeminiResponse(aiGeneratedContent[countryName].packing) : 
                 `<p class="text-center text-secondary">Bavul hazırlama listesi oluşturulmadı. Lütfen butona tıklayarak Yapay Zeka Asistanından talep edin.</p>`;
 
+            // Use dynamic visa data based on selected passport
+            const detailVisaInfo = (typeof getVisaForPassport === 'function')
+                ? getVisaForPassport(userPassport, countryName, country.visaStatus)
+                : { status: country.visaStatus || 'Vize Bilgisi', note: '' };
+
             const quickLook = {
-                visa: country.visaStatus || 'Vize Bilgisi',
+                visa: detailVisaInfo.status + (detailVisaInfo.note ? ` (${detailVisaInfo.note})` : ''),
                 bestTime: country.bestTime || 'En İyi Dönem',
                 budget: country.dailyBudget || 'Bütçe',
                 plug: country.plugType || 'Priz Tipi',
