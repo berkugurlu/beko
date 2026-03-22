@@ -558,6 +558,40 @@
             white-space: nowrap;
         }
         .premium-tooltip::before { display: none; }
+
+        /* Google Translate Widget Styling */
+        #google_translate_element { display: inline-block; }
+        .goog-te-gadget { font-size: 0 !important; line-height: 0 !important; }
+        .goog-te-gadget > span { display: none !important; }
+        .goog-te-gadget .goog-te-combo {
+            background: var(--card-bg) !important;
+            color: var(--text-primary) !important;
+            border: 1.5px solid var(--border-color) !important;
+            border-radius: 10px !important;
+            padding: 6px 12px !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            font-family: inherit !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            cursor: pointer !important;
+            outline: none !important;
+            transition: border-color 0.2s, box-shadow 0.2s !important;
+            min-width: 90px !important;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%236366f1' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 10px center !important;
+            padding-right: 28px !important;
+        }
+        .goog-te-gadget .goog-te-combo:hover,
+        .goog-te-gadget .goog-te-combo:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+        }
+        .goog-te-banner-frame, .goog-te-ftab-link, #goog-gt-tt { display: none !important; }
+        body { top: 0 !important; }
+        .skiptranslate { display: none !important; }
+        .goog-te-gadget img { display: none !important; }
         
     </style>
 </head>

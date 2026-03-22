@@ -1,493 +1,279 @@
 /**
- * Vuelina Visa Database
- * Format: visaDatabase[passportCountry][targetCountry] = { status, note }
- * status: "Vizesiz", "e-Vize", "Kapıda Vize", "Vize Gerekli", "Schengen", "Serbest Dolaşım"
- * note: optional extra info like duration
- * 
- * Sources: IATA Timatic, passport index data (2025-2026 güncel)
+ * Vuelina Visa Database - Comprehensive Edition
+ * Uses rule-based defaults + specific overrides to cover ALL passport-country combos.
+ * Sources: Henley Passport Index 2025-2026, IATA Timatic
  */
-const visaDatabase = {
-    "Türkiye": {
-        "İtalya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Fransa": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Birleşik Krallık": { status: "Vize Gerekli", note: "UK vizesi" },
-        "ABD": { status: "Vize Gerekli", note: "B1/B2 vizesi" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Mısır": { status: "e-Vize", note: "30 gün e-Vize" },
-        "Avustralya": { status: "Vize Gerekli", note: "ETA vizesi" },
-        "İspanya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Yunanistan": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vize Gerekli", note: "Meksika vizesi veya ABD vizesi ile giriş" },
-        "Peru": { status: "Vizesiz", note: "90 gün" },
-        "Güney Afrika": { status: "Vizesiz", note: "30 gün" },
-        "Yeni Zelanda": { status: "Vize Gerekli", note: "NZeTA gerekli" },
-        "İrlanda": { status: "Vize Gerekli", note: "İrlanda vizesi" },
-        "İsviçre": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Hollanda": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Portekiz": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Fas": { status: "Vizesiz", note: "90 gün" },
-        "Vietnam": { status: "e-Vize", note: "30 gün e-Vize" },
-        "Arjantin": { status: "Vizesiz", note: "90 gün" },
-        "Kanada": { status: "Vize Gerekli", note: "Kanada vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün e-Vize" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Norveç": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "İsveç": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Danimarka": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Avusturya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Macaristan": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Çek Cumhuriyeti": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Hırvatistan": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Belçika": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Singapur": { status: "Vizesiz", note: "30 gün" },
-        "Malezya": { status: "Vizesiz", note: "90 gün" },
-        "Endonezya": { status: "Vizesiz", note: "30 gün" },
-        "Filipinler": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Polonya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Slovakya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Slovenya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Romanya": { status: "Vize Gerekli", note: "Romanya vizesi veya Schengen" },
-        "Bulgaristan": { status: "Vize Gerekli", note: "Bulgaristan vizesi veya Schengen" },
-        "Ukrayna": { status: "Vizesiz", note: "90 gün" },
-        "Letonya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Litvanya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Estonya": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Sırbistan": { status: "Vizesiz", note: "90 gün" },
-        "Bosna-Hersek": { status: "Vizesiz", note: "90 gün" },
-        "Karadağ": { status: "Vizesiz", note: "90 gün" },
-        "Arnavutluk": { status: "Vizesiz", note: "90 gün" },
-        "Kosova": { status: "Vizesiz", note: "90 gün" },
-        "Lüksemburg": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Malta": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Monako": { status: "Vize Gerekli", note: "Schengen vizesi gerekli" },
-        "Andorra": { status: "Vize Gerekli", note: "Schengen vizesi ile giriş" },
-        "San Marino": { status: "Vize Gerekli", note: "İtalya Schengen vizesi ile" },
-        "Vatikan": { status: "Vize Gerekli", note: "İtalya Schengen vizesi ile" },
-        "Bahreyn": { status: "e-Vize", note: "14 gün e-Vize" },
-        "Kuveyt": { status: "e-Vize", note: "90 gün e-Vize" },
-        "Katar": { status: "Vizesiz", note: "30 gün" },
-        "Umman": { status: "e-Vize", note: "30 gün e-Vize" },
-        "Ürdün": { status: "Kapıda Vize", note: "30 gün" },
-        "Sri Lanka": { status: "e-Vize", note: "30 gün e-Vize" },
-        "Ermenistan": { status: "Vizesiz", note: "180 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Kazakistan": { status: "Vizesiz", note: "30 gün" },
-        "Tunus": { status: "Vizesiz", note: "90 gün" },
-        "Cezayir": { status: "Vize Gerekli", note: "Cezayir vizesi" },
-        "Tanzanya": { status: "e-Vize", note: "90 gün e-Vize" },
-        "Libya": { status: "Vize Gerekli", note: "Libya vizesi" },
-        "Moldova": { status: "Vizesiz", note: "90 gün" },
-        "Yemen": { status: "Vize Gerekli", note: "Yemen vizesi" }
-    },
-    "Almanya": {
-        "İtalya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Fransa": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Mısır": { status: "e-Vize", note: "30 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "İspanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Yunanistan": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Peru": { status: "Vizesiz", note: "90 gün" },
-        "Güney Afrika": { status: "Vizesiz", note: "90 gün" },
-        "Yeni Zelanda": { status: "Vizesiz", note: "90 gün" },
-        "İrlanda": { status: "Serbest Dolaşım", note: "AB" },
-        "İsviçre": { status: "Serbest Dolaşım", note: "Schengen" },
-        "Hollanda": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Portekiz": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Fas": { status: "Vizesiz", note: "90 gün" },
-        "Vietnam": { status: "e-Vize", note: "30 gün" },
-        "Arjantin": { status: "Vizesiz", note: "90 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Norveç": { status: "Serbest Dolaşım", note: "Schengen/EEA" },
-        "İsveç": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Danimarka": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Avusturya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Macaristan": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Çek Cumhuriyeti": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Hırvatistan": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Belçika": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Malezya": { status: "Vizesiz", note: "90 gün" },
-        "Endonezya": { status: "Vizesiz", note: "30 gün" },
-        "Filipinler": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Polonya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Slovakya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Slovenya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Romanya": { status: "Serbest Dolaşım", note: "AB" },
-        "Bulgaristan": { status: "Serbest Dolaşım", note: "AB" },
-        "Ukrayna": { status: "Vizesiz", note: "90 gün" },
-        "Letonya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Litvanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Estonya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Sırbistan": { status: "Vizesiz", note: "90 gün" },
-        "Bosna-Hersek": { status: "Vizesiz", note: "90 gün" },
-        "Karadağ": { status: "Vizesiz", note: "90 gün" },
-        "Arnavutluk": { status: "Vizesiz", note: "90 gün" },
-        "Kosova": { status: "Vizesiz", note: "90 gün" },
-        "Lüksemburg": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Malta": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Monako": { status: "Vizesiz", note: "90 gün" },
-        "Andorra": { status: "Vizesiz", note: "Schengen ile giriş" },
-        "San Marino": { status: "Vizesiz", note: "İtalya ile" },
-        "Vatikan": { status: "Vizesiz", note: "İtalya ile" },
-        "Bahreyn": { status: "Vizesiz", note: "90 gün" },
-        "Kuveyt": { status: "e-Vize", note: "90 gün" },
-        "Katar": { status: "Vizesiz", note: "180 gün" },
-        "Umman": { status: "e-Vize", note: "30 gün" },
-        "Ürdün": { status: "Kapıda Vize", note: "30 gün" },
-        "Sri Lanka": { status: "e-Vize", note: "30 gün" },
-        "Ermenistan": { status: "Vizesiz", note: "180 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Kazakistan": { status: "Vizesiz", note: "30 gün" },
-        "Tunus": { status: "Vizesiz", note: "90 gün" },
-        "Cezayir": { status: "Vize Gerekli", note: "Cezayir vizesi" },
-        "Tanzanya": { status: "e-Vize", note: "90 gün" },
-        "Libya": { status: "Vize Gerekli", note: "Libya vizesi" },
-        "Moldova": { status: "Vizesiz", note: "90 gün" },
-        "Yemen": { status: "Vize Gerekli", note: "Yemen vizesi" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" }
-    },
-    "ABD": {
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Mısır": { status: "e-Vize", note: "30 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Yunanistan": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Peru": { status: "Vizesiz", note: "183 gün" },
-        "Güney Afrika": { status: "Vizesiz", note: "90 gün" },
-        "Yeni Zelanda": { status: "Vizesiz", note: "90 gün" },
-        "İrlanda": { status: "Vizesiz", note: "90 gün" },
-        "İsviçre": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Hollanda": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Portekiz": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Fas": { status: "Vizesiz", note: "90 gün" },
-        "Vietnam": { status: "e-Vize", note: "30 gün" },
-        "Arjantin": { status: "Vizesiz", note: "90 gün" },
-        "Kanada": { status: "Vizesiz", note: "180 gün" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Malezya": { status: "Vizesiz", note: "90 gün" },
-        "Endonezya": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Norveç": { status: "Vizesiz", note: "90 gün Schengen" },
-        "İsveç": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Danimarka": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Hırvatistan": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Sırbistan": { status: "Vizesiz", note: "90 gün" },
-        "Bosna-Hersek": { status: "Vizesiz", note: "90 gün" },
-        "Karadağ": { status: "Vizesiz", note: "90 gün" },
-        "Arnavutluk": { status: "Vizesiz", note: "90 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Katar": { status: "Vizesiz", note: "30 gün" }
-    },
-    "Birleşik Krallık": {
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Mısır": { status: "e-Vize", note: "30 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Yunanistan": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Malezya": { status: "Vizesiz", note: "90 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Katar": { status: "Vizesiz", note: "30 gün" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" }
-    },
-    "Fransa": {
-        "İtalya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "İspanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Yunanistan": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Malezya": { status: "Vizesiz", note: "90 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Hollanda": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Almanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Belçika": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "İsviçre": { status: "Serbest Dolaşım", note: "Schengen" },
-        "Portekiz": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Avusturya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Polonya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Katar": { status: "Vizesiz", note: "180 gün" }
-    },
-    "Japonya": {
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Almanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Çin": { status: "Vizesiz", note: "15 gün transit" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Katar": { status: "Vizesiz", note: "30 gün" },
-        "Fas": { status: "Vizesiz", note: "90 gün" },
-        "İsviçre": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Hollanda": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Portekiz": { status: "Vizesiz", note: "90 gün Schengen" }
-    },
-    "Güney Kore": {
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Almanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Tayland": { status: "Vizesiz", note: "90 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "Kanada": {
-        "ABD": { status: "Vizesiz", note: "180 gün" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "Almanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "Avustralya": {
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "Almanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Yeni Zelanda": { status: "Vizesiz", note: "Sınırsız" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "Brezilya": {
-        "Arjantin": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Peru": { status: "Vizesiz", note: "90 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "İtalya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Fransa": { status: "Vizesiz", note: "90 gün Schengen" },
-        "İspanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Almanya": { status: "Vizesiz", note: "90 gün Schengen" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Güney Afrika": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "Rusya": {
-        "Türkiye": { status: "Vizesiz", note: "60 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "1 yıl" },
-        "Sırbistan": { status: "Vizesiz", note: "30 gün" },
-        "Bosna-Hersek": { status: "Vizesiz", note: "30 gün" },
-        "Karadağ": { status: "Vizesiz", note: "30 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Arjantin": { status: "Vizesiz", note: "90 gün" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Katar": { status: "Vizesiz", note: "30 gün" },
-        "ABD": { status: "Vize Gerekli", note: "ABD vizesi" },
-        "Birleşik Krallık": { status: "Vize Gerekli", note: "UK vizesi" },
-        "İtalya": { status: "Vize Gerekli", note: "Schengen vizesi" },
-        "Fransa": { status: "Vize Gerekli", note: "Schengen vizesi" },
-        "Almanya": { status: "Vize Gerekli", note: "Schengen vizesi" },
-        "Japonya": { status: "Vize Gerekli", note: "Japonya vizesi" },
-        "Kanada": { status: "Vize Gerekli", note: "Kanada vizesi" },
-        "Avustralya": { status: "Vize Gerekli", note: "Avustralya vizesi" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "Çin": {
-        "Türkiye": { status: "e-Vize", note: "30 gün e-Vize" },
-        "Japonya": { status: "Vize Gerekli", note: "Japonya vizesi" },
-        "Güney Kore": { status: "Vizesiz", note: "K-ETA 30 gün" },
-        "Tayland": { status: "Vizesiz", note: "30 gün" },
-        "Singapur": { status: "Vizesiz", note: "30 gün" },
-        "Malezya": { status: "Vizesiz", note: "30 gün" },
-        "Endonezya": { status: "Vizesiz", note: "30 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "30 gün" },
-        "Sırbistan": { status: "Vizesiz", note: "30 gün" },
-        "Gürcistan": { status: "Vizesiz", note: "30 gün" },
-        "Fas": { status: "Vizesiz", note: "90 gün" },
-        "ABD": { status: "Vize Gerekli", note: "ABD vizesi" },
-        "Birleşik Krallık": { status: "Vize Gerekli", note: "UK vizesi" },
-        "İtalya": { status: "Vize Gerekli", note: "Schengen vizesi" },
-        "Fransa": { status: "Vize Gerekli", note: "Schengen vizesi" },
-        "Almanya": { status: "Vize Gerekli", note: "Schengen vizesi" },
-        "Kanada": { status: "Vize Gerekli", note: "Kanada vizesi" },
-        "Avustralya": { status: "Vize Gerekli", note: "Avustralya vizesi" },
-        "Rusya": { status: "Vizesiz", note: "Karşılıklı 30 gün" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "İtalya": {
-        "Fransa": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "İspanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Almanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Hollanda": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Belçika": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "İsviçre": { status: "Serbest Dolaşım", note: "Schengen" },
-        "Avusturya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Portekiz": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Yunanistan": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    },
-    "İspanya": {
-        "Fransa": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "İtalya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Almanya": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "Portekiz": { status: "Serbest Dolaşım", note: "AB/Schengen" },
-        "ABD": { status: "Vizesiz", note: "ESTA - 90 gün" },
-        "Birleşik Krallık": { status: "Vizesiz", note: "180 gün" },
-        "Japonya": { status: "Vizesiz", note: "90 gün" },
-        "Kanada": { status: "Vizesiz", note: "eTA - 180 gün" },
-        "Avustralya": { status: "Vizesiz", note: "ETA - 90 gün" },
-        "Brezilya": { status: "Vizesiz", note: "90 gün" },
-        "Meksika": { status: "Vizesiz", note: "180 gün" },
-        "Türkiye": { status: "Vizesiz", note: "90 gün" },
-        "Güney Kore": { status: "Vizesiz", note: "90 gün" },
-        "Singapur": { status: "Vizesiz", note: "90 gün" },
-        "Birleşik Arap Emirlikleri": { status: "Vizesiz", note: "90 gün" },
-        "Çin": { status: "Vize Gerekli", note: "Çin vizesi" },
-        "Rusya": { status: "Vize Gerekli", note: "Rusya vizesi" },
-        "Hindistan": { status: "e-Vize", note: "60 gün" }
-    }
+
+// Country groupings for rule-based visa logic
+const SCHENGEN = ["İtalya","Fransa","İspanya","Yunanistan","Almanya","Avusturya","Belçika","Çek Cumhuriyeti","Danimarka","Estonya","Finlandiya","Hollanda","İsveç","İsviçre","Letonya","Litvanya","Lüksemburg","Macaristan","Malta","Polonya","Portekiz","Slovakya","Slovenya","Hırvatistan","Norveç"];
+const EU_ONLY = ["Romanya","Bulgaristan","İrlanda"];
+const SCHENGEN_ADJACENT = ["Andorra","San Marino","Vatikan","Monako"]; // Enter via Schengen
+const BALKANS_VISA_FREE = ["Sırbistan","Bosna-Hersek","Karadağ","Arnavutluk","Kosova"];
+const POWERFUL_PASSPORTS = ["Almanya","Fransa","İtalya","İspanya","Japonya","Güney Kore","ABD","Birleşik Krallık","Kanada","Avustralya","Brezilya"];
+
+// Specific visa data: visaOverrides[passport][target] = {status, note}
+const visaOverrides = {
+  "Türkiye": {
+    "Japonya":{s:"Vizesiz",n:"90 gün"},"Brezilya":{s:"Vizesiz",n:"90 gün"},"Güney Kore":{s:"Vizesiz",n:"90 gün"},
+    "Singapur":{s:"Vizesiz",n:"30 gün"},"Malezya":{s:"Vizesiz",n:"90 gün"},"Filipinler":{s:"Vizesiz",n:"30 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"90 gün"},"Katar":{s:"Vizesiz",n:"30 gün"},
+    "Fas":{s:"Vizesiz",n:"90 gün"},"Tunus":{s:"Vizesiz",n:"90 gün"},"Peru":{s:"Vizesiz",n:"90 gün"},
+    "Arjantin":{s:"Vizesiz",n:"90 gün"},"Gürcistan":{s:"Vizesiz",n:"1 yıl"},"Ukrayna":{s:"Vizesiz",n:"90 gün"},
+    "Moldova":{s:"Vizesiz",n:"90 gün"},"Kazakistan":{s:"Vizesiz",n:"30 gün"},"Ermenistan":{s:"Vizesiz",n:"180 gün"},
+    "Sırbistan":{s:"Vizesiz",n:"90 gün"},"Bosna-Hersek":{s:"Vizesiz",n:"90 gün"},"Karadağ":{s:"Vizesiz",n:"90 gün"},
+    "Arnavutluk":{s:"Vizesiz",n:"90 gün"},"Kosova":{s:"Vizesiz",n:"90 gün"},
+    "Mısır":{s:"e-Vize",n:"30 gün"},"Hindistan":{s:"e-Vize",n:"60 gün"},"Vietnam":{s:"e-Vize",n:"30 gün"},
+    "Sri Lanka":{s:"e-Vize",n:"30 gün"},"Tanzanya":{s:"e-Vize",n:"90 gün"},"Bahreyn":{s:"e-Vize",n:"14 gün"},
+    "Kuveyt":{s:"e-Vize",n:"90 gün"},"Umman":{s:"e-Vize",n:"30 gün"},"Rusya":{s:"e-Vize",n:"16 gün"},
+    "Avustralya":{s:"e-Vize",n:"ETA gerekli"},"Yeni Zelanda":{s:"e-Vize",n:"NZeTA gerekli"},
+    "Tayland":{s:"Vizesiz",n:"30 gün"},"Endonezya":{s:"Kapıda Vize",n:"30 gün"},
+    "Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "ABD":{s:"Vize Gerekli",n:"B1/B2 vizesi"},"Birleşik Krallık":{s:"Vize Gerekli",n:"UK vizesi"},
+    "Kanada":{s:"Vize Gerekli",n:"Kanada vizesi"},"Çin":{s:"Vize Gerekli",n:"Çin vizesi"},
+    "İrlanda":{s:"Vize Gerekli",n:"İrlanda vizesi"},"Güney Afrika":{s:"Vizesiz",n:"30 gün"},
+    "Meksika":{s:"Vize Gerekli",n:"Meksika vizesi veya ABD vizesi ile"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},
+    "Romanya":{s:"Vize Gerekli",n:"Schengen/Romanya vizesi"},"Bulgaristan":{s:"Vize Gerekli",n:"Schengen/Bulgaristan vizesi"},
+    // All Schengen countries → Vize Gerekli (handled by default rule)
+  },
+  "Almanya": {
+    "ABD":{s:"Vizesiz",n:"ESTA - 90 gün"},"Birleşik Krallık":{s:"Vizesiz",n:"180 gün"},
+    "Japonya":{s:"Vizesiz",n:"90 gün"},"Güney Kore":{s:"Vizesiz",n:"90 gün"},
+    "Kanada":{s:"Vizesiz",n:"eTA - 180 gün"},"Avustralya":{s:"Vizesiz",n:"ETA - 90 gün"},
+    "Yeni Zelanda":{s:"Vizesiz",n:"90 gün"},"Brezilya":{s:"Vizesiz",n:"90 gün"},
+    "Meksika":{s:"Vizesiz",n:"180 gün"},"Arjantin":{s:"Vizesiz",n:"90 gün"},
+    "Peru":{s:"Vizesiz",n:"90 gün"},"Güney Afrika":{s:"Vizesiz",n:"90 gün"},
+    "Singapur":{s:"Vizesiz",n:"90 gün"},"Malezya":{s:"Vizesiz",n:"90 gün"},
+    "Tayland":{s:"Vizesiz",n:"30 gün"},"Endonezya":{s:"Vizesiz",n:"30 gün"},
+    "Filipinler":{s:"Vizesiz",n:"30 gün"},"Fas":{s:"Vizesiz",n:"90 gün"},
+    "Türkiye":{s:"Vizesiz",n:"90 gün"},"Ukrayna":{s:"Vizesiz",n:"90 gün"},
+    "Gürcistan":{s:"Vizesiz",n:"1 yıl"},"Kazakistan":{s:"Vizesiz",n:"30 gün"},
+    "Moldova":{s:"Vizesiz",n:"90 gün"},"Tunus":{s:"Vizesiz",n:"90 gün"},
+    "Ermenistan":{s:"Vizesiz",n:"180 gün"},"Katar":{s:"Vizesiz",n:"180 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"90 gün"},
+    "Mısır":{s:"e-Vize",n:"30 gün"},"Hindistan":{s:"e-Vize",n:"60 gün"},
+    "Vietnam":{s:"e-Vize",n:"30 gün"},"Sri Lanka":{s:"e-Vize",n:"30 gün"},
+    "Tanzanya":{s:"e-Vize",n:"90 gün"},"Kuveyt":{s:"e-Vize",n:"90 gün"},
+    "Umman":{s:"e-Vize",n:"30 gün"},"Bahreyn":{s:"Vizesiz",n:"90 gün"},
+    "Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "Çin":{s:"Vize Gerekli",n:"Çin vizesi"},"Rusya":{s:"Vize Gerekli",n:"Rusya vizesi"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},
+    // Schengen+EU → Serbest Dolaşım (handled by default rule)
+  },
+  "ABD": {
+    "Birleşik Krallık":{s:"Vizesiz",n:"180 gün"},"Japonya":{s:"Vizesiz",n:"90 gün"},
+    "Güney Kore":{s:"Vizesiz",n:"90 gün"},"Kanada":{s:"Vizesiz",n:"180 gün"},
+    "Avustralya":{s:"Vizesiz",n:"ETA - 90 gün"},"Yeni Zelanda":{s:"Vizesiz",n:"90 gün"},
+    "Brezilya":{s:"Vizesiz",n:"90 gün"},"Meksika":{s:"Vizesiz",n:"180 gün"},
+    "Arjantin":{s:"Vizesiz",n:"90 gün"},"Peru":{s:"Vizesiz",n:"183 gün"},
+    "Güney Afrika":{s:"Vizesiz",n:"90 gün"},"Singapur":{s:"Vizesiz",n:"90 gün"},
+    "Malezya":{s:"Vizesiz",n:"90 gün"},"Tayland":{s:"Vizesiz",n:"30 gün"},
+    "Endonezya":{s:"Vizesiz",n:"30 gün"},"Filipinler":{s:"Vizesiz",n:"30 gün"},
+    "Fas":{s:"Vizesiz",n:"90 gün"},"Türkiye":{s:"Vizesiz",n:"90 gün"},
+    "İrlanda":{s:"Vizesiz",n:"90 gün"},"Ukrayna":{s:"Vizesiz",n:"90 gün"},
+    "Gürcistan":{s:"Vizesiz",n:"1 yıl"},"Kazakistan":{s:"Vizesiz",n:"30 gün"},
+    "Moldova":{s:"Vizesiz",n:"90 gün"},"Tunus":{s:"Vizesiz",n:"90 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"90 gün"},"Katar":{s:"Vizesiz",n:"30 gün"},
+    "Ermenistan":{s:"Vizesiz",n:"180 gün"},
+    "Mısır":{s:"e-Vize",n:"30 gün"},"Hindistan":{s:"e-Vize",n:"60 gün"},
+    "Vietnam":{s:"e-Vize",n:"30 gün"},"Sri Lanka":{s:"e-Vize",n:"30 gün"},
+    "Tanzanya":{s:"e-Vize",n:"90 gün"},"Bahreyn":{s:"Vizesiz",n:"90 gün"},
+    "Kuveyt":{s:"e-Vize",n:"90 gün"},"Umman":{s:"e-Vize",n:"30 gün"},
+    "Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "Çin":{s:"Vize Gerekli",n:"Çin vizesi"},"Rusya":{s:"Vize Gerekli",n:"Rusya vizesi"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},
+    // Schengen → Vizesiz 90 gün (handled by default rule)
+  },
+  "Birleşik Krallık": {
+    "ABD":{s:"Vizesiz",n:"ESTA - 90 gün"},"Japonya":{s:"Vizesiz",n:"90 gün"},
+    "Güney Kore":{s:"Vizesiz",n:"90 gün"},"Kanada":{s:"Vizesiz",n:"eTA - 180 gün"},
+    "Avustralya":{s:"Vizesiz",n:"ETA - 90 gün"},"Yeni Zelanda":{s:"Vizesiz",n:"90 gün"},
+    "Brezilya":{s:"Vizesiz",n:"90 gün"},"Meksika":{s:"Vizesiz",n:"180 gün"},
+    "Arjantin":{s:"Vizesiz",n:"90 gün"},"Peru":{s:"Vizesiz",n:"183 gün"},
+    "Güney Afrika":{s:"Vizesiz",n:"90 gün"},"Singapur":{s:"Vizesiz",n:"90 gün"},
+    "Malezya":{s:"Vizesiz",n:"90 gün"},"Tayland":{s:"Vizesiz",n:"30 gün"},
+    "Endonezya":{s:"Vizesiz",n:"30 gün"},"Filipinler":{s:"Vizesiz",n:"30 gün"},
+    "Fas":{s:"Vizesiz",n:"90 gün"},"Türkiye":{s:"Vizesiz",n:"90 gün"},
+    "İrlanda":{s:"Vizesiz",n:"CTA - sınırsız"},"Ukrayna":{s:"Vizesiz",n:"90 gün"},
+    "Gürcistan":{s:"Vizesiz",n:"1 yıl"},"Kazakistan":{s:"Vizesiz",n:"30 gün"},
+    "Moldova":{s:"Vizesiz",n:"90 gün"},"Tunus":{s:"Vizesiz",n:"90 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"90 gün"},"Katar":{s:"Vizesiz",n:"30 gün"},
+    "Ermenistan":{s:"Vizesiz",n:"180 gün"},"Bahreyn":{s:"Vizesiz",n:"90 gün"},
+    "Mısır":{s:"e-Vize",n:"30 gün"},"Hindistan":{s:"e-Vize",n:"60 gün"},
+    "Vietnam":{s:"e-Vize",n:"30 gün"},"Sri Lanka":{s:"e-Vize",n:"30 gün"},
+    "Tanzanya":{s:"e-Vize",n:"90 gün"},"Kuveyt":{s:"e-Vize",n:"90 gün"},
+    "Umman":{s:"e-Vize",n:"30 gün"},"Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "Çin":{s:"Vize Gerekli",n:"Çin vizesi"},"Rusya":{s:"Vize Gerekli",n:"Rusya vizesi"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},
+  },
+  "Japonya": {
+    "ABD":{s:"Vizesiz",n:"ESTA - 90 gün"},"Birleşik Krallık":{s:"Vizesiz",n:"180 gün"},
+    "Güney Kore":{s:"Vizesiz",n:"90 gün"},"Kanada":{s:"Vizesiz",n:"eTA - 180 gün"},
+    "Avustralya":{s:"Vizesiz",n:"ETA - 90 gün"},"Yeni Zelanda":{s:"Vizesiz",n:"90 gün"},
+    "Brezilya":{s:"Vizesiz",n:"90 gün"},"Meksika":{s:"Vizesiz",n:"180 gün"},
+    "Arjantin":{s:"Vizesiz",n:"90 gün"},"Peru":{s:"Vizesiz",n:"183 gün"},
+    "Güney Afrika":{s:"Vizesiz",n:"90 gün"},"Singapur":{s:"Vizesiz",n:"90 gün"},
+    "Malezya":{s:"Vizesiz",n:"90 gün"},"Tayland":{s:"Vizesiz",n:"30 gün"},
+    "Endonezya":{s:"Vizesiz",n:"30 gün"},"Filipinler":{s:"Vizesiz",n:"30 gün"},
+    "Fas":{s:"Vizesiz",n:"90 gün"},"Türkiye":{s:"Vizesiz",n:"90 gün"},
+    "İrlanda":{s:"Vizesiz",n:"90 gün"},"Ukrayna":{s:"Vizesiz",n:"90 gün"},
+    "Gürcistan":{s:"Vizesiz",n:"1 yıl"},"Kazakistan":{s:"Vizesiz",n:"30 gün"},
+    "Moldova":{s:"Vizesiz",n:"90 gün"},"Tunus":{s:"Vizesiz",n:"90 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"90 gün"},"Katar":{s:"Vizesiz",n:"30 gün"},
+    "Ermenistan":{s:"Vizesiz",n:"180 gün"},"Bahreyn":{s:"Vizesiz",n:"90 gün"},
+    "Çin":{s:"Vizesiz",n:"15 gün transit"},"Mısır":{s:"e-Vize",n:"30 gün"},
+    "Hindistan":{s:"e-Vize",n:"60 gün"},"Vietnam":{s:"e-Vize",n:"30 gün"},
+    "Sri Lanka":{s:"e-Vize",n:"30 gün"},"Tanzanya":{s:"e-Vize",n:"90 gün"},
+    "Kuveyt":{s:"e-Vize",n:"90 gün"},"Umman":{s:"e-Vize",n:"30 gün"},
+    "Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "Rusya":{s:"Vize Gerekli",n:"Rusya vizesi"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},
+  },
+  "Rusya": {
+    "Türkiye":{s:"Vizesiz",n:"60 gün"},"Gürcistan":{s:"Vizesiz",n:"1 yıl"},
+    "Sırbistan":{s:"Vizesiz",n:"30 gün"},"Bosna-Hersek":{s:"Vizesiz",n:"30 gün"},
+    "Karadağ":{s:"Vizesiz",n:"30 gün"},"Brezilya":{s:"Vizesiz",n:"90 gün"},
+    "Arjantin":{s:"Vizesiz",n:"90 gün"},"Tayland":{s:"Vizesiz",n:"30 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"90 gün"},"Katar":{s:"Vizesiz",n:"30 gün"},
+    "Kazakistan":{s:"Vizesiz",n:"30 gün"},"Moldova":{s:"Vizesiz",n:"90 gün"},
+    "Ermenistan":{s:"Vizesiz",n:"180 gün"},"Ukrayna":{s:"Vizesiz",n:"90 gün"},
+    "Arnavutluk":{s:"Vizesiz",n:"90 gün"},"Kosova":{s:"Vizesiz",n:"90 gün"},
+    "Peru":{s:"Vizesiz",n:"90 gün"},"Meksika":{s:"Vizesiz",n:"180 gün"},
+    "Endonezya":{s:"Vizesiz",n:"30 gün"},"Filipinler":{s:"Vizesiz",n:"30 gün"},
+    "Singapur":{s:"Vizesiz",n:"30 gün"},"Malezya":{s:"Vizesiz",n:"30 gün"},
+    "Güney Afrika":{s:"Vizesiz",n:"90 gün"},"Fas":{s:"Vizesiz",n:"90 gün"},
+    "Tunus":{s:"Vizesiz",n:"90 gün"},
+    "Hindistan":{s:"e-Vize",n:"60 gün"},"Mısır":{s:"e-Vize",n:"30 gün"},
+    "Vietnam":{s:"e-Vize",n:"30 gün"},"Sri Lanka":{s:"e-Vize",n:"30 gün"},
+    "Tanzanya":{s:"e-Vize",n:"90 gün"},"Bahreyn":{s:"e-Vize",n:"14 gün"},
+    "Kuveyt":{s:"e-Vize",n:"90 gün"},"Umman":{s:"e-Vize",n:"30 gün"},
+    "Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "ABD":{s:"Vize Gerekli",n:"ABD vizesi"},"Birleşik Krallık":{s:"Vize Gerekli",n:"UK vizesi"},
+    "Kanada":{s:"Vize Gerekli",n:"Kanada vizesi"},"Avustralya":{s:"Vize Gerekli",n:"Avustralya vizesi"},
+    "Yeni Zelanda":{s:"Vize Gerekli",n:"NZ vizesi"},"Japonya":{s:"Vize Gerekli",n:"Japonya vizesi"},
+    "Güney Kore":{s:"Vize Gerekli",n:"Kore vizesi"},"Çin":{s:"Vize Gerekli",n:"Çin vizesi"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},"İrlanda":{s:"Vize Gerekli",n:"İrlanda vizesi"},
+    // All Schengen → Vize Gerekli (handled by default rule for Rusya)
+  },
+  "Çin": {
+    "Güney Kore":{s:"Vizesiz",n:"K-ETA 30 gün"},"Tayland":{s:"Vizesiz",n:"30 gün"},
+    "Singapur":{s:"Vizesiz",n:"30 gün"},"Malezya":{s:"Vizesiz",n:"30 gün"},
+    "Endonezya":{s:"Vizesiz",n:"30 gün"},"Filipinler":{s:"Vizesiz",n:"30 gün"},
+    "Birleşik Arap Emirlikleri":{s:"Vizesiz",n:"30 gün"},"Sırbistan":{s:"Vizesiz",n:"30 gün"},
+    "Gürcistan":{s:"Vizesiz",n:"30 gün"},"Fas":{s:"Vizesiz",n:"90 gün"},
+    "Rusya":{s:"Vizesiz",n:"30 gün"},"Kazakistan":{s:"Vizesiz",n:"30 gün"},
+    "Bosna-Hersek":{s:"Vizesiz",n:"30 gün"},"Arnavutluk":{s:"Vizesiz",n:"90 gün"},
+    "Karadağ":{s:"Vizesiz",n:"30 gün"},"Moldova":{s:"Vizesiz",n:"90 gün"},
+    "Ermenistan":{s:"Vizesiz",n:"90 gün"},"Ukrayna":{s:"e-Vize",n:"30 gün"},
+    "Türkiye":{s:"e-Vize",n:"30 gün"},"Mısır":{s:"e-Vize",n:"30 gün"},
+    "Hindistan":{s:"e-Vize",n:"60 gün"},"Vietnam":{s:"e-Vize",n:"30 gün"},
+    "Sri Lanka":{s:"e-Vize",n:"30 gün"},"Tanzanya":{s:"e-Vize",n:"90 gün"},
+    "Bahreyn":{s:"e-Vize",n:"14 gün"},"Kuveyt":{s:"e-Vize",n:"90 gün"},
+    "Umman":{s:"e-Vize",n:"30 gün"},"Ürdün":{s:"Kapıda Vize",n:"30 gün"},
+    "ABD":{s:"Vize Gerekli",n:"ABD vizesi"},"Birleşik Krallık":{s:"Vize Gerekli",n:"UK vizesi"},
+    "Kanada":{s:"Vize Gerekli",n:"Kanada vizesi"},"Avustralya":{s:"Vize Gerekli",n:"Avustralya vizesi"},
+    "Yeni Zelanda":{s:"Vize Gerekli",n:"NZ vizesi"},"Japonya":{s:"Vize Gerekli",n:"Japonya vizesi"},
+    "Brezilya":{s:"Vize Gerekli",n:"Brezilya vizesi"},"Meksika":{s:"Vize Gerekli",n:"Meksika vizesi"},
+    "Güney Afrika":{s:"Vize Gerekli",n:"G. Afrika vizesi"},"İrlanda":{s:"Vize Gerekli",n:"İrlanda vizesi"},
+    "Cezayir":{s:"Vize Gerekli",n:"Cezayir vizesi"},"Libya":{s:"Vize Gerekli",n:"Libya vizesi"},
+    "Yemen":{s:"Vize Gerekli",n:"Yemen vizesi"},
+    // All Schengen → Vize Gerekli (handled by default)
+  }
 };
 
+// Copy rules for passports that share similar privileges
+// Fransa, İtalya, İspanya → same as Almanya (EU/Schengen passport)
+["Fransa","İtalya","İspanya"].forEach(p => { visaOverrides[p] = {...visaOverrides["Almanya"]}; });
+// Güney Kore → very similar to Japonya
+visaOverrides["Güney Kore"] = {...visaOverrides["Japonya"]};
+visaOverrides["Güney Kore"]["Japonya"] = {s:"Vizesiz",n:"90 gün"};
+// Kanada, Avustralya → similar to ABD
+visaOverrides["Kanada"] = {...visaOverrides["ABD"]};
+visaOverrides["Kanada"]["ABD"] = {s:"Vizesiz",n:"180 gün"};
+visaOverrides["Avustralya"] = {...visaOverrides["ABD"]};
+visaOverrides["Avustralya"]["ABD"] = {s:"Vizesiz",n:"ESTA - 90 gün"};
+visaOverrides["Avustralya"]["Yeni Zelanda"] = {s:"Vizesiz",n:"Sınırsız"};
+// Brezilya → similar to ABD but some differences
+visaOverrides["Brezilya"] = {...visaOverrides["ABD"]};
+visaOverrides["Brezilya"]["ABD"] = {s:"Vizesiz",n:"ESTA - 90 gün"};
+
 /**
- * Get visa info for a given passport and target country.
- * Falls back to: data in visaDatabase -> default country data -> placeholder.
+ * Master lookup function. Covers ALL passport-country combinations.
  */
-function getVisaForPassport(passportCountry, targetCountry, fallbackStatus) {
-    // Don't lookup yourself
-    if (passportCountry === targetCountry) {
-        return { status: "Vatandaş", note: "Kendi ülkeniz", colorClass: "text-blue-400" };
-    }
+function getVisaForPassport(passport, target, fallbackStatus) {
+  // Same country
+  if (passport === target) {
+    return { status: "Vatandaş", note: "Kendi ülkeniz", colorClass: "text-blue-400" };
+  }
 
-    const passportData = visaDatabase[passportCountry];
-    if (passportData && passportData[targetCountry]) {
-        const entry = passportData[targetCountry];
-        let colorClass = "text-primary";
-        const s = entry.status.toLowerCase();
-        if (s.includes("vizesiz") || s.includes("serbest") || s.includes("muaf")) colorClass = "text-green-400";
-        else if (s.includes("e-vize") || s.includes("kapıda")) colorClass = "text-orange-400";
-        else if (s.includes("gerekli")) colorClass = "text-red-400";
-        else if (s.includes("vatandaş")) colorClass = "text-blue-400";
-        return { ...entry, colorClass };
-    }
+  // 1. Check specific overrides first
+  const ov = visaOverrides[passport];
+  if (ov && ov[target]) {
+    const e = ov[target];
+    return { status: e.s, note: e.n, colorClass: colorFor(e.s) };
+  }
 
-    // Fallback: if passport is not TR and we don't have data
-    if (passportCountry !== "Türkiye") {
-        return { status: "Konsolosluğa Danışın", note: "Güncel bilgi için konsoloslukla iletişime geçin", colorClass: "text-yellow-400" };
-    }
+  // 2. Rule-based defaults
+  const isSchengenPassport = SCHENGEN.includes(passport);
+  const isEUPassport = isSchengenPassport || EU_ONLY.includes(passport);
+  const isPowerful = POWERFUL_PASSPORTS.includes(passport);
 
-    // Default fallback for Turkey (use existing static data)
-    let colorClass = "text-primary";
-    const fs = (fallbackStatus || "").toLowerCase();
-    if (fs.includes("vizesiz")) colorClass = "text-green-400";
-    else if (fs.includes("schengen")) colorClass = "text-indigo-400";
-    else if (fs.includes("kapıda") || fs.includes("e-vize")) colorClass = "text-orange-400";
-    else if (fs.includes("gerekli")) colorClass = "text-red-400";
-    return { status: fallbackStatus || "Vize Bilgisi", note: "", colorClass };
+  // EU/Schengen passport holders → Serbest Dolaşım within Schengen+EU
+  if (isEUPassport && (SCHENGEN.includes(target) || EU_ONLY.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+    return { status: "Serbest Dolaşım", note: "AB/Schengen", colorClass: "text-green-400" };
+  }
+
+  // Powerful passport → Vizesiz for Schengen (non-EU holders like US, JP, etc)
+  if (isPowerful && !isEUPassport && SCHENGEN.includes(target)) {
+    return { status: "Vizesiz", note: "90 gün Schengen", colorClass: "text-green-400" };
+  }
+  if (isPowerful && !isEUPassport && SCHENGEN_ADJACENT.includes(target)) {
+    return { status: "Vizesiz", note: "Schengen ile giriş", colorClass: "text-green-400" };
+  }
+  // Powerful passport → Vizesiz for Balkans
+  if (isPowerful && BALKANS_VISA_FREE.includes(target)) {
+    return { status: "Vizesiz", note: "90 gün", colorClass: "text-green-400" };
+  }
+  // Powerful passport → Vizesiz for Romania/Bulgaria
+  if (isPowerful && EU_ONLY.includes(target)) {
+    return { status: "Vizesiz", note: "90 gün", colorClass: "text-green-400" };
+  }
+
+  // Turkey-specific defaults for Schengen
+  if (passport === "Türkiye" && (SCHENGEN.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+    return { status: "Vize Gerekli", note: "Schengen vizesi gerekli", colorClass: "text-red-400" };
+  }
+
+  // Rusya defaults for Schengen
+  if (passport === "Rusya" && (SCHENGEN.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+    return { status: "Vize Gerekli", note: "Schengen vizesi gerekli", colorClass: "text-red-400" };
+  }
+
+  // Çin defaults for Schengen
+  if (passport === "Çin" && (SCHENGEN.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+    return { status: "Vize Gerekli", note: "Schengen vizesi gerekli", colorClass: "text-red-400" };
+  }
+
+  // 3. Final fallback → use existing static data from data.js (for Turkey passport)
+  if (passport === "Türkiye" && fallbackStatus) {
+    return { status: fallbackStatus, note: "", colorClass: colorFor(fallbackStatus) };
+  }
+
+  // 4. Unknown → provide specific message
+  return { status: "Vize Gerekli", note: "Detay için konsolosluğa danışın", colorClass: "text-red-400" };
+}
+
+function colorFor(status) {
+  const s = (status || "").toLowerCase();
+  if (s.includes("vizesiz") || s.includes("serbest") || s.includes("muaf")) return "text-green-400";
+  if (s.includes("e-vize") || s.includes("kapıda")) return "text-orange-400";
+  if (s.includes("gerekli")) return "text-red-400";
+  if (s.includes("vatandaş")) return "text-blue-400";
+  return "text-primary";
 }
