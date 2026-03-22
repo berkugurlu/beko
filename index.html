@@ -34,8 +34,17 @@
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
-    <!-- GSAP Core -->
+    <!-- GSAP Core & Plugins -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'tr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+    }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -583,10 +592,17 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         <span data-i18n="nav.login">Giriş Yap</span>
                     </button>
+                    <!-- Passport Button (Desktop) -->
+                    <button id="passport-btn" class="ml-2 px-3 py-1.5 font-bold text-sm bg-card-bg border border-border-color rounded-xl text-primary hover:text-accent transition-colors shadow-sm flex items-center gap-2">
+                        <span>🌍</span> <span id="current-passport-text">Türkiye</span>
+                    </button>
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-4 ml-4">
-                    <button id="lang-toggle-btn" class="px-2.5 sm:px-3 py-1.5 font-bold text-xs sm:text-sm bg-card-bg border border-border-color rounded-lg text-primary hover:text-accent transition-colors shadow-sm w-10 sm:w-12 text-center">TR</button>
+                    <div id="google_translate_element" class="mr-2 overflow-hidden rounded-lg"></div>
+                    <button id="passport-btn-mobile" class="sm:hidden px-2.5 py-1.5 font-bold text-xs bg-card-bg border border-border-color rounded-lg text-primary hover:text-accent transition-colors shadow-sm flex items-center gap-1">
+                        🌍
+                    </button>
                     <button id="mobile-menu-btn" class="sm:hidden nav-link inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -815,16 +831,30 @@
         </div>
     </div>
 
+    <!-- PASSPORT MODAL -->
+    <div id="passport-modal" class="modal-overlay" aria-modal="true" role="dialog">
+        <div class="modal-content content-card w-full max-w-md p-8 relative">
+            <button id="passport-modal-close-btn" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white transition-colors">&times;</button>
+            <h3 class="text-2xl font-bold mb-4">Hangi ülkenin vatandaşısınız?</h3>
+            <p class="text-secondary mb-6 text-sm">Vize deneyiminizi kişiselleştirmek için pasaportunuzu seçin.</p>
+            <input type="text" id="passport-search" class="w-full mb-4" placeholder="Ülke ara... (Örn: Almanya)">
+            <ul id="passport-list" class="max-h-60 overflow-y-auto space-y-2 border border-border-color rounded-xl p-2 bg-background">
+                <!-- Javascript will populate this -->
+            </ul>
+        </div>
+    </div>
+
     <!-- GSAP HERO ANIMATIONS -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
             // Wait a small delay to ensure loading screen or UI state is settled
             setTimeout(() => {
                 const titleEl = document.getElementById("hero-title");
                 if (!titleEl) return;
 
-                // Simple SplitText alternative to prevent destroying <i> or nested tags,
-                // But typically title is pure text. Let's wrap each character in a span.
+                // Simple SplitText alternative
                 const text = titleEl.innerText;
                 titleEl.innerHTML = ""; // Clear existing
                 
@@ -855,29 +885,35 @@
                 // Prepare GSAP Timeline
                 const tl = gsap.timeline();
 
-                // 1. Letters drop from top (Apple-style smooth drop)
+                // 0. Logo presentation
+                gsap.set("#home-link", { scale: 0.95, opacity: 0 });
+                tl.to("#home-link", { scale: 1, opacity: 1, duration: 1.2, ease: "power4.out" });
+
+                // 1. Letters drop from bottom to top (Apple-style premium fade)
                 tl.fromTo(".hero-title .char", 
-                    { y: -60, opacity: 0, rotateX: 45 }, 
-                    { y: 0, opacity: 1, rotateX: 0, stagger: 0.04, ease: "back.out(1.5)", duration: 0.8 }
+                    { y: 30, opacity: 0 }, 
+                    { y: 0, opacity: 1, stagger: 0.03, ease: "expo.out", duration: 1.2 },
+                    "-=0.8"
                 );
 
-                // 2. Slogan fades in with slight upward motion
+                // 2. Slogan fades in with blur effect
+                gsap.set("#hero-subtitle", { filter: "blur(10px)" });
                 tl.to("#hero-subtitle", 
-                    { opacity: 1, y: -10, duration: 1, ease: "power3.out" }, 
-                    "-=0.4"
+                    { opacity: 1, filter: "blur(0px)", y: -10, duration: 1.5, ease: "power3.out" }, 
+                    "-=0.9"
                 );
 
                 // 3. Search Bar, Filters and Map Toggles appear smoothly
                 tl.to(["#hero-search-wrapper", "#filter-container", "#hero-views-wrapper"], 
-                    { opacity: 1, y: -10, stagger: 0.15, duration: 0.8, ease: "power2.out" }, 
-                    "-=0.6"
+                    { opacity: 1, y: -10, stagger: 0.1, duration: 1, ease: "power3.out" }, 
+                    "-=1"
                 );
 
                 // 4. "Hemen Başla" button scale-up & glow (Premium CTA Entrance)
                 tl.fromTo("#hero-cta-wrapper", 
-                    { opacity: 0, scale: 0.7, y: 20 }, 
-                    { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "elastic.out(1, 0.4)" }, 
-                    "-=0.7"
+                    { opacity: 0, scale: 0.9, y: 15 }, 
+                    { opacity: 1, scale: 1, y: 0, duration: 1.5, ease: "elastic.out(1, 0.5)" }, 
+                    "-=0.9"
                 );
             }, 500); // Small initial delay to offset preloader
         });
