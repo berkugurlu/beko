@@ -627,6 +627,8 @@
             </a>
             <nav class="flex items-center">
                 <div class="hidden sm:flex items-center gap-6">
+                    <button id="nav-compare-btn" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">Karşılaştır</button>
+                    <button id="nav-quiz-btn" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors">🧭 Quiz</button>
                     <a href="?page=blog" id="nav-blog-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.blog">Blog</a>
                     <a href="/nedir" id="nav-what-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.what">Nedir?</a>
                     <a href="/hakkimizda" id="nav-about-link" class="nav-link text-secondary hover:text-indigo-500 font-medium transition-colors" data-i18n="nav.about">Hakkımızda</a>
@@ -634,17 +636,10 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                         <span data-i18n="nav.login">Giriş Yap</span>
                     </button>
-                    <!-- Passport Button (Desktop) -->
-                    <button id="passport-btn" class="ml-2 px-3 py-1.5 font-bold text-sm bg-card-bg border border-border-color rounded-xl text-primary hover:text-accent transition-colors shadow-sm flex items-center gap-2">
-                        <span>🌍</span> <span id="current-passport-text">Türkiye</span>
-                    </button>
                 </div>
 
                 <div class="flex items-center gap-2 sm:gap-4 ml-4">
                     <div id="google_translate_element" class="mr-2 overflow-hidden rounded-lg"></div>
-                    <button id="passport-btn-mobile" class="sm:hidden px-2.5 py-1.5 font-bold text-xs bg-card-bg border border-border-color rounded-lg text-primary hover:text-accent transition-colors shadow-sm flex items-center gap-1">
-                        🌍
-                    </button>
                     <button id="mobile-menu-btn" class="sm:hidden nav-link inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl border border-border-color bg-card-bg text-primary" aria-label="Menü" aria-expanded="false">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -678,10 +673,13 @@
                 <h2 id="hero-title" class="hero-title font-extrabold tracking-tight mb-6 text-primary dark:text-indigo-400 drop-shadow-sm" style="opacity:1;" data-i18n="hero.title">Hayalindeki Macerayı Bul</h2>
                 <p id="hero-subtitle" class="text-base sm:text-lg md:text-2xl text-secondary mb-10 max-w-3xl mx-auto leading-relaxed opacity-0" data-i18n="hero.subtitle">Sekmelerde Kaybolma, Sokaklarda Kaybol.</p>
                 
-                <div class="flex justify-center mb-12 opacity-0" id="hero-cta-wrapper">
+                <div class="flex flex-wrap justify-center gap-4 mb-12 opacity-0" id="hero-cta-wrapper">
                     <button id="hero-start-btn" class="btn btn-primary px-10 py-4 rounded-full text-lg sm:text-xl font-bold shadow-2xl hover:shadow-indigo-500/50 flex items-center gap-2 transform transition-all" onclick="document.getElementById('search-input').focus()">
                         <span data-i18n="hero.start_btn">Hemen Başla</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    </button>
+                    <button id="hero-quiz-btn" class="btn px-8 py-4 rounded-full text-lg sm:text-xl font-bold flex items-center gap-2 transform transition-all border-2 border-accent/50 text-primary hover:bg-accent/10 bg-card-bg shadow-xl">
+                        🧭 Sana Uygun Ülkeyi Bul
                     </button>
                 </div>
 
@@ -873,18 +871,51 @@
         </div>
     </div>
 
-    <!-- PASSPORT MODAL -->
-    <div id="passport-modal" class="modal-overlay" aria-modal="true" role="dialog">
-        <div class="modal-content content-card w-full max-w-md p-8 relative">
-            <button id="passport-modal-close-btn" class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-gray-800 [data-theme*='dark']:hover:text-white transition-colors">&times;</button>
-            <h3 class="text-2xl font-bold mb-4">Hangi ülkenin vatandaşısınız?</h3>
-            <p class="text-secondary mb-6 text-sm">Vize deneyiminizi kişiselleştirmek için pasaportunuzu seçin.</p>
-            <input type="text" id="passport-search" class="w-full mb-4" placeholder="Ülke ara... (Örn: Almanya)">
-            <ul id="passport-list" class="max-h-60 overflow-y-auto space-y-2 border border-border-color rounded-xl p-2 bg-background">
-                <!-- Javascript will populate this -->
-            </ul>
+    <!-- QUIZ MODAL -->
+    <div id="quiz-modal" class="modal-overlay" aria-modal="true" role="dialog">
+        <div class="modal-content content-card w-full max-w-2xl p-0 overflow-hidden mx-4">
+            <div class="p-6 border-b border-border-color bg-gradient-to-r from-indigo-600/10 to-purple-600/10 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-primary">🧭 Sana Uygun Ülkeyi Bul</h3>
+                <button id="quiz-close-btn" class="text-2xl text-secondary hover:text-primary">&times;</button>
+            </div>
+            <div class="p-6 sm:p-8">
+                <div id="quiz-progress" class="w-full h-2 bg-background rounded-full mb-6 overflow-hidden"><div id="quiz-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500" style="width:20%"></div></div>
+                <div id="quiz-content">
+                    <!-- Quiz steps injected by JS -->
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button id="quiz-prev-btn" class="btn btn-secondary px-6 py-2 rounded-xl hidden">← Geri</button>
+                    <button id="quiz-next-btn" class="btn btn-primary px-6 py-2 rounded-xl ml-auto">Sonraki →</button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- COMPARISON MODAL -->
+    <div id="compare-modal" class="modal-overlay" aria-modal="true" role="dialog">
+        <div class="modal-content content-card w-full max-w-4xl p-0 overflow-hidden mx-4">
+            <div class="p-6 border-b border-border-color bg-gradient-to-r from-emerald-600/10 to-teal-600/10 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-primary">⚖️ Ülke Karşılaştırma</h3>
+                <button id="compare-close-btn" class="text-2xl text-secondary hover:text-primary">&times;</button>
+            </div>
+            <div class="p-6 sm:p-8">
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <select id="compare-country-1" class="w-full p-3 rounded-xl bg-background border border-border-color text-primary focus:ring-2 focus:ring-accent/30 focus:outline-none">
+                        <option value="">1. Ülke Seçin</option>
+                    </select>
+                    <select id="compare-country-2" class="w-full p-3 rounded-xl bg-background border border-border-color text-primary focus:ring-2 focus:ring-accent/30 focus:outline-none">
+                        <option value="">2. Ülke Seçin</option>
+                    </select>
+                </div>
+                <button id="compare-go-btn" class="btn btn-primary w-full py-3 rounded-xl mb-6 font-bold text-lg">Karşılaştır</button>
+                <div id="compare-results" class="hidden">
+                    <!-- Results injected by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- GSAP HERO ANIMATIONS -->
     <script>

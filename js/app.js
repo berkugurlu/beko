@@ -57,88 +57,141 @@
         let currentUser = JSON.parse(localStorage.getItem('vuelina_user') || 'null');
         let userPassport = localStorage.getItem('vuelina_passport') || 'Türkiye';
 
-        // --- PASSPORT SYSTEM LOGIC ---
-        const passportModalBtn = document.getElementById('passport-btn');
-        const passportModalBtnMobile = document.getElementById('passport-btn-mobile');
-        const passportModal = document.getElementById('passport-modal');
-        const passportModalCloseBtn = document.getElementById('passport-modal-close-btn');
-        const passportSearch = document.getElementById('passport-search');
-        const passportList = document.getElementById('passport-list');
-        const currentPassportText = document.getElementById('current-passport-text');
+        // --- IP-BASED AUTOMATIC PASSPORT DETECTION ---
+        // Reverse map: ISO code → Turkish country name
+        const codeToCountry = {};
+        Object.entries(countryCodes).forEach(([name, code]) => { codeToCountry[code] = name; });
 
-        const globalPassports = ["Türkiye", "Almanya", "ABD", "Birleşik Krallık", "Fransa", "İtalya", "İspanya", "Japonya", "Kanada", "Avustralya", "Brezilya", "Güney Kore", "Rusya", "Çin"];
+        // Supported passports (ones that have visa override data)
+        const supportedPassports = ["Türkiye", "Almanya", "ABD", "Birleşik Krallık", "Fransa", "İtalya", "İspanya", "Japonya", "Kanada", "Avustralya", "Brezilya", "Güney Kore", "Rusya", "Çin"];
 
-        const renderPassportList = (filter = "") => {
-            if (!passportList) return;
-            const q = filter.toLocaleLowerCase('tr');
-            const filtered = globalPassports.filter(p => p.toLocaleLowerCase('tr').includes(q));
-            passportList.innerHTML = filtered.map(p => `
-                <li class="p-3 border-b border-border-color cursor-pointer hover:bg-card-bg transition-colors flex justify-between items-center" data-passport="${p}">
-                    <span class="text-primary font-medium">${p} ${p === userPassport ? '✅' : ''}</span>
-                </li>
-            `).join('');
-        };
+        const detectPassportFromIP = async () => {
+            // Skip if already auto-detected
+            if (localStorage.getItem('vuelina_passport_auto_set')) return;
 
-        if (currentPassportText) currentPassportText.innerText = userPassport;
-
-        const openPassportModal = () => {
-            if (!passportModal) return;
-            passportModal.classList.add('visible');
-            renderPassportList();
-        };
-
-        const closePassportModal = () => {
-            if (!passportModal) return;
-            passportModal.classList.remove('visible');
-        };
-
-        if (passportModalBtn) passportModalBtn.addEventListener('click', openPassportModal);
-        if (passportModalBtnMobile) passportModalBtnMobile.addEventListener('click', openPassportModal);
-        if (passportModalCloseBtn) passportModalCloseBtn.addEventListener('click', closePassportModal);
-        
-        if (passportModal) {
-            passportModal.addEventListener('click', (e) => {
-                if (e.target === passportModal) closePassportModal();
-            });
-        }
-
-        if (passportSearch) {
-            passportSearch.addEventListener('input', (e) => {
-                renderPassportList(e.target.value);
-            });
-        }
-
-        if (passportList) {
-            passportList.addEventListener('click', (e) => {
-                const li = e.target.closest('li');
-                if (li && li.dataset.passport) {
-                    const newPassport = li.dataset.passport;
-                    if (newPassport !== userPassport) {
-                        userPassport = newPassport;
-                        localStorage.setItem('vuelina_passport', userPassport);
-                        if (currentPassportText) currentPassportText.innerText = userPassport;
-                        closePassportModal();
-                        
-                        // Premium fade out/in update using GSAP
-                        if (typeof gsap !== 'undefined') {
-                            gsap.to('.country-card', { 
-                                opacity: 0, 
-                                y: 10,
-                                duration: 0.3, 
-                                stagger: 0.05,
-                                onComplete: () => {
-                                    displayCountries(document.getElementById('search-input').value);
-                                }
-                            });
-                        } else {
-                            displayCountries(document.getElementById('search-input').value);
-                        }
+            try {
+                const response = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
+                if (!response.ok) throw new Error('API error');
+                const data = await response.json();
+                const detectedCode = data.country_code; // e.g. "TR", "DE", "US"
+                
+                if (detectedCode && codeToCountry[detectedCode]) {
+                    const detectedCountry = codeToCountry[detectedCode];
+                    // Use detected country if it's a supported passport, otherwise use it as-is
+                    if (supportedPassports.includes(detectedCountry)) {
+                        userPassport = detectedCountry;
                     } else {
-                        closePassportModal();
+                        // Even if not a "supported" passport with detailed overrides,
+                        // set it so the fallback logic in getVisaForPassport works
+                        userPassport = detectedCountry;
                     }
+                    localStorage.setItem('vuelina_passport', userPassport);
                 }
-            });
-        }
+            } catch (err) {
+                console.log('IP-based passport detection failed, using default:', err.message);
+            }
+
+            // Mark as auto-set so we don't call the API again
+            localStorage.setItem('vuelina_passport_auto_set', '1');
+        };
+
+        // --- VISITED COUNTRIES SYSTEM ---
+        const getVisitedCountries = () => {
+            try { return JSON.parse(localStorage.getItem('vuelina_visited') || '[]'); } catch(e) { return []; }
+        };
+        const toggleVisitedCountry = (name) => {
+            let visited = getVisitedCountries();
+            if (visited.includes(name)) {
+                visited = visited.filter(v => v !== name);
+            } else {
+                visited.push(name);
+            }
+            localStorage.setItem('vuelina_visited', JSON.stringify(visited));
+            return visited;
+        };
+        const getVisitedStats = () => {
+            const visited = getVisitedCountries();
+            const total = Object.keys(countriesData).length;
+            const pct = total > 0 ? Math.round((visited.length / total) * 100) : 0;
+            return { count: visited.length, total, pct };
+        };
+
+        // --- WEATHER API HELPER ---
+        const capitalCoords = {
+            "Türkiye": {lat:39.93,lon:32.86}, "İtalya": {lat:41.90,lon:12.50}, "Japonya": {lat:35.68,lon:139.69},
+            "Fransa": {lat:48.85,lon:2.35}, "Birleşik Krallık": {lat:51.50,lon:-0.12}, "ABD": {lat:38.90,lon:-77.04},
+            "Brezilya": {lat:-15.79,lon:-47.88}, "Mısır": {lat:30.04,lon:31.24}, "Avustralya": {lat:-33.87,lon:151.21},
+            "İspanya": {lat:40.42,lon:-3.70}, "Yunanistan": {lat:37.98,lon:23.73}, "Tayland": {lat:13.76,lon:100.50},
+            "Güney Kore": {lat:37.57,lon:126.98}, "Meksika": {lat:19.43,lon:-99.13}, "Peru": {lat:-12.05,lon:-77.04},
+            "Güney Afrika": {lat:-33.93,lon:18.42}, "Yeni Zelanda": {lat:-41.29,lon:174.78}, "İrlanda": {lat:53.35,lon:-6.26},
+            "İsviçre": {lat:46.95,lon:7.45}, "Hollanda": {lat:52.37,lon:4.90}, "Portekiz": {lat:38.72,lon:-9.14},
+            "Fas": {lat:33.97,lon:-6.85}, "Vietnam": {lat:21.03,lon:105.85}, "Arjantin": {lat:-34.60,lon:-58.38},
+            "Kanada": {lat:45.42,lon:-75.70}, "Hindistan": {lat:28.61,lon:77.21}, "Çin": {lat:39.90,lon:116.40},
+            "Rusya": {lat:55.76,lon:37.62}, "Norveç": {lat:59.91,lon:10.75}, "İsveç": {lat:59.33,lon:18.07},
+            "Danimarka": {lat:55.68,lon:12.57}, "Avusturya": {lat:48.21,lon:16.37}, "Macaristan": {lat:47.50,lon:19.04},
+            "Çek Cumhuriyeti": {lat:50.08,lon:14.44}, "Hırvatistan": {lat:45.81,lon:15.98}, "Belçika": {lat:50.85,lon:4.35},
+            "Singapur": {lat:1.35,lon:103.82}, "Malezya": {lat:3.14,lon:101.69}, "Endonezya": {lat:-6.21,lon:106.85},
+            "Filipinler": {lat:14.60,lon:120.98}, "Birleşik Arap Emirlikleri": {lat:24.45,lon:54.65},
+            "Polonya": {lat:52.23,lon:21.01}, "Romanya": {lat:44.43,lon:26.10}, "Bulgaristan": {lat:42.70,lon:23.32}
+        };
+
+        const fetchWeather = async (countryName) => {
+            const coords = capitalCoords[countryName];
+            if (!coords) return null;
+            try {
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`, { signal: AbortSignal.timeout(5000) });
+                if (!res.ok) return null;
+                const data = await res.json();
+                const c = data.current;
+                const wmoIcon = (code) => {
+                    if (code <= 1) return '☀️';
+                    if (code <= 3) return '⛅';
+                    if (code <= 48) return '🌫️';
+                    if (code <= 67) return '🌧️';
+                    if (code <= 77) return '🌨️';
+                    if (code <= 82) return '🌦️';
+                    if (code <= 86) return '❄️';
+                    return '⛈️';
+                };
+                const wmoText = (code) => {
+                    if (code <= 1) return 'Açık';
+                    if (code <= 3) return 'Parçalı Bulutlu';
+                    if (code <= 48) return 'Sisli';
+                    if (code <= 67) return 'Yağmurlu';
+                    if (code <= 77) return 'Karlı';
+                    if (code <= 82) return 'Sağanak';
+                    if (code <= 86) return 'Yoğun Kar';
+                    return 'Gök Gürültülü';
+                };
+                return { temp: Math.round(c.temperature_2m), humidity: c.relative_humidity_2m, wind: Math.round(c.wind_speed_10m), icon: wmoIcon(c.weather_code), desc: wmoText(c.weather_code) };
+            } catch(e) { return null; }
+        };
+
+        // --- SMOOTH VIEW TRANSITION HELPER ---
+        const smoothViewTransition = (hideEl, showEl, callback) => {
+            if (typeof gsap !== 'undefined') {
+                gsap.to(hideEl, { opacity: 0, y: -20, duration: 0.3, onComplete: () => {
+                    hideEl.classList.add('hidden');
+                    hideEl.style.opacity = ''; hideEl.style.transform = '';
+                    if (callback) callback();
+                    showEl.classList.remove('hidden');
+                    gsap.fromTo(showEl, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+                }});
+            } else {
+                hideEl.classList.add('hidden');
+                if (callback) callback();
+                showEl.classList.remove('hidden');
+            }
+        };
+
+        // Run auto-detection (non-blocking)
+        detectPassportFromIP().then(() => {
+            // Re-render country cards if they were already displayed, to reflect the detected passport
+            if (typeof displayCountries === 'function') {
+                const searchVal = document.getElementById('search-input')?.value || '';
+                displayCountries(searchVal);
+            }
+        });
 
 
         const updateAuthUI = () => {
@@ -1526,7 +1579,8 @@
                 </div>
             `;
             
-            countryListView.classList.add('hidden');
+            // Use smooth transition
+            smoothViewTransition(countryListView, countryDetailView, () => {
             countryDetailView.innerHTML = `
                 <div class="animate-fade-in-up">
                     <button id="back-to-list" class="btn btn-secondary mb-10 py-3 px-6 rounded-xl flex items-center hover:bg-card-bg hover:shadow-xl transition-all group stagger-1">
@@ -1655,6 +1709,67 @@
                         <!-- RIGHT COLUMN (Sidebar) -->
                         <div class="lg:col-span-4 space-y-6">
                             
+                            <!-- Visited Button -->
+                            <button id="visited-toggle-btn" class="w-full content-card glass-card p-4 flex items-center justify-between hover:border-accent/50 transition-all group">
+                                <div class="flex items-center gap-3">
+                                    <span class="text-2xl">${getVisitedCountries().includes(countryName) ? '✅' : '✈️'}</span>
+                                    <div>
+                                        <div class="font-bold text-primary text-left">${getVisitedCountries().includes(countryName) ? 'Ziyaret Edildi!' : 'Ziyaret Ettim'}</div>
+                                        <div class="text-xs text-secondary">Dünyanın %${getVisitedStats().pct}\'ini keşfettin (${getVisitedStats().count}/${getVisitedStats().total})</div>
+                                    </div>
+                                </div>
+                                <div class="w-8 h-8 rounded-full ${getVisitedCountries().includes(countryName) ? 'bg-green-500/20 text-green-400' : 'bg-accent/10 text-accent'} flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    ${getVisitedCountries().includes(countryName) ? '✓' : '+'}
+                                </div>
+                            </button>
+
+                            <!-- Weather Widget -->
+                            <div id="weather-widget" class="content-card glass-card p-6 hidden">
+                                <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                    <span class="text-2xl">🌤️</span>
+                                    <span class="text-primary">Anlık Hava Durumu</span>
+                                </h3>
+                                <div id="weather-content" class="text-center">
+                                    <div class="skeleton h-16 w-full rounded-lg"></div>
+                                </div>
+                            </div>
+
+                            <!-- Flight Widget (Travelpayouts) -->
+                            <div class="content-card glass-card p-6">
+                                <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                    <span class="text-2xl">✈️</span>
+                                    <span class="text-primary">Uçuş Fiyatları</span>
+                                </h3>
+                                <div class="space-y-3">
+                                    <a href="https://www.aviasales.com/search/IST01${(country.code || 'TR').slice(0,3)}1?marker=510486" target="_blank" rel="noopener" class="block p-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border border-blue-500/30 hover:border-blue-400/60 transition-all group">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="text-sm font-bold text-primary">İstanbul → ${countryName}</div>
+                                                <div class="text-xs text-secondary mt-1">En ucuz uçuşları karşılaştır</div>
+                                            </div>
+                                            <svg class="w-5 h-5 text-accent group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                                        </div>
+                                    </a>
+                                    <a href="https://www.aviasales.com/search/SAW01${(country.code || 'TR').slice(0,3)}1?marker=510486" target="_blank" rel="noopener" class="block p-3 rounded-xl bg-card-bg border border-border-color hover:border-accent/40 transition-all text-center">
+                                        <span class="text-xs text-secondary">Sabiha Gökçen'den de ara →</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Photo Gallery -->
+                            <div class="content-card glass-card p-6">
+                                <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                    <span class="text-2xl">📸</span>
+                                    <span class="text-primary">Fotoğraf Galerisi</span>
+                                </h3>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20famous%20landmark%20tourism?width=400&height=300&nologo=true" alt="${countryName} 1" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20street%20food%20culture?width=400&height=300&nologo=true" alt="${countryName} 2" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20nature%20scenery%20travel?width=400&height=300&nologo=true" alt="${countryName} 3" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20local%20market%20people?width=400&height=300&nologo=true" alt="${countryName} 4" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                </div>
+                            </div>
+
                             <!-- Map Card -->
                             <div class="content-card glass-card p-1 overflow-hidden h-64 shadow-md">
                                 <iframe width="100%" height="100%" style="border:0; border-radius: 16px;" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${encodeURIComponent(countryName)}&t=&z=5&ie=UTF8&iwloc=&output=embed"></iframe>
@@ -1734,14 +1849,64 @@
                         </div>
                     </div>
                 </div>`;
-            countryDetailView.classList.remove('hidden');
+            }); // end smoothViewTransition callback
             scrollToTop();
             
             await initCurrencyConverter(country.currency);
 
+            // Weather widget
+            fetchWeather(countryName).then(w => {
+                const widget = document.getElementById('weather-widget');
+                const content = document.getElementById('weather-content');
+                if (w && widget && content) {
+                    widget.classList.remove('hidden');
+                    content.innerHTML = `
+                        <div class="flex items-center justify-center gap-4 mb-3">
+                            <span class="text-5xl">${w.icon}</span>
+                            <div class="text-left">
+                                <div class="text-3xl font-bold text-primary">${w.temp}°C</div>
+                                <div class="text-sm text-secondary">${w.desc}</div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-3">
+                            <div class="p-2 rounded-lg bg-background border border-border-color text-center">
+                                <div class="text-xs text-secondary">💧 Nem</div>
+                                <div class="text-sm font-bold text-primary">%${w.humidity}</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-background border border-border-color text-center">
+                                <div class="text-xs text-secondary">💨 Rüzgar</div>
+                                <div class="text-sm font-bold text-primary">${w.wind} km/s</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            // Visited toggle
+            const visitedBtn = document.getElementById('visited-toggle-btn');
+            if (visitedBtn) {
+                visitedBtn.addEventListener('click', () => {
+                    const visited = toggleVisitedCountry(countryName);
+                    const isVisited = visited.includes(countryName);
+                    const stats = getVisitedStats();
+                    visitedBtn.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl">${isVisited ? '✅' : '✈️'}</span>
+                            <div>
+                                <div class="font-bold text-primary text-left">${isVisited ? 'Ziyaret Edildi!' : 'Ziyaret Ettim'}</div>
+                                <div class="text-xs text-secondary">Dünyanın %${stats.pct}'ini keşfettin (${stats.count}/${stats.total})</div>
+                            </div>
+                        </div>
+                        <div class="w-8 h-8 rounded-full ${isVisited ? 'bg-green-500/20 text-green-400' : 'bg-accent/10 text-accent'} flex items-center justify-center">
+                            ${isVisited ? '✓' : '+'}
+                        </div>
+                    `;
+                    showToast(isVisited ? `${countryName} ziyaret listenize eklendi! 🎉` : `${countryName} listeden çıkarıldı.`, 'success');
+                });
+            }
+
             document.getElementById('back-to-list').addEventListener('click', () => {
-                countryDetailView.classList.add('hidden');
-                countryListView.classList.remove('hidden');
+                smoothViewTransition(countryDetailView, countryListView);
                 // Yeni: Ana sayfaya dönerken URL'yi temizle
                 window.history.pushState({}, document.title, window.location.pathname);
             });
@@ -2479,6 +2644,318 @@
             });
         }
 
+        // --- QUIZ SYSTEM ---
+        const quizQuestions = [
+            { id: 'budget', title: '💰 Bütçen ne kadar?', options: [
+                { label: '💸 Düşük (Ekonomik)', value: 'low', emoji: '💸' },
+                { label: '💵 Orta', value: 'mid', emoji: '💵' },
+                { label: '💎 Yüksek (Lüks)', value: 'high', emoji: '💎' }
+            ]},
+            { id: 'climate', title: '🌡️ Hangi iklimi tercih edersin?', options: [
+                { label: '☀️ Sıcak & Güneşli', value: 'hot', emoji: '☀️' },
+                { label: '❄️ Soğuk & Kar', value: 'cold', emoji: '❄️' },
+                { label: '🌤️ Ilıman', value: 'mild', emoji: '🌤️' },
+                { label: '🌴 Tropikal', value: 'tropical', emoji: '🌴' }
+            ]},
+            { id: 'visa', title: '🛂 Vize durumu önemli mi?', options: [
+                { label: '🟢 Vizesiz olsun', value: 'free', emoji: '🟢' },
+                { label: '🟡 Fark etmez', value: 'any', emoji: '🟡' }
+            ]},
+            { id: 'interest', title: '🎯 Ne tür bir tatil istersin?', options: [
+                { label: '🏛️ Tarih & Kültür', value: 'culture', emoji: '🏛️' },
+                { label: '🏖️ Plaj & Deniz', value: 'beach', emoji: '🏖️' },
+                { label: '🏔️ Doğa & Macera', value: 'nature', emoji: '🏔️' },
+                { label: '🍕 Yemek & Gastronomi', value: 'food', emoji: '🍕' },
+                { label: '🌃 Şehir & Gece Hayatı', value: 'city', emoji: '🌃' }
+            ]},
+            { id: 'continent', title: '🌍 Hangi bölge?', options: [
+                { label: '🇪🇺 Avrupa', value: 'europe', emoji: '🇪🇺' },
+                { label: '🌏 Asya', value: 'asia', emoji: '🌏' },
+                { label: '🌎 Amerika', value: 'americas', emoji: '🌎' },
+                { label: '🌍 Afrika & Diğer', value: 'other', emoji: '🌍' },
+                { label: '🌐 Fark Etmez', value: 'any', emoji: '🌐' }
+            ]}
+        ];
+
+        const countryQuizMeta = {
+            "Türkiye": { budget:'low', climate:'hot', continent:'europe', tags:['culture','beach','food'] },
+            "İtalya": { budget:'mid', climate:'mild', continent:'europe', tags:['culture','food','city'] },
+            "Japonya": { budget:'high', climate:'mild', continent:'asia', tags:['culture','food','city'] },
+            "Fransa": { budget:'high', climate:'mild', continent:'europe', tags:['culture','food','city'] },
+            "İspanya": { budget:'mid', climate:'hot', continent:'europe', tags:['beach','food','city'] },
+            "Yunanistan": { budget:'mid', climate:'hot', continent:'europe', tags:['beach','culture','food'] },
+            "Tayland": { budget:'low', climate:'tropical', continent:'asia', tags:['beach','food','nature'] },
+            "Güney Kore": { budget:'mid', climate:'mild', continent:'asia', tags:['culture','food','city'] },
+            "Meksika": { budget:'low', climate:'hot', continent:'americas', tags:['culture','food','beach'] },
+            "Brezilya": { budget:'mid', climate:'tropical', continent:'americas', tags:['beach','nature','city'] },
+            "Mısır": { budget:'low', climate:'hot', continent:'other', tags:['culture','nature'] },
+            "Avustralya": { budget:'high', climate:'hot', continent:'other', tags:['nature','beach','city'] },
+            "ABD": { budget:'high', climate:'mild', continent:'americas', tags:['city','nature','food'] },
+            "Birleşik Krallık": { budget:'high', climate:'cold', continent:'europe', tags:['culture','city'] },
+            "Portekiz": { budget:'mid', climate:'mild', continent:'europe', tags:['beach','food','culture'] },
+            "Fas": { budget:'low', climate:'hot', continent:'other', tags:['culture','food','nature'] },
+            "Vietnam": { budget:'low', climate:'tropical', continent:'asia', tags:['food','nature','beach'] },
+            "Hırvatistan": { budget:'mid', climate:'hot', continent:'europe', tags:['beach','culture','nature'] },
+            "Norveç": { budget:'high', climate:'cold', continent:'europe', tags:['nature','city'] },
+            "İsviçre": { budget:'high', climate:'cold', continent:'europe', tags:['nature','city'] },
+            "Endonezya": { budget:'low', climate:'tropical', continent:'asia', tags:['beach','nature','food'] },
+            "Peru": { budget:'low', climate:'mild', continent:'americas', tags:['culture','nature','food'] },
+            "Arjantin": { budget:'mid', climate:'mild', continent:'americas', tags:['food','nature','city'] },
+            "Hindistan": { budget:'low', climate:'tropical', continent:'asia', tags:['culture','food','nature'] },
+            "Macaristan": { budget:'low', climate:'mild', continent:'europe', tags:['culture','city','food'] },
+            "Çek Cumhuriyeti": { budget:'low', climate:'cold', continent:'europe', tags:['culture','city'] },
+            "Singapur": { budget:'high', climate:'tropical', continent:'asia', tags:['food','city'] },
+            "Güney Afrika": { budget:'mid', climate:'mild', continent:'other', tags:['nature','culture'] },
+            "Birleşik Arap Emirlikleri": { budget:'high', climate:'hot', continent:'other', tags:['city','food'] },
+            "Karadağ": { budget:'low', climate:'hot', continent:'europe', tags:['beach','nature'] },
+            "İrlanda": { budget:'mid', climate:'cold', continent:'europe', tags:['nature','culture','city'] },
+            "Hollanda": { budget:'mid', climate:'cold', continent:'europe', tags:['culture','city'] },
+        };
+
+        let quizStep = 0;
+        let quizAnswers = {};
+
+        const initQuiz = () => {
+            const modal = document.getElementById('quiz-modal');
+            const closeBtn = document.getElementById('quiz-close-btn');
+            const prevBtn = document.getElementById('quiz-prev-btn');
+            const nextBtn = document.getElementById('quiz-next-btn');
+            const heroQuizBtn = document.getElementById('hero-quiz-btn');
+            const navQuizBtn = document.getElementById('nav-quiz-btn');
+
+            const openQuiz = () => { quizStep = 0; quizAnswers = {}; renderQuizStep(); modal.classList.add('visible'); };
+            if (heroQuizBtn) heroQuizBtn.addEventListener('click', openQuiz);
+            if (navQuizBtn) navQuizBtn.addEventListener('click', openQuiz);
+            if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
+            if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('visible'); });
+
+            const renderQuizStep = () => {
+                const content = document.getElementById('quiz-content');
+                const progressBar = document.getElementById('quiz-progress-bar');
+                progressBar.style.width = `${((quizStep + 1) / quizQuestions.length) * 100}%`;
+                prevBtn.classList.toggle('hidden', quizStep === 0);
+
+                if (quizStep >= quizQuestions.length) {
+                    showQuizResults();
+                    return;
+                }
+                const q = quizQuestions[quizStep];
+                nextBtn.textContent = quizStep === quizQuestions.length - 1 ? 'Sonuçları Gör 🎉' : 'Sonraki →';
+                content.innerHTML = `
+                    <h4 class="text-2xl font-bold text-primary mb-6">${q.title}</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        ${q.options.map(o => `
+                            <button class="quiz-option p-4 rounded-xl border-2 ${quizAnswers[q.id] === o.value ? 'border-accent bg-accent/10' : 'border-border-color hover:border-accent/50'} text-left transition-all flex items-center gap-3 group" data-value="${o.value}">
+                                <span class="text-2xl group-hover:scale-125 transition-transform">${o.emoji}</span>
+                                <span class="font-medium text-primary">${o.label}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+                content.querySelectorAll('.quiz-option').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        quizAnswers[q.id] = btn.dataset.value;
+                        content.querySelectorAll('.quiz-option').forEach(b => { b.classList.remove('border-accent', 'bg-accent/10'); b.classList.add('border-border-color'); });
+                        btn.classList.add('border-accent', 'bg-accent/10');
+                        btn.classList.remove('border-border-color');
+                    });
+                });
+            };
+
+            if (prevBtn) prevBtn.addEventListener('click', () => { if (quizStep > 0) { quizStep--; renderQuizStep(); } });
+            if (nextBtn) nextBtn.addEventListener('click', () => { quizStep++; renderQuizStep(); });
+
+            const showQuizResults = () => {
+                const content = document.getElementById('quiz-content');
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                document.getElementById('quiz-progress-bar').style.width = '100%';
+
+                const scores = {};
+                Object.keys(countriesData).forEach(name => {
+                    const meta = countryQuizMeta[name];
+                    if (!meta) return;
+                    let score = 0;
+                    if (quizAnswers.budget && (quizAnswers.budget === meta.budget)) score += 3;
+                    if (quizAnswers.climate && (quizAnswers.climate === meta.climate)) score += 3;
+                    if (quizAnswers.interest && meta.tags.includes(quizAnswers.interest)) score += 4;
+                    if (quizAnswers.continent === 'any' || quizAnswers.continent === meta.continent) score += 2;
+                    scores[name] = score;
+                });
+
+                const top3 = Object.entries(scores).sort((a, b) => b[1] - a[1]).slice(0, 3);
+                content.innerHTML = `
+                    <h4 class="text-2xl font-bold text-primary mb-2">🎉 Sana En Uygun Ülkeler</h4>
+                    <p class="text-secondary mb-6">Tercihlerine göre en iyi 3 eşleşme:</p>
+                    <div class="space-y-4">
+                        ${top3.map(([name, score], i) => {
+                            const c = countriesData[name];
+                            const medals = ['🥇', '🥈', '🥉'];
+                            return `
+                            <div class="p-5 rounded-2xl border-2 ${i === 0 ? 'border-yellow-400/50 bg-yellow-400/5' : 'border-border-color'} flex items-center gap-4 cursor-pointer hover:border-accent/50 transition-all quiz-result-card" data-country="${name}">
+                                <span class="text-4xl">${medals[i]}</span>
+                                <span class="text-4xl">${c.flag}</span>
+                                <div class="flex-1">
+                                    <div class="font-bold text-lg text-primary">${name}</div>
+                                    <div class="text-sm text-secondary">${c.description}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-xs text-secondary">Uyum</div>
+                                    <div class="text-lg font-bold text-accent">${Math.min(Math.round((score / 12) * 100), 100)}%</div>
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                    <button id="quiz-restart-btn" class="btn btn-secondary w-full py-3 rounded-xl mt-4">🔄 Quizi Tekrarla</button>
+                `;
+                content.querySelectorAll('.quiz-result-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        modal.classList.remove('visible');
+                        displayCountryDetail(card.dataset.country);
+                    });
+                });
+                const restartBtn = document.getElementById('quiz-restart-btn');
+                if (restartBtn) restartBtn.addEventListener('click', () => { quizStep = 0; quizAnswers = {}; nextBtn.classList.remove('hidden'); renderQuizStep(); });
+            };
+        };
+
+        // --- COMPARISON SYSTEM ---
+        const initComparison = () => {
+            const modal = document.getElementById('compare-modal');
+            const closeBtn = document.getElementById('compare-close-btn');
+            const goBtn = document.getElementById('compare-go-btn');
+            const navBtn = document.getElementById('nav-compare-btn');
+            const sel1 = document.getElementById('compare-country-1');
+            const sel2 = document.getElementById('compare-country-2');
+            if (!modal || !sel1 || !sel2) return;
+
+            // Populate dropdowns
+            const countries = Object.keys(countriesData).sort();
+            countries.forEach(name => {
+                sel1.innerHTML += `<option value="${name}">${countriesData[name].flag} ${name}</option>`;
+                sel2.innerHTML += `<option value="${name}">${countriesData[name].flag} ${name}</option>`;
+            });
+
+            if (navBtn) navBtn.addEventListener('click', () => modal.classList.add('visible'));
+            if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('visible'); });
+
+            if (goBtn) goBtn.addEventListener('click', () => {
+                const n1 = sel1.value, n2 = sel2.value;
+                if (!n1 || !n2 || n1 === n2) { showToast('Lütfen iki farklı ülke seçin!', 'error'); return; }
+                const c1 = countriesData[n1], c2 = countriesData[n2];
+                const results = document.getElementById('compare-results');
+                const quickLook1 = typeof getVisaForPassport === 'function' ? getVisaForPassport(n1, userPassport) : {};
+                const quickLook2 = typeof getVisaForPassport === 'function' ? getVisaForPassport(n2, userPassport) : {};
+
+                const rows = [
+                    ['🏳️ Bayrak', c1.flag, c2.flag],
+                    ['🛂 Vize', quickLook1.visa || '-', quickLook2.visa || '-'],
+                    ['💰 Para Birimi', c1.currency, c2.currency],
+                    ['🗣️ Dil', c1.language, c2.language],
+                    ['📅 En İyi Dönem', quickLook1.bestTime || '-', quickLook2.bestTime || '-'],
+                    ['💸 Günlük Bütçe', quickLook1.budget || '-', quickLook2.budget || '-'],
+                    ['🔌 Priz Tipi', quickLook1.plug || '-', quickLook2.plug || '-'],
+                    ['☕ Bahşiş', quickLook1.tipping || '-', quickLook2.tipping || '-'],
+                    ['🆘 Acil Durum', c1.emergencyNumber, c2.emergencyNumber],
+                    ['🌡️ İklim', c1.climate, c2.climate],
+                ];
+                results.classList.remove('hidden');
+                results.innerHTML = `
+                    <div class="overflow-x-auto rounded-2xl border border-border-color">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-card-bg">
+                                    <th class="p-3 text-left text-secondary font-medium w-1/4">Özellik</th>
+                                    <th class="p-3 text-center font-bold text-primary">${c1.flag} ${n1}</th>
+                                    <th class="p-3 text-center font-bold text-primary">${c2.flag} ${n2}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map(([label, v1, v2], i) => `
+                                    <tr class="${i % 2 === 0 ? 'bg-background' : 'bg-card-bg'}">
+                                        <td class="p-3 text-secondary font-medium">${label}</td>
+                                        <td class="p-3 text-center text-primary">${v1}</td>
+                                        <td class="p-3 text-center text-primary">${v2}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                if (typeof gsap !== 'undefined') gsap.fromTo(results, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
+            });
+        };
+
+        // --- STATIC BLOG DATA (SEO Content) ---
+        const staticBlogPosts = [
+            { slug: 'vizesiz-ulkeler-2026', title: '🌍 2026\'da Türk Pasaportuyla Vizesiz Gidilen 50+ Ülke', summary: 'Vize derdi olmadan gidebileceğiniz en güzel ülkeleri ve pratik ipuçlarını keşfedin.', image: 'https://image.pollinations.ai/prompt/world%20travel%20passport%20visa%20free?width=800&height=400&nologo=true', date: '2026-03-20', category: 'Rehber', content: `<h2 class="text-2xl font-bold mt-6 mb-3">Vizesiz Seyahat Rehberi 2026</h2><p class="mb-4">Türk vatandaşları 2026 yılında 50'den fazla ülkeye vizesiz veya kapıda vize ile seyahat edebilir. İşte bölgelere göre listesi:</p><h3 class="text-xl font-bold mt-5 mb-2">🌏 Asya</h3><p class="mb-4">Japonya (90 gün), Güney Kore (90 gün), Tayland (30 gün), Malezya (90 gün), Singapur (30 gün), Endonezya (30 gün kapıda vize), Filipinler (30 gün).</p><h3 class="text-xl font-bold mt-5 mb-2">🌎 Amerika</h3><p class="mb-4">Brezilya (90 gün), Arjantin (90 gün), Meksika (e-vize), Peru (90 gün), Kolombiya, Ekvador, Şili.</p><h3 class="text-xl font-bold mt-5 mb-2">🌍 Afrika & Orta Doğu</h3><p class="mb-4">Fas (90 gün), Tunus (90 gün), BAE (90 gün), Güney Afrika (30 gün), Katar.</p><h3 class="text-xl font-bold mt-5 mb-2">🇪🇺 Balkanlar</h3><p class="mb-4">Sırbistan, Bosna-Hersek, Karadağ, Arnavutluk, Kosova — hepsi vizesiz!</p><p class="mb-4"><strong>İpucu:</strong> Pasaportunuzun geçerlilik süresinin seyahat bitiş tarihinden itibaren en az 6 ay olmasına dikkat edin.</p>` },
+            { slug: 'japonya-7-gunluk-rehber', title: '🇯🇵 Japonya\'da 7 Günlük Gezi Rehberi', summary: 'Tokyo, Kyoto ve Osaka: Japon kültürünü bir haftada nasıl keşfedersiniz?', image: 'https://image.pollinations.ai/prompt/japan%20tokyo%20cherry%20blossom%20temple?width=800&height=400&nologo=true', date: '2026-03-18', category: 'Gezi Rehberi', content: `<h2 class="text-2xl font-bold mt-6 mb-3">7 Günde Japonya</h2><h3 class="text-xl font-bold mt-5 mb-2">📅 1-2. Gün: Tokyo</h3><p class="mb-4">Shibuya Geçidi, Meiji Tapınağı, Akihabara elektronik caddesi, Tsukiji Dış Pazarı. Japan Rail Pass alarak bütçenizi optimize edin.</p><h3 class="text-xl font-bold mt-5 mb-2">📅 3-4. Gün: Kyoto</h3><p class="mb-4">Fushimi Inari, Arashiyama Bambu Ormanı, Kinkaku-ji Altın Tapınak. Geleneksel bir Ryokan'da konaklama deneyimi.</p><h3 class="text-xl font-bold mt-5 mb-2">📅 5. Gün: Nara</h3><p class="mb-4">Geyik parkı ve Todai-ji Tapınağı. Kyoto'dan günübirlik gidilebilir.</p><h3 class="text-xl font-bold mt-5 mb-2">📅 6-7. Gün: Osaka</h3><p class="mb-4">Dotonbori sokak yemekleri, Osaka Kalesi, Shinsekai bölgesi. Takoyaki ve okonomiyaki mutlaka deneyin!</p><p class="mb-4"><strong>Bütçe:</strong> Günlük ortalama 80-120$ (konaklama dahil). JR Pass 7 gün ~$200.</p>` },
+            { slug: 'butce-dostu-avrupa', title: '💶 Bütçe Dostu Avrupa: Günde 50€ ile Gezin', summary: 'Avrupa\'da ucuza seyahat etmenin sırları ve en uygun ülkeler.', image: 'https://image.pollinations.ai/prompt/europe%20backpacker%20budget%20travel%20train?width=800&height=400&nologo=true', date: '2026-03-15', category: 'Bütçe', content: `<h2 class="text-2xl font-bold mt-6 mb-3">Avrupa'da Bütçe Seyahati</h2><h3 class="text-xl font-bold mt-5 mb-2">🏆 En Ucuz Avrupa Ülkeleri</h3><p class="mb-4">1. Arnavutluk (günlük 25-35€) 2. Bosna-Hersek (30-40€) 3. Sırbistan (30-40€) 4. Bulgaristan (35-45€) 5. Macaristan (40-50€) 6. Romanya (35-45€) 7. Polonya (40-50€)</p><h3 class="text-xl font-bold mt-5 mb-2">💡 Tasarruf İpuçları</h3><p class="mb-4">• Hostel yerine Couchsurfing veya ev takası deneyin<br>• Yerel pazarlardan alışveriş yapın<br>• Ücretsiz yürüyüş turlarına katılın<br>• FlixBus ile şehirler arası ucuz ulaşım<br>• Müze kartları ve city pass'lerden yararlanın</p>` },
+            { slug: 'solo-seyahat-rehberi', title: '🎒 Yalnız Seyahat Edenlerin Bilmesi Gereken 10 Şey', summary: 'Solo seyahate çıkmadan önce bilmeniz gereken güvenlik ve pratik ipuçları.', image: 'https://image.pollinations.ai/prompt/solo%20traveler%20backpacker%20mountain%20sunrise?width=800&height=400&nologo=true', date: '2026-03-10', category: 'İpuçları', content: `<h2 class="text-2xl font-bold mt-6 mb-3">Solo Seyahat Rehberi</h2><p class="mb-4">Yalnız seyahat, özgürlüğün ve kendini keşfetmenin en güzel yolu. Ama hazırlıklı olmanız şart:</p><ol class="list-decimal pl-6 mb-4 space-y-2"><li>Konaklama yerinizi önceden rezerve edin</li><li>Seyahat sigortası mutlaka yaptırın</li><li>Belgelerin fotokopisini dijital olarak saklayın</li><li>Yerel SIM kart alın veya eSIM kullanın</li><li>İlk gece güvenli bir bölgede konaklayın</li><li>Hostel'lerde yeni insanlarla tanışın</li><li>Acil durum kişileriyle konumunuzu paylaşın</li><li>Yerel kültüre saygı gösterin</li><li>Değerli eşyalarınızı güvenli saklayın</li><li>İnstinct'inize güvenin - bir şey yanlış hissediyorsa, yerinizi değiştirin</li></ol>` },
+            { slug: 'en-iyi-sokak-yemekleri', title: '🍜 Dünyanın En İyi Sokak Yemekleri: 15 Ülke, 15 Lezzet', summary: 'Her ülkenin vazgeçilmez sokak lezzetleri ve nerede bulacağınız.', image: 'https://image.pollinations.ai/prompt/street%20food%20night%20market%20delicious?width=800&height=400&nologo=true', date: '2026-03-05', category: 'Yemek', content: `<h2 class="text-2xl font-bold mt-6 mb-3">Dünya Sokak Yemekleri Haritası</h2><p class="mb-4">Sokak yemekleri, bir ülkenin ruhunu tanımanın en lezzetli yoludur. İşte mutlaka denemeniz gereken 15 lezzet:</p><ul class="list-disc pl-6 mb-4 space-y-2"><li>🇹🇭 <strong>Tayland:</strong> Pad Thai - Bangkok sokakları</li><li>🇲🇽 <strong>Meksika:</strong> Tacos al Pastor - Mexico City</li><li>🇹🇷 <strong>Türkiye:</strong> Balık Ekmek - İstanbul Eminönü</li><li>🇯🇵 <strong>Japonya:</strong> Takoyaki - Osaka</li><li>🇮🇳 <strong>Hindistan:</strong> Samosa - Delhi</li><li>🇻🇳 <strong>Vietnam:</strong> Banh Mi - Ho Chi Minh</li><li>🇰🇷 <strong>Güney Kore:</strong> Tteokbokki - Seul</li><li>🇪🇬 <strong>Mısır:</strong> Koshary - Kahire</li><li>🇧🇷 <strong>Brezilya:</strong> Açai Bowl - Rio</li><li>🇲🇦 <strong>Fas:</strong> B'stilla - Marakeş</li></ul>` },
+            { slug: 'dijital-gocebe-rehberi', title: '💻 Dijital Göçebe Olmak: En İyi 10 Şehir', summary: 'Uzaktan çalışırken dünyanın en iyi şehirlerinde yaşamak mümkün.', image: 'https://image.pollinations.ai/prompt/digital%20nomad%20laptop%20cafe%20tropical?width=800&height=400&nologo=true', date: '2026-03-01', category: 'Dijital Göçebe', content: `<h2 class="text-2xl font-bold mt-6 mb-3">Dijital Göçebeler İçin En İyi Şehirler</h2><ol class="list-decimal pl-6 mb-4 space-y-2"><li><strong>Bali, Endonezya</strong> - Ucuz yaşam, coworking alanları, tropikal cennet</li><li><strong>Lizbon, Portekiz</strong> - Avrupa'nın en uygun başkenti, mükemmel internet</li><li><strong>Chiang Mai, Tayland</strong> - Aylık 600$'a mükemmel yaşam</li><li><strong>Tiflis, Gürcistan</strong> - 1 yıl vizesiz, düşük maliyet</li><li><strong>Mexico City, Meksika</strong> - Kültürel zenginlik, lezzetli yemek</li><li><strong>Budapeşte, Macaristan</strong> - Orta Avrupa'nın gizli mücevheri</li><li><strong>Medellín, Kolombiya</strong> - Mükemmel iklim, aktif topluluk</li><li><strong>Bangkok, Tayland</strong> - Hızlı internet, uygun fiyat</li><li><strong>Barselona, İspanya</strong> - Plaj + şehir + kültür</li><li><strong>Porto, Portekiz</strong> - Dijital vize programı</li></ol>` }
+        ];
+
+        // Override blog rendering to include static posts
+        const renderStaticBlogPosts = () => {
+            const container = document.getElementById('blog-posts-container');
+            if (!container) return;
+            container.innerHTML = staticBlogPosts.map(post => `
+                <div class="content-card glass-card overflow-hidden cursor-pointer group" onclick="window.history.pushState({page:'blog-detail',slug:'${post.slug}'}, '', '?page=blog&slug=${post.slug}');">
+                    <div class="h-48 overflow-hidden">
+                        <img src="${post.image}" alt="${post.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-accent/10 text-accent mb-3">${post.category}</span>
+                        <h3 class="text-lg font-bold text-primary mb-2 group-hover:text-accent transition-colors">${post.title}</h3>
+                        <p class="text-sm text-secondary line-clamp-2">${post.summary}</p>
+                        <div class="mt-4 text-xs text-secondary">${new Date(post.date).toLocaleDateString('tr-TR')}</div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        // --- PUSH NOTIFICATION SYSTEM ---
+        const initPushNotifications = () => {
+            if (!('Notification' in window) || !('serviceWorker' in navigator)) return;
+            if (Notification.permission === 'granted' || localStorage.getItem('vuelina_push_asked')) return;
+            
+            // Show after 30 seconds
+            setTimeout(() => {
+                if (Notification.permission !== 'default') return;
+                localStorage.setItem('vuelina_push_asked', '1');
+                
+                const banner = document.createElement('div');
+                banner.id = 'push-banner';
+                banner.className = 'fixed bottom-6 left-6 right-6 sm:left-auto sm:right-6 sm:w-96 z-[9999] p-5 rounded-2xl shadow-2xl border border-border-color';
+                banner.style.cssText = 'background: var(--card-bg); backdrop-filter: blur(20px); animation: fadeInUp 0.5s ease;';
+                banner.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl">🔔</span>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-primary mb-1">Bildirimleri Aç</h4>
+                            <p class="text-sm text-secondary mb-3">Yeni vize güncellemelerinden ve fırsatlardan haberdar ol!</p>
+                            <div class="flex gap-2">
+                                <button id="push-allow-btn" class="btn btn-primary px-4 py-2 text-sm rounded-xl">İzin Ver</button>
+                                <button id="push-dismiss-btn" class="btn btn-secondary px-4 py-2 text-sm rounded-xl">Şimdi Değil</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(banner);
+
+                document.getElementById('push-allow-btn').addEventListener('click', async () => {
+                    const perm = await Notification.requestPermission();
+                    if (perm === 'granted') {
+                        new Notification('Vuelina 🎉', { body: 'Artık seyahat fırsatlarından haberdar olacaksın!', icon: '/favicon.ico' });
+                    }
+                    banner.remove();
+                });
+                document.getElementById('push-dismiss-btn').addEventListener('click', () => banner.remove());
+            }, 30000);
+        };
+
         const initApp = async () => {
             console.log("initApp started");
             try {
@@ -2504,6 +2981,12 @@
 
                 // 5. Para birimi kurlarını yükle (Arka planda)
                 fetchCurrencyRates(); 
+
+                // 6. Premium features
+                initQuiz();
+                initComparison();
+                renderStaticBlogPosts();
+                initPushNotifications();
 
             } catch (error) {
                 console.error("Initialization Error:", error);
