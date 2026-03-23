@@ -1580,7 +1580,7 @@
             `;
             
             // Use smooth transition
-            smoothViewTransition(countryListView, countryDetailView, () => {
+            smoothViewTransition(countryListView, countryDetailView, async () => {
             countryDetailView.innerHTML = `
                 <div class="animate-fade-in-up">
                     <button id="back-to-list" class="btn btn-secondary mb-10 py-3 px-6 rounded-xl flex items-center hover:bg-card-bg hover:shadow-xl transition-all group stagger-1">
@@ -1763,10 +1763,10 @@
                                     <span class="text-primary">Fotoğraf Galerisi</span>
                                 </h3>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20famous%20landmark%20tourism?width=400&height=300&nologo=true" alt="${countryName} 1" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20street%20food%20culture?width=400&height=300&nologo=true" alt="${countryName} 2" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20nature%20scenery%20travel?width=400&height=300&nologo=true" alt="${countryName} 3" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20local%20market%20people?width=400&height=300&nologo=true" alt="${countryName} 4" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},landmark/all?random=1" alt="${countryName} 1" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},food/all?random=2" alt="${countryName} 2" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},nature/all?random=3" alt="${countryName} 3" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},market/all?random=4" alt="${countryName} 4" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
                                 </div>
                             </div>
 
@@ -1849,8 +1849,6 @@
                         </div>
                     </div>
                 </div>`;
-            }); // end smoothViewTransition callback
-            scrollToTop();
             
             await initCurrencyConverter(country.currency);
 
@@ -1973,6 +1971,8 @@
                 generatePackingList(countryName, duration, 'mevsimine uygun');
             };
 
+            scrollToTop();
+            }); // end smoothViewTransition callback
         };
 
         const typeIntoProse = (proseEl, markdownText) => {
