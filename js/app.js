@@ -1762,11 +1762,11 @@
                                     <span class="text-2xl">📸</span>
                                     <span class="text-primary">Fotoğraf Galerisi</span>
                                 </h3>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20landmark%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 1" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20street%20food%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 2" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20beautiful%20nature%20landscape%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 3" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20city%20market%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 4" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                <div id="gallery-container-${country.code}" class="grid grid-cols-2 gap-2 min-h-[120px]">
+                                    <div class="skeleton w-full h-28 rounded-xl bg-gray-700/30 animate-pulse"></div>
+                                    <div class="skeleton w-full h-28 rounded-xl bg-gray-700/30 animate-pulse"></div>
+                                    <div class="skeleton w-full h-28 rounded-xl bg-gray-700/30 animate-pulse"></div>
+                                    <div class="skeleton w-full h-28 rounded-xl bg-gray-700/30 animate-pulse"></div>
                                 </div>
                             </div>
 
@@ -1851,6 +1851,25 @@
                 </div>`;
             
             await initCurrencyConverter(country.currency);
+
+            // Fetch Wikipedia Images for Gallery
+            fetch(`https://tr.wikipedia.org/w/api.php?action=query&generator=images&titles=${encodeURIComponent(countryName)}&gimlimit=30&prop=imageinfo&iiprop=url&format=json&origin=*`)
+                .then(res => res.json())
+                .then(data => {
+                    const pages = data?.query?.pages;
+                    const container = document.getElementById(`gallery-container-${country.code}`);
+                    if(pages && container) {
+                        const images = Object.values(pages)
+                            .map(p => p.imageinfo?.[0]?.url)
+                            .filter(url => url && (url.toLowerCase().endsWith('.jpg') || url.toLowerCase().endsWith('.jpeg')) && !url.toLowerCase().includes('map') && !url.toLowerCase().includes('flag') && !url.toLowerCase().includes('logo') && !url.toLowerCase().includes('icon'))
+                            .slice(0, 4);
+                        if (images.length > 0) {
+                            container.innerHTML = images.map((url, i) => `<img src="${url}" alt="${countryName} ${i+1}" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy" onclick="window.open('${url}', '_blank')">`).join('');
+                        } else {
+                            container.innerHTML = `<div class="col-span-2 text-center text-sm text-secondary">Fotoğraf bulunamadı.</div>`;
+                        }
+                    }
+                }).catch(e => console.error('Gallery error:', e));
 
             // Weather widget
             fetchWeather(countryName).then(w => {
