@@ -1763,10 +1763,10 @@
                                     <span class="text-primary">Fotoğraf Galerisi</span>
                                 </h3>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},landmark/all?random=1" alt="${countryName} 1" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},food/all?random=2" alt="${countryName} 2" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},nature/all?random=3" alt="${countryName} 3" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
-                                    <img src="https://loremflickr.com/400/300/${encodeURIComponent(countryName)},market/all?random=4" alt="${countryName} 4" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20landmark%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 1" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20street%20food%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 2" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20beautiful%20nature%20landscape%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 3" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
+                                    <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(countryName)}%20city%20market%20photo%20real?width=400&height=300&nologo=true" alt="${countryName} 4" class="w-full h-28 object-cover rounded-xl hover:scale-105 transition-transform cursor-pointer" loading="lazy">
                                 </div>
                             </div>
 
@@ -2103,34 +2103,14 @@
         const fetchCurrencyRates = async () => {
             if (currencyRates) return;
             try {
-                // Frankfurter API - supports all major currencies
-                const response = await fetch('https://api.frankfurter.app/latest?from=TRY');
+                // Open Exchange Rate API (Free and supports all currencies)
+                const response = await fetch('https://open.er-api.com/v6/latest/TRY');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
                 currencyRates = data.rates;
                 currencyRates['TRY'] = 1; // Base currency
-                
-                // Add additional common currencies that might not be in the base response
-                const additionalCurrencies = ['ALL', 'JPY', 'EUR', 'SEK', 'HUF', 'MKD', 'CHF', 'GBP', 'USD', 'AUD', 'CAD', 'NOK', 'DKK', 'PLN', 'CZK', 'RON', 'BGN', 'HRK', 'RSD', 'BAM', 'ISK'];
-                
-                // Try to get rates for additional currencies
-                for (const currency of additionalCurrencies) {
-                    if (!currencyRates[currency]) {
-                        try {
-                            const extraResponse = await fetch(`https://api.frankfurter.app/latest?from=TRY&to=${currency}`);
-                            if (extraResponse.ok) {
-                                const extraData = await extraResponse.json();
-                                if (extraData.rates[currency]) {
-                                    currencyRates[currency] = extraData.rates[currency];
-                                }
-                            }
-                        } catch (error) {
-                            console.log(`Could not fetch rate for ${currency}:`, error.message);
-                        }
-                    }
-                }
                 
                 console.log('Available currencies:', Object.keys(currencyRates).sort());
                 
