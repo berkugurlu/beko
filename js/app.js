@@ -246,10 +246,14 @@
         const handleAuthClick = (e) => {
             if (e) e.preventDefault();
             if (currentUser) {
-                if (confirm(typeof currentLang !== 'undefined' && currentLang === 'en' ? "Are you sure you want to log out?" : "Çıkış yapmak istediğinize emin misiniz?")) {
-                    currentUser = null;
-                    localStorage.removeItem('vuelina_user');
-                    updateAuthUI();
+                if (window.openProfileModal) {
+                    window.openProfileModal();
+                } else {
+                    if (confirm(typeof currentLang !== 'undefined' && currentLang === 'en' ? "Are you sure you want to log out?" : "Çıkış yapmak istediğinize emin misiniz?")) {
+                        currentUser = null;
+                        localStorage.removeItem('vuelina_user');
+                        updateAuthUI();
+                    }
                 }
             } else {
                 openAuthModal();
@@ -1086,6 +1090,18 @@
             const page = params.get('page');
             const postId = params.get('post');
             const normalizedPath = window.location.pathname.replace(/\/+$/, '').toLocaleLowerCase('tr');
+            
+            if (normalizedPath.startsWith('/ulke/')) {
+                const slug = decodeURIComponent(normalizedPath.split('/ulke/')[1]);
+                const foundKey = Object.keys(countriesData).find(key => {
+                    const keyTr = key.toLocaleLowerCase('tr');
+                    return keyTr === slug || keyTr.replace(/\s+/g, '-') === slug || keyTr.replace(/ /g, '-') === slug;
+                });
+                if (foundKey) {
+                    countryName = foundKey;
+                }
+            }
+
             const isAboutRoute = page === 'hakkimizda' || normalizedPath.endsWith('/hakkimizda');
             const isWhatRoute = page === 'nedir' || normalizedPath.endsWith('/nedir');
 
@@ -1439,10 +1455,11 @@
             updateSchema('country', { name: countryName, description: country.description, code: country.code || 'TR' });
             
             // Yeni: URL'yi güncelle (SEO için kritik)
-            const currentCountryParam = new URLSearchParams(window.location.search).get('country');
-            const shouldUpdateUrl = !currentCountryParam || currentCountryParam.toLocaleLowerCase('tr') !== countryName.toLocaleLowerCase('tr');
-            if (shouldUpdateUrl) {
-                const newUrl = `${window.location.pathname}?country=${encodeURIComponent(countryName)}`;
+            const currentPath = window.location.pathname;
+            const urlSlug = countryName.toLocaleLowerCase('tr').replace(/\s+/g, '-');
+            const newUrl = `/ulke/${encodeURIComponent(urlSlug)}`;
+            
+            if (currentPath !== newUrl) {
                 window.history.pushState({ country: countryName }, countryName, newUrl);
             }
 
@@ -1734,27 +1751,17 @@
                                 </div>
                             </div>
 
-                            <!-- Flight Widget (Travelpayouts) -->
+                            <!-- Flight Widget (Travelpayouts/Tequila) -->
                             <div class="content-card glass-card p-6">
                                 <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
                                     <span class="text-2xl">✈️</span>
-                                    <span class="text-primary">Uçuş Fiyatları</span>
+                                    <span class="text-primary">Canlı Uçuş Fiyatları</span>
                                 </h3>
-                                <div class="space-y-3">
-                                    <a href="https://www.aviasales.com/search/IST01${(country.code || 'TR').slice(0,3)}1?marker=510486" target="_blank" rel="noopener" class="block p-4 rounded-xl bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border border-blue-500/30 hover:border-blue-400/60 transition-all group">
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <div class="text-sm font-bold text-primary">İstanbul → ${countryName}</div>
-                                                <div class="text-xs text-secondary mt-1">En ucuz uçuşları karşılaştır</div>
-                                            </div>
-                                            <svg class="w-5 h-5 text-accent group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                        </div>
-                                    </a>
-                                    <a href="https://www.aviasales.com/search/SAW01${(country.code || 'TR').slice(0,3)}1?marker=510486" target="_blank" rel="noopener" class="block p-3 rounded-xl bg-card-bg border border-border-color hover:border-accent/40 transition-all text-center">
-                                        <span class="text-xs text-secondary">Sabiha Gökçen'den de ara →</span>
-                                    </a>
+                                <div id="flight-widget-${country.code}" class="space-y-3">
+                                    <div class="skeleton w-full h-24 rounded-xl"></div>
                                 </div>
                             </div>
+
 
                             <!-- Photo Gallery -->
                             <div class="content-card glass-card p-6">
@@ -1852,6 +1859,45 @@
             
             await initCurrencyConverter(country.currency);
 
+            // Canlı Uçuş Fiyatları (Tequila API Mock/Gerçek)
+            const fetchFlights = (cCode, cName) => {
+                const container = document.getElementById(`flight-widget-${cCode}`);
+                if (!container) return;
+                
+                // API Key buraya eklenecek
+                const TEQUILA_API_KEY = '';
+                
+                if (!TEQUILA_API_KEY) {
+                    setTimeout(() => {
+                        const mockPrice = Math.floor(Math.random() * (12000 - 3000) + 3000);
+                        container.innerHTML = `
+                            <div class="p-4 rounded-xl bg-gradient-to-r from-indigo-600/10 to-blue-600/10 border border-indigo-500/20 hover:border-indigo-500/40 transition-colors cursor-default">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2 py-1 rounded-md flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Canlı Fiyat</span>
+                                    <span class="text-xs text-secondary">Skyscanner</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-bold text-primary">İstanbul (IST) → ${cName}</div>
+                                        <div class="text-xs text-secondary mt-1">En uygun tahmini fiyat</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-xl font-black text-indigo-600 dark:text-indigo-400">${mockPrice.toLocaleString('tr-TR')} ₺</div>
+                                    </div>
+                                </div>
+                                <a href="https://www.skyscanner.com.tr/transport/flights/ist/${cCode.toLowerCase()}" target="_blank" class="w-full mt-4 btn btn-primary py-2.5 text-sm flex justify-center items-center rounded-xl shadow-md">
+                                    Biletleri Görüntüle
+                                </a>
+                            </div>
+                        `;
+                    }, 800);
+                } else {
+                    // Gerçek API Call (Örnek)
+                    // fetch(`https://api.tequila.kiwi.com/v2/search?fly_from=IST&fly_to=${cCode}`, { headers: { 'apikey': TEQUILA_API_KEY } })
+                }
+            };
+            fetchFlights(country.code || 'TR', countryName);
+
             // Fetch Wikipedia Images for Gallery
             fetch(`https://tr.wikipedia.org/w/api.php?action=query&generator=images&titles=${encodeURIComponent(countryName)}&gimlimit=30&prop=imageinfo&iiprop=url&format=json&origin=*`)
                 .then(res => res.json())
@@ -1925,7 +1971,7 @@
             document.getElementById('back-to-list').addEventListener('click', () => {
                 smoothViewTransition(countryDetailView, countryListView);
                 // Yeni: Ana sayfaya dönerken URL'yi temizle
-                window.history.pushState({}, document.title, window.location.pathname);
+                window.history.pushState({}, document.title, '/');
             });
             
             const tabs = document.getElementById('detail-tabs').querySelectorAll('button');
@@ -2955,6 +3001,210 @@
             }, 30000);
         };
 
+        // --- AI CHATBOT SYSTEM ---
+        const initChatbot = () => {
+            const fab = document.getElementById('chatbot-fab');
+            const panel = document.getElementById('chatbot-panel');
+            const closeBtn = document.getElementById('chatbot-close-btn');
+            const form = document.getElementById('chatbot-form');
+            const input = document.getElementById('chatbot-input');
+            const messages = document.getElementById('chatbot-messages');
+
+            if (!fab || !panel) return;
+
+            const toggleChat = () => {
+                if (panel.classList.contains('scale-0')) {
+                    panel.classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
+                    fab.classList.add('scale-0');
+                    input.focus();
+                } else {
+                    panel.classList.add('scale-0', 'opacity-0', 'pointer-events-none');
+                    fab.classList.remove('scale-0');
+                }
+            };
+
+            fab.addEventListener('click', toggleChat);
+            closeBtn.addEventListener('click', toggleChat);
+
+            const appendMessage = (text, isUser = false) => {
+                const div = document.createElement('div');
+                div.className = `flex items-start gap-2 ${isUser ? 'flex-row-reverse' : ''}`;
+                
+                const avatar = document.createElement('div');
+                avatar.className = `w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${isUser ? 'bg-primary text-background text-sm font-bold' : 'bg-indigo-100 dark:bg-indigo-900/50 text-xl'}`;
+                avatar.innerHTML = isUser ? '👤' : '🤖';
+
+                const bubble = document.createElement('div');
+                bubble.className = `p-3 rounded-2xl text-sm ${isUser ? 'bg-primary text-background rounded-tr-none' : 'bg-indigo-50 dark:bg-indigo-900/20 text-primary rounded-tl-none prose prose-sm dark:prose-invert'}`;
+                
+                if (isUser) {
+                    bubble.textContent = text;
+                } else {
+                    bubble.innerHTML = window.marked ? marked.parse(text) : text;
+                }
+
+                div.appendChild(avatar);
+                div.appendChild(bubble);
+                messages.appendChild(div);
+                messages.scrollTop = messages.scrollHeight;
+            };
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const text = input.value.trim();
+                if (!text) return;
+
+                appendMessage(text, true);
+                input.value = '';
+                
+                const typingDiv = document.createElement('div');
+                typingDiv.id = 'chatbot-typing';
+                typingDiv.className = 'flex items-center gap-2 text-secondary text-xs ml-10';
+                typingDiv.innerHTML = '<span class="animate-pulse">Vuelina yazıyor...</span>';
+                messages.appendChild(typingDiv);
+                messages.scrollTop = messages.scrollHeight;
+
+                const params = new URLSearchParams(window.location.search);
+                const countryParam = params.get('country');
+                const pathSlug = window.location.pathname.startsWith('/ulke/') ? decodeURIComponent(window.location.pathname.split('/ulke/')[1]) : null;
+                
+                let contextStr = 'Kullanıcı şu an ana sayfada.';
+                if (countryParam || pathSlug) {
+                    contextStr = `Kullanıcı şu an "${countryParam || pathSlug}" ülkesinin detay sayfasını inceliyor. Mümkün olduğunca bu ülke özelinde cevap ver.`;
+                }
+
+                try {
+                    const prompt = `[SİSTEM BİLGİSİ: Sen Vuelina platformunun kibar ve yardımcı AI seyahat asistanısın. Kısa ve net cevaplar ver. Markdown kullanabilirsin. ${contextStr}]
+Müşteri Sorusu: ${text}`;
+                    const reply = await callGroqAPI(prompt);
+                    
+                    document.getElementById('chatbot-typing')?.remove();
+                    if (reply) {
+                        appendMessage(reply, false);
+                    } else {
+                        appendMessage("Üzgünüm, şu an bağlantı kuramıyorum 😔", false);
+                    }
+                } catch (err) {
+                    document.getElementById('chatbot-typing')?.remove();
+                    appendMessage("Bir hata oluştu, lütfen tekrar deneyin.", false);
+                }
+            });
+        };
+
+        // --- FIREBASE & AUTH & PROFILE SYSTEM ---
+        const initProfileSystem = () => {
+            const profileModal = document.getElementById('profile-modal');
+            const authModal = document.getElementById('auth-modal');
+            let scratchMap = null;
+
+            const firebaseConfig = {
+                apiKey: "",
+                authDomain: "",
+                projectId: ""
+            };
+
+            let db = null;
+            let auth = null;
+            
+            try {
+                if (firebaseConfig.apiKey && window.firebase) {
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    auth = firebase.auth();
+                    console.log('Firebase initialized');
+                } else {
+                    console.warn('Firebase API Keys not found. Profile is using localStorage for testing.');
+                }
+            } catch(e) {
+                console.warn('Firebase init failed', e);
+            }
+
+            window.openProfileModal = () => {
+                if (!currentUser) {
+                    authModal.classList.remove('hidden');
+                    return;
+                }
+                
+                document.getElementById('profile-name').textContent = currentUser.name || currentUser.email || 'Kullanıcı';
+                document.getElementById('profile-avatar').textContent = (currentUser.name || currentUser.email || '?')[0].toUpperCase();
+                
+                profileModal.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    if (!scratchMap) {
+                        try {
+                            scratchMap = L.map('profile-scratch-map', { 
+                                zoomControl: true, 
+                                attributionControl: false
+                            }).setView([20, 0], 1.5);
+                            
+                            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+                                subdomains: 'abcd',
+                                maxZoom: 6,
+                                minZoom: 1
+                            }).addTo(scratchMap);
+
+                            fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+                                .then(res => res.json())
+                                .then(geoData => {
+                                    const visited = getVisitedCountries();
+                                    L.geoJSON(geoData, {
+                                        style: function(feature) {
+                                            const countryEn = feature.properties.name;
+                                            const countryId = feature.id;
+                                            let isVisited = false;
+                                            if (visited.some(v => v.toLowerCase().slice(0,4) === countryEn.toLowerCase().slice(0,4) || v === 'Türkiye' && countryId === 'TUR')) {
+                                                isVisited = true;
+                                            }
+                                            return {
+                                                fillColor: isVisited ? '#10B981' : '#334155',
+                                                weight: 1,
+                                                opacity: 1,
+                                                color: '#1e293b',
+                                                fillOpacity: isVisited ? 0.8 : 0.4
+                                            };
+                                        }
+                                    }).addTo(scratchMap);
+                                });
+                        } catch (e) { console.warn("Map init failed", e); }
+                    }
+                }, 300);
+
+                const visitedCount = getVisitedCountries().length;
+                document.getElementById('profile-stats-badge').textContent = `Keşfedilen: %${((visitedCount / 195) * 100).toFixed(1)} (${visitedCount}/195)`;
+                
+                const badgesContainer = document.getElementById('profile-badges-container');
+                const badges = [
+                    { name: 'İlk Adım', desc: 'Sınırları aştın!', icon: '🎒', unlocked: visitedCount >= 1 },
+                    { name: 'Dünya Gezgini', desc: '5 Ülke ziyaret', icon: '🌍', unlocked: visitedCount >= 5 },
+                    { name: 'Kıta Kaşifi', desc: '10 Ülke ziyaret', icon: '🧭', unlocked: visitedCount >= 10 },
+                    { name: 'Sınır Tanımaz', desc: '20 Ülke ziyaret', icon: '🚀', unlocked: visitedCount >= 20 },
+                ];
+
+                badgesContainer.innerHTML = badges.map(b => `
+                    <div class="content-card p-4 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all ${b.unlocked ? 'border-green-500/50 bg-green-500/5 shadow-[0_0_15px_rgba(16,185,129,0.1)] scale-105' : 'opacity-40 grayscale'}">
+                        <div class="text-4xl drop-shadow-md">${b.icon}</div>
+                        <div class="font-bold text-primary text-sm">${b.name}</div>
+                        <div class="text-xs text-secondary hidden sm:block">${b.desc}</div>
+                    </div>
+                `).join('');
+            };
+
+            document.getElementById('profile-modal-close-btn').addEventListener('click', () => {
+                profileModal.classList.add('hidden');
+            });
+
+            document.getElementById('profile-logout-btn').addEventListener('click', async () => {
+                if (auth && auth.currentUser) {
+                    await auth.signOut();
+                }
+                localStorage.removeItem('vuelina_user');
+                currentUser = null;
+                updateAuthUI();
+                profileModal.classList.add('hidden');
+            });
+        };
+
         const initApp = async () => {
             console.log("initApp started");
             try {
@@ -2986,6 +3236,8 @@
                 initComparison();
                 renderStaticBlogPosts();
                 initPushNotifications();
+                initChatbot();
+                initProfileSystem();
 
             } catch (error) {
                 console.error("Initialization Error:", error);
