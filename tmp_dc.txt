@@ -1,0 +1,8 @@
+205: if (typeof displayCountries === 'function' && !countryListView.classList.contains('hidden')) {
+207: displayCountries(searchVal);
+904: displayCountries(document.getElementById('search-input').value); // Re-render
+970: const displayCountries = (filter = '') => {
+1183: displayCountries();
+2588: displayCountries(document.getElementById('search-input').value);
+2596: displayCountries(document.getElementById('search-input') ? document.getElementById('search-input').value : '');
+2715: searchInput.addEventListener('input', (e) => displayCountries(e.target.value));

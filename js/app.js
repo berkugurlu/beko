@@ -3266,9 +3266,9 @@ ${historyStr}Müşteri Sorusu: ${text}`;
             console.log("initApp started");
             try {
                 // 1. SaaS Görünümü için Dark Mode Sabitlendi
-                applyTheme('dark-indigo');
+                document.documentElement.setAttribute('data-theme', 'dark-indigo');
                 console.log("SaaS Theme applied");
-
+                
                 // 2. Filters
                 setupFilters();
                 console.log("Filters setup");
