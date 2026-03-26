@@ -1,0 +1,51 @@
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:58: let userPassport = localStorage.getItem('vuelina_passport') || 'Türkiye';
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:60: // --- IP-BASED AUTOMATIC PASSPORT DETECTION ---
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:65: // Supported passports (ones that have visa override data)
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:66: const supportedPassports = ["Türkiye", "Almanya", "ABD", "Birleşik Krallık", "Fransa", "İtalya", "İspanya", "Japonya", "Kanada", "Avustralya", "Brezilya", "Güney Kore", "Rusya", "Çin"];
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:68: const detectPassportFromIP = async () => {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:70: if (localStorage.getItem('vuelina_passport_auto_set')) return;
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:73: const response = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:80: // Use detected country if it's a supported passport, otherwise use it as-is
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:81: if (supportedPassports.includes(detectedCountry)) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:82: userPassport = detectedCountry;
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:84: // Even if not a "supported" passport with detailed overrides,
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:85: // set it so the fallback logic in getVisaForPassport works
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:86: userPassport = detectedCountry;
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:88: localStorage.setItem('vuelina_passport', userPassport);
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:91: console.log('IP-based passport detection failed, using default:', err.message);
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:95: localStorage.setItem('vuelina_passport_auto_set', '1');
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:188: detectPassportFromIP().then(() => {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:189: // Re-render country cards if they were already displayed, to reflect the detected passport
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:985: const visaInfo = (typeof getVisaForPassport === 'function')
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:986: ? getVisaForPassport(userPassport, name, country.visaStatus)
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:1488: // Use dynamic visa data based on selected passport
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:1489: const detailVisaInfo = (typeof getVisaForPassport === 'function')
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:1490: ? getVisaForPassport(userPassport, countryName, country.visaStatus)
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:2908: const quickLook1 = typeof getVisaForPassport === 'function' ? getVisaForPassport(n1, userPassport) : {};
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:2909: const quickLook2 = typeof getVisaForPassport === 'function' ? getVisaForPassport(n2, userPassport) : {};
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:2952: { slug: 'vizesiz-ulkeler-2026', title: '🌍 2026\'da Türk Pasaportuyla Vizesiz Gidilen 50+ Ülke', summary: 'Vize derdi olmadan gidebileceğiniz en güzel ülkeleri ve pratik ipuçlarını keşfedin.', image: 'https://image.pollinations.ai/prompt/world%20travel%20passport%20visa%20free?width=800&height=400&nologo=true', date: '2026-03-20', category: 'Rehber', content: `<h2 class="text-2xl font-bold mt-6 mb-3">Vizesiz Seyahat Rehberi 2026</h2><p class="mb-4">Türk vatandaşları 2026 yılında 50'den fazla ülkeye vizesiz veya kapıda vize ile seyahat edebilir. İşte bölgelere göre listesi:</p><h3 class="text-xl font-bold mt-5 mb-2">🌏 Asya</h3><p class="mb-4">Japonya (90 gün), Güney Kore (90 gün), Tayland (30 gün), Malezya (90 gün), Singapur (30 gün), Endonezya (30 gün kapıda vize), Filipinler (30 gün).</p><h3 class="text-xl font-bold mt-5 mb-2">🌎 Amerika</h3><p class="mb-4">Brezilya (90 gün), Arjantin (90 gün), Meksika (e-vize), Peru (90 gün), Kolombiya, Ekvador, Şili.</p><h3 class="text-xl font-bold mt-5 mb-2">🌍 Afrika & Orta Doğu</h3><p class="mb-4">Fas (90 gün), Tunus (90 gün), BAE (90 gün), Güney Afrika (30 gün), Katar.</p><h3 class="text-xl font-bold mt-5 mb-2">🇪🇺 Balkanlar</h3><p class="mb-4">Sırbistan, Bosna-Hersek, Karadağ, Arnavutluk, Kosova — hepsi vizesiz!</p><p class="mb-4"><strong>İpucu:</strong> Pasaportunuzun geçerlilik süresinin seyahat bitiş tarihinden itibaren en az 6 ay olmasına dikkat edin.</p>` },
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:3: * Uses rule-based defaults + specific overrides to cover ALL passport-country combos.
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:4: * Sources: Henley Passport Index 2025-2026, IATA Timatic
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:12: const POWERFUL_PASSPORTS = ["Almanya","Fransa","İtalya","İspanya","Japonya","Güney Kore","ABD","Birleşik Krallık","Kanada","Avustralya","Brezilya"];
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:14: // Specific visa data: visaOverrides[passport][target] = {status, note}
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:190: // Copy rules for passports that share similar privileges
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:191: // Fransa, İtalya, İspanya → same as Almanya (EU/Schengen passport)
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:207: * Master lookup function. Covers ALL passport-country combinations.
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:209: function getVisaForPassport(passport, target, fallbackStatus) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:211: if (passport === target) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:216: const ov = visaOverrides[passport];
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:223: const isSchengenPassport = SCHENGEN.includes(passport);
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:224: const isEUPassport = isSchengenPassport || EU_ONLY.includes(passport);
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:225: const isPowerful = POWERFUL_PASSPORTS.includes(passport);
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:227: // EU/Schengen passport holders → Serbest Dolaşım within Schengen+EU
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:228: if (isEUPassport && (SCHENGEN.includes(target) || EU_ONLY.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:232: // Powerful passport → Vizesiz for Schengen (non-EU holders like US, JP, etc)
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:233: if (isPowerful && !isEUPassport && SCHENGEN.includes(target)) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:236: if (isPowerful && !isEUPassport && SCHENGEN_ADJACENT.includes(target)) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:239: // Powerful passport → Vizesiz for Balkans
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:243: // Powerful passport → Vizesiz for Romania/Bulgaria
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:249: if (passport === "Türkiye" && (SCHENGEN.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:254: if (passport === "Rusya" && (SCHENGEN.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:259: if (passport === "Çin" && (SCHENGEN.includes(target) || SCHENGEN_ADJACENT.includes(target))) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:263: // 3. Final fallback → use existing static data from data.js (for Turkey passport)
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\visaData.js:264: if (passport === "Türkiye" && fallbackStatus) {

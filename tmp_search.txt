@@ -1,0 +1,26 @@
+326: window.history.pushState({}, document.title, window.location.pathname);
+653: L.control.attribution({ prefix: false, position: 'bottomright' }).addAttribution('<a href="https://carto.com">CARTO</a> | <a href="https://openstreetmap.org">OpenStreetMap</a>').addTo(leafletMap);
+923: "url": window.location.href,
+1088: const params = new URLSearchParams(window.location.search);
+1092: const normalizedPath = window.location.pathname.replace(/\/+$/, '').toLocaleLowerCase('tr');
+1194: if (window.location.protocol === 'file:') {
+1290: const newUrl = `${window.location.pathname}?page=blog`;
+1291: if (window.location.search !== '?page=blog') {
+1332: if (window.location.protocol === 'file:') {
+1391: return `<a href="${node.data?.uri}" target="_blank" rel="noopener noreferrer" class="text-accent underline hover:text-primary">${children}</a>`;
+1458: const currentPath = window.location.pathname;
+1622: <a href="https://www.skyscanner.com.tr/transport/flights/tr/${(country.code || 'tr').toLowerCase()}/?rtn=1" target="_blank" class="bg-indigo-600/90 backdrop-blur-md text-white border border-indigo-400/50 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-2xl shadow-indigo-500/20 hover:bg-indigo-500 hover:-translate-y-1 transition-all">
+1625: <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="bg-white/10 backdrop-blur-xl text-white border border-white/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-white/20 hover:-translate-y-1 transition-all">
+1686: <a href="https://www.getyourguide.com/s/?q=${encodeURIComponent(country.code || countryName)}" target="_blank" class="flex items-center gap-2 text-accent font-semibold hover:text-accent-dark transition-colors group">
+1888: <a href="https://www.skyscanner.com.tr/transport/flights/ist/${cCode.toLowerCase()}/?rtn=1" target="_blank" class="w-full mt-4 btn btn-primary py-2.5 text-sm flex justify-center items-center rounded-xl shadow-md">
+1996: const url = window.location.href;
+2186: const countryName = new URLSearchParams(window.location.search).get('country');
+2301: <p>Google tarafından çerezlerin kullanımı ve kişiselleştirilmiş reklamlar hakkında daha fazla bilgi için lütfen Google'ın <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer">Reklamcılık Politikaları</a> sayfasını ziyaret edin.</p>
+2589: if (window.location.protocol === 'file:') {
+2590: window.history.pushState({}, document.title, window.location.pathname);
+2615: if (window.location.protocol === 'file:') {
+2626: if (window.location.protocol === 'file:') {
+2638: if (window.location.protocol === 'file:') {
+2649: if (window.location.protocol === 'file:') {
+3083: const params = new URLSearchParams(window.location.search);
+3085: const pathSlug = window.location.pathname.startsWith('/ulke/') ? decodeURIComponent(window.location.pathname.split('/ulke/')[1]) : null;

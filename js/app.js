@@ -67,32 +67,46 @@
 
         const detectPassportFromIP = async () => {
             // Skip if already auto-detected
-            if (localStorage.getItem('vuelina_passport_auto_set')) return;
+            if (localStorage.getItem('vuelina_passport_auto_set')) return false;
+
+            let detectedCode = null;
 
             try {
                 const response = await fetch('https://ipapi.co/json/', { signal: AbortSignal.timeout(5000) });
-                if (!response.ok) throw new Error('API error');
-                const data = await response.json();
-                const detectedCode = data.country_code; // e.g. "TR", "DE", "US"
-                
-                if (detectedCode && codeToCountry[detectedCode]) {
-                    const detectedCountry = codeToCountry[detectedCode];
-                    // Use detected country if it's a supported passport, otherwise use it as-is
-                    if (supportedPassports.includes(detectedCountry)) {
-                        userPassport = detectedCountry;
-                    } else {
-                        // Even if not a "supported" passport with detailed overrides,
-                        // set it so the fallback logic in getVisaForPassport works
-                        userPassport = detectedCountry;
-                    }
-                    localStorage.setItem('vuelina_passport', userPassport);
+                if (response.ok) {
+                    const data = await response.json();
+                    detectedCode = data.country_code; // e.g. "TR", "DE", "US"
                 }
             } catch (err) {
-                console.log('IP-based passport detection failed, using default:', err.message);
+                console.log('ipapi.co failed, trying fallback:', err.message);
             }
 
-            // Mark as auto-set so we don't call the API again
-            localStorage.setItem('vuelina_passport_auto_set', '1');
+            if (!detectedCode) {
+                try {
+                    const response = await fetch('https://get.geojs.io/v1/ip/country.json', { signal: AbortSignal.timeout(5000) });
+                    if (response.ok) {
+                        const data = await response.json();
+                        detectedCode = data.country; // e.g. "TR"
+                    }
+                } catch (err) {
+                    console.log('geojs failed:', err.message);
+                }
+            }
+                
+            if (detectedCode && codeToCountry[detectedCode]) {
+                const detectedCountry = codeToCountry[detectedCode];
+                userPassport = detectedCountry;
+                localStorage.setItem('vuelina_passport', userPassport);
+                localStorage.setItem('vuelina_passport_auto_set', '1');
+                console.log('Detected passport from IP:', userPassport);
+                return true;
+            } else if (detectedCode) {
+                // We got a country code but it's not in our known list
+                localStorage.setItem('vuelina_passport_auto_set', '1');
+                return false;
+            }
+
+            return false;
         };
 
         // --- VISITED COUNTRIES SYSTEM ---
@@ -185,11 +199,29 @@
         };
 
         // Run auto-detection (non-blocking)
-        detectPassportFromIP().then(() => {
-            // Re-render country cards if they were already displayed, to reflect the detected passport
-            if (typeof displayCountries === 'function') {
-                const searchVal = document.getElementById('search-input')?.value || '';
-                displayCountries(searchVal);
+        detectPassportFromIP().then((changed) => {
+            if (changed) {
+                // Re-render country cards if they were already displayed
+                if (typeof displayCountries === 'function' && !countryListView.classList.contains('hidden')) {
+                    const searchVal = document.getElementById('search-input')?.value || '';
+                    displayCountries(searchVal);
+                }
+                
+                // Re-render detail view if active
+                if (typeof displayCountryDetail === 'function' && !countryDetailView.classList.contains('hidden')) {
+                    const pathParts = window.location.pathname.split('/ulke/');
+                    if (pathParts.length > 1 && pathParts[1]) {
+                        const slug = decodeURIComponent(pathParts[1]);
+                        const countryName = Object.keys(countriesData).find(c => {
+                            const trChars = {'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u'};
+                            const toSlug = (str) => str.toLowerCase().replace(/[çğıöşü]/g, m => trChars[m] || m).replace(/\s+/g, '-');
+                            return toSlug(c) === slug;
+                        });
+                        if (countryName) {
+                            displayCountryDetail(countryName);
+                        }
+                    }
+                }
             }
         });
 

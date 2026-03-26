@@ -1,0 +1,4 @@
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:5: const countryCodes = {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:63: Object.entries(countryCodes).forEach(([name, code]) => { codeToCountry[code] = name; });
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:581: if (countryCodes[country]) {
+c:/Users/PC/OneDrive/Masaüstü/Cursor/beko/js\app.js:582: countriesData[country].code = countryCodes[country];
