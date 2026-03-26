@@ -1619,8 +1619,8 @@
                                     </div>
                                 </div>
                                 <div class="mt-8 flex flex-wrap gap-4 relative z-10 border-t border-white/20 pt-6">
-                                    <a href="https://www.skyscanner.com.tr/transport/flights/tr/${(country.code || 'tr').toLowerCase()}/?adults=1&cabinclass=economy." target="_blank" class="bg-indigo-600/90 backdrop-blur-md text-white border border-indigo-400/50 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-2xl shadow-indigo-500/20 hover:bg-indigo-500 hover:-translate-y-1 transition-all">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6 3L5 15l-3 1 1 3 3-1 4-4 9 6c.4.3.9.1 1-.4l-.2-1.4z"/></svg> Uçuş Bul
+                                    <a href="https://www.skyscanner.com.tr/transport/flights/tr/${(country.code || 'tr').toLowerCase()}/?rtn=1" target="_blank" class="bg-indigo-600/90 backdrop-blur-md text-white border border-indigo-400/50 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-2xl shadow-indigo-500/20 hover:bg-indigo-500 hover:-translate-y-1 transition-all">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6 3L5 15l-3 1 1 3 3-1 4-4 9 6c.4.3.9.1 1-.4l-.2-1.4z"/></svg> Gidiş-Dönüş Bul
                                     </a>
                                     <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="bg-white/10 backdrop-blur-xl text-white border border-white/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-white/20 hover:-translate-y-1 transition-all">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-6.57"/><path d="M14 22v-6.57"/><path d="M19 3v11.83"/><path d="M22 6.57v3.26"/><path d="M3 22v-6.57"/><path d="M5 3v11.83"/><path d="M8 6.57v3.26"/><path d="M8.57 2H10v4.57H8.57z"/><path d="M14 2h1.43v4.57H14z"/><path d="M5.43 2.57h13.14V7.5H5.43z"/><path d="M3 13.5v8.5h18v-8.5"/><path d="m3 13.5 1.43-1.43c.1-.1.25-.1.35 0L6.5 13.8l1.7-1.74a.26.26 0 0 1 .36 0L10.3 13.8l1.7-1.74a.26.26 0 0 1 .36 0l1.73 1.74 1.71-1.74a.26.26 0 0 1 .37 0l1.43 1.44v8.5"/></svg> Otel Bak
@@ -1869,7 +1869,7 @@
                 
                 if (!TEQUILA_API_KEY) {
                     setTimeout(() => {
-                        const mockPrice = Math.floor(Math.random() * (12000 - 3000) + 3000);
+                        const mockPrice = Math.floor(Math.random() * (22000 - 6000) + 6000);
                         container.innerHTML = `
                             <div class="p-4 rounded-xl bg-gradient-to-r from-indigo-600/10 to-blue-600/10 border border-indigo-500/20 hover:border-indigo-500/40 transition-colors cursor-default">
                                 <div class="flex items-center justify-between mb-3">
@@ -1878,14 +1878,14 @@
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <div class="text-sm font-bold text-primary">İstanbul (IST) → ${cName}</div>
-                                        <div class="text-xs text-secondary mt-1">En uygun tahmini fiyat</div>
+                                        <div class="text-sm font-bold text-primary">İstanbul (IST) ⇄ ${cName}</div>
+                                        <div class="text-xs text-secondary mt-1">Gidiş-Dönüş tahmini fiyat</div>
                                     </div>
                                     <div class="text-right">
                                         <div class="text-xl font-black text-indigo-600 dark:text-indigo-400">${mockPrice.toLocaleString('tr-TR')} ₺</div>
                                     </div>
                                 </div>
-                                <a href="https://www.skyscanner.com.tr/transport/flights/ist/${cCode.toLowerCase()}" target="_blank" class="w-full mt-4 btn btn-primary py-2.5 text-sm flex justify-center items-center rounded-xl shadow-md">
+                                <a href="https://www.skyscanner.com.tr/transport/flights/ist/${cCode.toLowerCase()}/?rtn=1" target="_blank" class="w-full mt-4 btn btn-primary py-2.5 text-sm flex justify-center items-center rounded-xl shadow-md">
                                     Biletleri Görüntüle
                                 </a>
                             </div>
@@ -2498,11 +2498,20 @@
         };
 
         // --- TEMA YÖNETİMİ ---
-        const applyTheme = (theme) => {
-            document.documentElement.setAttribute('data-theme', theme);
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', theme);
+        const toggleTheme = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            const newTheme = isDark ? 'light' : 'dark';
+            if (newTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            localStorage.setItem('theme', newTheme);
         };
+
+        document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', toggleTheme);
+        });
         // --- TEMA YÖNETİMİ SONU ---
 
         // --- FILTERS ---
@@ -2767,10 +2776,16 @@
             const nextBtn = document.getElementById('quiz-next-btn');
             const heroQuizBtn = document.getElementById('hero-quiz-btn');
             const navQuizBtn = document.getElementById('nav-quiz-btn');
+            const navQuizBtnMobile = document.getElementById('nav-quiz-btn-mobile');
 
             const openQuiz = () => { quizStep = 0; quizAnswers = {}; renderQuizStep(); modal.classList.add('visible'); };
             if (heroQuizBtn) heroQuizBtn.addEventListener('click', openQuiz);
             if (navQuizBtn) navQuizBtn.addEventListener('click', openQuiz);
+            if (navQuizBtnMobile) navQuizBtnMobile.addEventListener('click', () => {
+                const mobileMenu = document.getElementById('mobile-menu');
+                if(mobileMenu) mobileMenu.classList.add('hidden');
+                openQuiz();
+            });
             if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
             if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('visible'); });
 
@@ -3009,6 +3024,7 @@
             const form = document.getElementById('chatbot-form');
             const input = document.getElementById('chatbot-input');
             const messages = document.getElementById('chatbot-messages');
+            let chatHistory = [];
 
             if (!fab || !panel) return;
 
@@ -3073,13 +3089,22 @@
                     contextStr = `Kullanıcı şu an "${countryParam || pathSlug}" ülkesinin detay sayfasını inceliyor. Mümkün olduğunca bu ülke özelinde cevap ver.`;
                 }
 
+                chatHistory.push({role: 'user', content: text});
+                if (chatHistory.length > 6) chatHistory.shift();
+
+                let historyStr = "";
+                if (chatHistory.length > 1) {
+                    historyStr = "Önceki konuşmalar:\n" + chatHistory.slice(0, -1).map(h => (h.role === 'user' ? "Müşteri: " : "Asistan: ") + h.content).join("\n") + "\n\n";
+                }
+
                 try {
-                    const prompt = `[SİSTEM BİLGİSİ: Sen Vuelina platformunun kibar ve yardımcı AI seyahat asistanısın. Kısa ve net cevaplar ver. Markdown kullanabilirsin. ${contextStr}]
-Müşteri Sorusu: ${text}`;
+                    const prompt = `[SİSTEM BİLGİSİ: Sen Vuelina platformunun kibar ve yardımcı AI seyahat asistanısın. Kısa ve net cevaplar ver. Kullanıcıyı sitedeki "Sana Uygun Ülkeyi Bul (Quiz navigasyon menüsünde)" ve profilindeki "Keşfedilen Ülkeler Haritası" özelliklerine yönlendirmeyi unutma. Markdown kullanabilirsin. ${contextStr}]
+${historyStr}Müşteri Sorusu: ${text}`;
                     const reply = await callGroqAPI(prompt);
                     
                     document.getElementById('chatbot-typing')?.remove();
                     if (reply) {
+                        chatHistory.push({role: 'assistant', content: reply});
                         appendMessage(reply, false);
                     } else {
                         appendMessage("Üzgünüm, şu an bağlantı kuramıyorum 😔", false);
