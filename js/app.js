@@ -46,7 +46,7 @@
         const legalModalContent = document.getElementById('legal-modal-content');
         const legalModalCloseBtn = document.getElementById('legal-modal-close-btn'); 
 
-        // --- AUTH LOGIC (MOCK) ---
+        // --- AUTH LOGIC (Firebase + localStorage fallback) ---
         const authModalBtn = document.getElementById('auth-modal-btn');
         const authModalBtnMobile = document.getElementById('auth-modal-btn-mobile');
         const authModal = document.getElementById('auth-modal');
@@ -326,19 +326,40 @@
         }
 
         if (authGoogleBtn) {
-            authGoogleBtn.addEventListener('click', () => {
-                currentUser = {
-                    uid: 'mock-g-' + Date.now(),
-                    email: 'google.user@example.com',
-                    photoURL: 'https://api.dicebear.com/7.x/avataaars/svg?seed=google'
-                };
-                localStorage.setItem('vuelina_user', JSON.stringify(currentUser));
-                updateAuthUI();
-                closeAuthModal();
-                showInfoModal(
-                    typeof currentLang !== 'undefined' && currentLang === 'en' ? "Welcome!" : "Hoş Geldin!", 
-                    typeof currentLang !== 'undefined' && currentLang === 'en' ? "Google Login Successful." : "Google ile başarıyla giriş yaptınız."
-                );
+            authGoogleBtn.addEventListener('click', async () => {
+                authGoogleBtn.disabled = true;
+                authGoogleBtn.textContent = '...';
+                try {
+                    const user = await window.vuelinaDb.loginWithGoogle();
+                    currentUser = {
+                        uid: user.uid,
+                        email: user.email || 'google.user@example.com',
+                        displayName: user.displayName || 'Google User',
+                        photoURL: user.photoURL || 'https://api.dicebear.com/7.x/avataaars/svg?seed=' + (user.email || 'google')
+                    };
+                    localStorage.setItem('vuelina_user', JSON.stringify(currentUser));
+                    // Persist to cloud if Firebase is configured
+                    if (window.vuelinaDb.isConfigured) {
+                        await window.vuelinaDb.saveUserData(user.uid, {
+                            email: currentUser.email,
+                            displayName: currentUser.displayName,
+                            photoURL: currentUser.photoURL,
+                            lastLogin: new Date().toISOString()
+                        });
+                    }
+                    updateAuthUI();
+                    closeAuthModal();
+                    showInfoModal(
+                        typeof currentLang !== 'undefined' && currentLang === 'en' ? 'Welcome!' : 'Hoş Geldin!',
+                        typeof currentLang !== 'undefined' && currentLang === 'en' ? 'Signed in with Google.' : 'Google ile başarıyla giriş yaptınız.'
+                    );
+                } catch (err) {
+                    console.error('Google login failed:', err);
+                    showInfoModal('Hata', 'Google ile giriş yapılamadı. Lütfen tekrar deneyin.');
+                } finally {
+                    authGoogleBtn.disabled = false;
+                    authGoogleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg> <span>Google ile Devam Et</span>`;
+                }
             });
         }
         
@@ -910,52 +931,89 @@
         
         const updateSchema = (type, data) => {
             // Remove existing JSON-LD scripts
-            const existingScripts = document.querySelectorAll('script[type="application/ld+json"]');
-            existingScripts.forEach(script => script.remove());
+            document.querySelectorAll('script[type="application/ld+json"]').forEach(s => s.remove());
+
+            const setMeta = (name, content, prop = false) => {
+                const sel = prop ? `meta[property="${name}"]` : `meta[name="${name}"]`;
+                let el = document.querySelector(sel);
+                if (!el) { el = document.createElement('meta'); prop ? el.setAttribute('property', name) : el.setAttribute('name', name); document.head.appendChild(el); }
+                el.setAttribute('content', content || '');
+            };
 
             let schemaData = {};
 
             if (type === 'country') {
+                const img = `https://image.pollinations.ai/prompt/${encodeURIComponent(data.name)}%20landmark?width=1200&height=630&nologo=true`;
+                const desc = `${data.name} vize bilgileri, seyahat rehberi, bütçe ve ipuçları - Vuelina`;
+                const title = `${data.name} | Vuelina Seyahat Rehberi`;
+                const url = `https://vuelina.com/ulke/${encodeURIComponent(data.name.toLocaleLowerCase('tr').replace(/\s+/g, '-'))}`;
+
+                document.title = title;
+                setMeta('description', desc);
+                setMeta('og:title', title, true);
+                setMeta('og:description', desc, true);
+                setMeta('og:image', img, true);
+                setMeta('og:url', url, true);
+                setMeta('og:type', 'article', true);
+                setMeta('twitter:card', 'summary_large_image');
+                setMeta('twitter:title', title);
+                setMeta('twitter:description', desc);
+                setMeta('twitter:image', img);
+
+                const countryCode = (data.code || 'TR').toLowerCase();
+                const coords = { lat: 0, lon: 0 };
                 schemaData = {
                     "@context": "https://schema.org",
                     "@type": "TouristDestination",
                     "name": data.name,
-                    "description": data.description,
-                    "image": `https://flagcdn.com/w320/${data.code}.png`, // Placeholder for flag/image logic
-                    "touristType": [
-                        "History",
-                        "Culture"
-                    ],
-                    "geo": {
-                        "@type": "GeoCoordinates",
-                        "latitude": "0", // Dynamic coords would be better but static for now
-                        "longitude": "0" 
-                    },
+                    "description": desc,
+                    "image": img,
+                    "url": url,
+                    "touristType": ["History", "Culture", "Travel"],
+                    "geo": { "@type": "GeoCoordinates", "latitude": coords.lat, "longitude": coords.lon },
                     "publicAccess": true
                 };
             } else if (type === 'blog') {
+                const title = `${data.title} | Vuelina Blog`;
+                const desc = data.summary || 'Vuelina Blog';
+                document.title = title;
+                setMeta('description', desc);
+                setMeta('og:title', title, true);
+                setMeta('og:description', desc, true);
+                setMeta('og:image', data.image || 'https://vuelina.com/og-default.jpg', true);
+                setMeta('og:type', 'article', true);
+                setMeta('twitter:card', 'summary_large_image');
+                setMeta('twitter:title', title);
+                setMeta('twitter:description', desc);
+
                 schemaData = {
                     "@context": "https://schema.org",
                     "@type": "BlogPosting",
                     "headline": data.title,
                     "image": data.image,
-                    "datePublished": data.date, 
-                    "author": {
-                        "@type": "Organization",
-                        "name": "Vuelina"
-                    },
-                    "description": data.summary
+                    "datePublished": data.date,
+                    "author": { "@type": "Organization", "name": "Vuelina" },
+                    "description": desc
                 };
             } else {
-                // Default Website Schema
+                const title = 'Vuelina - Akıllı Seyahat Rehberi';
+                const desc = 'Vize bilgileri, seyahat planı ve yapay zeka desteğiyle hayalindeki ülkeyi keşfet.';
+                document.title = title;
+                setMeta('description', desc);
+                setMeta('og:title', title, true);
+                setMeta('og:description', desc, true);
+                setMeta('og:image', 'https://vuelina.com/og-default.jpg', true);
+                setMeta('og:type', 'website', true);
+                setMeta('twitter:card', 'summary_large_image');
+
                 schemaData = {
                     "@context": "https://schema.org",
                     "@type": "WebSite",
                     "name": "Vuelina",
-                    "url": window.location.href,
+                    "url": "https://vuelina.com",
                     "potentialAction": {
                         "@type": "SearchAction",
-                        "target": "https://vuelina.com/?country={search_term_string}",
+                        "target": "https://vuelina.com/?q={search_term_string}",
                         "query-input": "required name=search_term_string"
                     }
                 };
@@ -966,6 +1024,7 @@
             script.text = JSON.stringify(schemaData);
             document.head.appendChild(script);
         };
+
     
         const displayCountries = (filter = '') => {
             countryListContainer.innerHTML = '';
@@ -1530,6 +1589,25 @@
                 tipping: country.tipping || 'Bahşiş',
             };
 
+            // Fetch live flight price (async, non-blocking)
+            const fetchFlightPrice = async () => {
+                const destCode = country.code || 'FR';
+                const originCode = userPassport === 'Türkiye' ? 'TR' : (
+                    typeof countryCodes !== 'undefined' ? Object.entries(countryCodes).find(([k]) => k === userPassport)?.[1] || 'TR' : 'TR'
+                );
+                try {
+                    const r = await fetch(`/api?dest=${destCode}&origin=${originCode}`);
+                    const json = await r.json();
+                    if (json.success && json.price) {
+                        const el = document.getElementById('live-flight-price');
+                        if (el) {
+                            el.innerHTML = `<span class="text-green-400 font-bold">~€${json.price}</span><span class="text-xs text-secondary ml-1">(tahmini)</span>`;
+                        }
+                    }
+                } catch (e) { /* silent fail */ }
+            };
+
+
             const aiResultsContainerHtml = `
                 <div class="mt-8 pt-8 border-t border-border-color relative">
                     <!-- AI Section Background Pattern -->
@@ -1652,7 +1730,7 @@
                                 </div>
                                 <div class="mt-8 flex flex-wrap gap-4 relative z-10 border-t border-white/20 pt-6">
                                     <a href="https://www.skyscanner.com.tr/transport/flights/tr/${(country.code || 'tr').toLowerCase()}/?rtn=1" target="_blank" class="bg-indigo-600/90 backdrop-blur-md text-white border border-indigo-400/50 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-2xl shadow-indigo-500/20 hover:bg-indigo-500 hover:-translate-y-1 transition-all">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6 3L5 15l-3 1 1 3 3-1 4-4 9 6c.4.3.9.1 1-.4l-.2-1.4z"/></svg> Gidiş-Dönüş Bul
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.2-1.1.6L3 8l6 3L5 15l-3 1 1 3 3-1 4-4 9 6c.4.3.9.1 1-.4l-.2-1.4z"/></svg> Gidiş-Dönüş Bul <span id="live-flight-price" class="ml-1 font-normal text-sm opacity-80"><span class="animate-pulse">✈ yükleniyor…</span></span>
                                     </a>
                                     <a href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(country.code || countryName)}&selected_currency=TRY." target="_blank" class="bg-white/10 backdrop-blur-xl text-white border border-white/30 flex flex-1 md:flex-none items-center justify-center gap-3 py-3 px-6 text-base md:text-lg rounded-2xl font-bold font-medium shadow-xl hover:bg-white/20 hover:-translate-y-1 transition-all">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 22v-6.57"/><path d="M14 22v-6.57"/><path d="M19 3v11.83"/><path d="M22 6.57v3.26"/><path d="M3 22v-6.57"/><path d="M5 3v11.83"/><path d="M8 6.57v3.26"/><path d="M8.57 2H10v4.57H8.57z"/><path d="M14 2h1.43v4.57H14z"/><path d="M5.43 2.57h13.14V7.5H5.43z"/><path d="M3 13.5v8.5h18v-8.5"/><path d="m3 13.5 1.43-1.43c.1-.1.25-.1.35 0L6.5 13.8l1.7-1.74a.26.26 0 0 1 .36 0L10.3 13.8l1.7-1.74a.26.26 0 0 1 .36 0l1.73 1.74 1.71-1.74a.26.26 0 0 1 .37 0l1.43 1.44v8.5"/></svg> Otel Bak
@@ -2005,6 +2083,10 @@
                 // Yeni: Ana sayfaya dönerken URL'yi temizle
                 window.history.pushState({}, document.title, '/');
             });
+
+            // Trigger live flight price fetch non-blocking
+            fetchFlightPrice();
+
             
             const tabs = document.getElementById('detail-tabs').querySelectorAll('button');
             tabs.forEach(tab => {
